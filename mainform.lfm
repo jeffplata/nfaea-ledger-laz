@@ -1,0 +1,98 @@
+object frmMain: TfrmMain
+  Left = 324
+  Height = 300
+  Top = 280
+  Width = 631
+  Caption = 'NFAEA Ledger'
+  ClientHeight = 280
+  ClientWidth = 631
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  LCLVersion = '1.8.2.0'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 257
+    Top = 0
+    Width = 631
+    ActivePage = tabPersons
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    object tabPersons: TTabSheet
+      Caption = 'Members'
+      ClientHeight = 229
+      ClientWidth = 623
+      object sgdPersons: TStringGrid
+        Left = 0
+        Height = 196
+        Top = 33
+        Width = 623
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ColCount = 0
+        FixedCols = 0
+        FixedRows = 0
+        RowCount = 0
+        TabOrder = 0
+      end
+    end
+    object tabServices: TTabSheet
+      Caption = 'Services'
+    end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 257
+    Width = 631
+    Panels = <>
+  end
+  object MainMenu1: TMainMenu
+    left = 96
+    top = 24
+    object MenuItem1: TMenuItem
+      Caption = '&File'
+      object MenuItem2: TMenuItem
+        Action = actFileEXit
+      end
+    end
+    object MenuItem3: TMenuItem
+      Caption = 'S&ystem'
+      object MenuItem6: TMenuItem
+        Action = actMembers
+      end
+      object MenuItem7: TMenuItem
+        Caption = '&Ser&vices'
+      end
+      object MenuItem8: TMenuItem
+        Caption = '&Ledger'
+      end
+    end
+    object MenuItem4: TMenuItem
+      Caption = '&Help'
+      object MenuItem5: TMenuItem
+        Action = actHelpAbout
+      end
+    end
+  end
+  object ActionList1: TActionList
+    left = 144
+    top = 24
+    object actFileEXit: TFileExit
+      Category = 'File'
+      Caption = 'E&xit'
+      Hint = 'Exit'
+      ShortCut = 32883
+    end
+    object actHelpAbout: TAction
+      Category = 'Help'
+      Caption = '&About'
+      OnExecute = actHelpAboutExecute
+    end
+    object actMembers: TAction
+      Category = 'System'
+      Caption = '&Members'
+      OnExecute = actMembersExecute
+    end
+  end
+end
