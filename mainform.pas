@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ActnList, StdActns, ComCtrls, Grids
+  ActnList, StdActns, ComCtrls, Grids, ExtCtrls, Buttons, StdCtrls
   ,ledger_bom
   ,tiModelMediator
   ,tiListMediators
@@ -21,6 +21,10 @@ type
     actMembers: TAction;
     ActionList1: TActionList;
     actFileEXit: TFileExit;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    edtFilter: TLabeledEdit;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
@@ -31,13 +35,17 @@ type
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
     PageControl1: TPageControl;
+    SpeedButton1: TSpeedButton;
     StatusBar1: TStatusBar;
     sgdPersons: TStringGrid;
+    sgdServices: TStringGrid;
     tabPersons: TTabSheet;
     tabServices: TTabSheet;
     procedure actHelpAboutExecute(Sender: TObject);
     procedure actMembersExecute(Sender: TObject);
+    procedure edtFilterKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
+    procedure edtFilterChange(Sender: TObject);
   private
     FPersonsMediator: TtiModelMediator;
     FPersons: TPersonList;
@@ -70,6 +78,18 @@ begin
   ShowPersons(nil);
 end;
 
+procedure TfrmMain.edtFilterKeyPress(Sender: TObject; var Key: char);
+begin
+  if key = chr(13) then
+  begin
+    FPersons.BeginUpdate;
+    FPersons.Clear;
+    gLedgerManager.LoadPersons;
+    FPersons := gLedgerManager.PersonList;
+    FPersons.EndUpdate;
+  end;
+end;
+
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   RegisterFallBackMediators;
@@ -77,7 +97,15 @@ begin
   gLedgerManager.LoadPersons;
   FPersons := gLedgerManager.PersonList;
   SetupMediators;
+
+  PageControl1.ActivePage := tabPersons;
 end;
+
+procedure TfrmMain.edtFilterChange(Sender: TObject);
+begin
+
+end;
+
 
 procedure TfrmMain.SetPersons(AValue: TPersonList);
 begin
@@ -91,7 +119,7 @@ begin
   begin
     FPersonsMediator := TtiModelMediator.Create(Self);
     FPersonsMediator.Name:= 'PersonsMediator';
-    FPersonsMediator.AddComposite('Name(100,"Name");DateJoinedAsString(100,"Date Joined")',sgdPersons);
+    FPersonsMediator.AddComposite('Name(200,"Name");DateJoinedAsString(100,"Date Joined")',sgdPersons);
   end;
   FPersonsMediator.Subject:= FPersons;
   FPersonsMediator.Active:= True;
