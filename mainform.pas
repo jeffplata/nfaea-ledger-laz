@@ -51,6 +51,7 @@ type
     FPersons: TPersonList;
     procedure SetPersons(AValue: TPersonList);
     procedure SetupMediators;
+    procedure SetupDatabase;
   public
     property Persons: TPersonList read FPersons write SetPersons;
   end;
@@ -62,6 +63,7 @@ implementation
 uses
   PersonsForm
   ,ledgermanager
+  ,tiOPFManager
   ;
 
 {$R *.lfm}
@@ -94,8 +96,11 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   RegisterFallBackMediators;
   RegisterFallBackListmediators;
+
+  SetupDatabase;
   gLedgerManager.LoadPersons;
   FPersons := gLedgerManager.PersonList;
+
   SetupMediators;
 
   PageControl1.ActivePage := tabPersons;
@@ -123,6 +128,12 @@ begin
   end;
   FPersonsMediator.Subject:= FPersons;
   FPersonsMediator.Active:= True;
+end;
+
+procedure TfrmMain.SetupDatabase;
+begin
+  GTIOPFManager.DefaultPersistenceLayerName:= 'Sqldb_IB';
+  GTIOPFManager.ConnectDatabase('C:\projects\nfaea-ledger\NFAEA-LEDGER.FDB','sysdba','masterkey');
 end;
 
 

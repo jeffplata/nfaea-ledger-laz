@@ -17,7 +17,6 @@ type
   private
     FPersonList: TPersonList;
     procedure SetPersonList(AValue: TPersonList);
-    //procedure LoadCategories;
   protected
   public
     constructor Create; override;
@@ -33,7 +32,8 @@ type
 implementation
 
 uses
-  sysutils;
+  sysutils
+  , tiOPFManager;
 
 var
   uLedgerManager: TLedgerManager;
@@ -46,22 +46,6 @@ begin
 end;
 
 { TLedgerManager }
-
-//procedure TLedgerManager.LoadCategories;
-//var
-//  C: TProductCategory;
-//begin
-//  C:= TProductCategory.Create;
-//  C.Description:= 'Soft Drinks';
-//  ProductCategoryList.Add(C);
-//  C:= TProductCategory.Create;
-//  C.Description:= 'Alcoholic Drinks';
-//  ProductCategoryList.Add(C);
-//  C:= TProductCategory.Create;
-//  C.Description:= 'Snacks';
-//  ProductCategoryList.Add(C);
-//
-//end;
 
 procedure TLedgerManager.SetPersonList(AValue: TPersonList);
 begin
@@ -83,19 +67,20 @@ begin
 end;
 
 procedure TLedgerManager.LoadPersons;
-var
-  P: TPerson;
+//var
+//  P: TPerson;
 begin
-  P := TPerson.Create;
-  P.Name:= 'Jeff Plata';
-  P.DateJoined:= Now;
-  FPersonList.Add(P);
+  //P := TPerson.Create;
+  //P.Name:= 'Jeff Plata';
+  //P.DateJoined:= Now;
+  //FPersonList.Add(P);
+  //
+  //P := TPerson.Create;
+  //P.Name:= 'John Carter';
+  //P.DateJoined:= Now-1234;
+  //FPersonList.Add(P);
 
-  P := TPerson.Create;
-  P.Name:= 'John Carter';
-  P.DateJoined:= Now-1234;
-  FPersonList.Add(P);
-
+  GTIOPFManager.Read(FPersonList);
 end;
 
 
