@@ -108,6 +108,7 @@ begin
   begin
     Persons.Add(P);
     P.ManualSave;
+    FPersonsMediator.SelectedObject[sgdPersons] := P;  // go to last inserted
   end
   else
     P.Free;
