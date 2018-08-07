@@ -7,7 +7,8 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, mainform, ledger_bom, ledgermanager, visitors;
+  Forms, mainform, ledger_bom, ledgermanager, visitors, PersonEditForm,
+  datetimectrls;
 
 {$R *.res}
 

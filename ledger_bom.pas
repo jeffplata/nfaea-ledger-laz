@@ -6,9 +6,19 @@ interface
 
 uses
   Classes, SysUtils
-  ,tiObject;
+  ,tiObject
+  ,tiOPFManager
+  ;
 
 type
+
+  { TManualObject }
+
+  TManualObject = class(TtiObject)
+    public
+      procedure ManualSave;
+  end;
+
   TPerson = class;
   TPersonList = class;
 
@@ -20,11 +30,12 @@ type
 
   { TPerson }
 
-  TPerson = class(TtiObject)
+  TPerson = class(TManualObject)
   private
     FDateJoined: TDate;
     FName: string;
     function GetDateJoinedAsString: string;
+    function GetID: string;
     procedure SetDateJoined(AValue: TDate);
     procedure SetName(AValue: string);
   protected
@@ -33,6 +44,7 @@ type
   public
     property  Owner: TPersonList read GetOwner write SetOwner;
   published
+    property ID: string read GetID;
     property Name: string read FName write SetName;
     property DateJoined: TDate read FDateJoined write SetDateJoined;
     property DateJoinedAsString: string read GetDateJoinedAsString;
@@ -132,6 +144,15 @@ type
   end;
 
 implementation
+
+{ TManualObject }
+
+procedure TManualObject.ManualSave;
+begin
+  Dirty:= True;
+  NotifyObservers;
+  GTIOPFManager.Save(Self);
+end;
 
 { TPersonLedger }
 
@@ -280,6 +301,7 @@ procedure TPerson.SetDateJoined(AValue: TDate);
 begin
   if FDateJoined=AValue then Exit;
   FDateJoined:=AValue;
+  //NotifyObservers;
 end;
 
 function TPerson.GetDateJoinedAsString: string;
@@ -287,10 +309,16 @@ begin
   Result := DateToStr(DateJoined);
 end;
 
+function TPerson.GetID: string;
+begin
+  result := OID.AsString;
+end;
+
 procedure TPerson.SetName(AValue: string);
 begin
   if FName=AValue then Exit;
   FName:=AValue;
+  //NotifyObservers;
 end;
 
 function TPerson.GetOwner: TPersonList;

@@ -10,7 +10,10 @@ uses
   ,ledger_bom
   ,tiModelMediator
   ,tiListMediators
-  ,tiMediators;
+  ,tiMediators
+  ,tiOID
+  ,tiOIDInteger
+  ;
 
 type
 
@@ -18,6 +21,8 @@ type
 
   TfrmMain = class(TForm)
     actHelpAbout: TAction;
+    actEditMember: TAction;
+    actAddMember: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
     actFileEXit: TFileExit;
@@ -41,11 +46,14 @@ type
     sgdServices: TStringGrid;
     tabPersons: TTabSheet;
     tabServices: TTabSheet;
+    procedure actAddMemberExecute(Sender: TObject);
+    procedure actEditMemberExecute(Sender: TObject);
     procedure actHelpAboutExecute(Sender: TObject);
     procedure actMembersExecute(Sender: TObject);
     procedure edtFilterKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure edtFilterChange(Sender: TObject);
+    procedure sgdPersonsDblClick(Sender: TObject);
   private
     FPersonsMediator: TtiModelMediator;
     FPersons: TPersonList;
@@ -61,7 +69,7 @@ var
 
 implementation
 uses
-  PersonsForm
+  PersonEditForm
   ,ledgermanager
   ,tiOPFManager
   ;
@@ -75,9 +83,39 @@ begin
   ShowMessage('NFAEA Loans Management System');
 end;
 
+procedure TfrmMain.actEditMemberExecute(Sender: TObject);
+var
+  P : TPerson;
+  B : TPerson; //Buffer for undo
+begin
+  P := TPerson(FPersonsMediator.SelectedObject[sgdPersons]);
+  B := TPerson.Create;
+  B.Assign(P);
+  if EditPerson(B) then
+  begin
+    P.Assign(B);
+    P.ManualSave;
+  end;
+  B.Free;
+end;
+
+procedure TfrmMain.actAddMemberExecute(Sender: TObject);
+var
+  P : TPerson;
+begin
+  P := TPerson.CreateNew;
+  if EditPerson(P) then
+  begin
+    Persons.Add(P);
+    P.ManualSave;
+  end
+  else
+    P.Free;
+end;
+
 procedure TfrmMain.actMembersExecute(Sender: TObject);
 begin
-  ShowPersons(nil);
+  //ShowPersons(nil);
 end;
 
 procedure TfrmMain.edtFilterKeyPress(Sender: TObject; var Key: char);
@@ -111,6 +149,11 @@ begin
 
 end;
 
+procedure TfrmMain.sgdPersonsDblClick(Sender: TObject);
+begin
+  actEditMember.Execute;
+end;
+
 
 procedure TfrmMain.SetPersons(AValue: TPersonList);
 begin
@@ -124,16 +167,20 @@ begin
   begin
     FPersonsMediator := TtiModelMediator.Create(Self);
     FPersonsMediator.Name:= 'PersonsMediator';
-    FPersonsMediator.AddComposite('Name(200,"Name");DateJoinedAsString(100,"Date Joined")',sgdPersons);
+    FPersonsMediator.AddComposite('Name(200,"Name");DateJoinedAsString(100,"Date Joined");ID(100," ")',sgdPersons);
   end;
   FPersonsMediator.Subject:= FPersons;
   FPersonsMediator.Active:= True;
 end;
 
 procedure TfrmMain.SetupDatabase;
+var
+  gen: TtiOIDGeneratorInteger;
 begin
   GTIOPFManager.DefaultPersistenceLayerName:= 'Sqldb_IB';
   GTIOPFManager.ConnectDatabase('C:\projects\nfaea-ledger\NFAEA-LEDGER.FDB','sysdba','masterkey');
+  gen := TtiOIDGeneratorInteger.CreateEx(5);
+  GTIOPFManager.DefaultOIDGenerator := gen;
 end;
 
 

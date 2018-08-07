@@ -22,16 +22,19 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="3">
+    <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="tiopfLCL"/>
+        <PackageName Value="DateTimeCtrls"/>
       </Item1>
       <Item2>
-        <PackageName Value="tiOPF"/>
+        <PackageName Value="tiopfLCL"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="tiOPF"/>
       </Item3>
+      <Item4>
+        <PackageName Value="LCL"/>
+      </Item4>
     </RequiredPackages>
     <Units Count="6">
       <Unit0>
@@ -54,14 +57,16 @@
         <IsPartOfProject Value="True"/>
       </Unit3>
       <Unit4>
-        <Filename Value="personsform.pas"/>
-        <IsPartOfProject Value="True"/>
-        <HasResources Value="True"/>
-        <UnitName Value="PersonsForm"/>
-      </Unit4>
-      <Unit5>
         <Filename Value="visitors.pas"/>
         <IsPartOfProject Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="personeditform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmPersonEdit"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="PersonEditForm"/>
       </Unit5>
     </Units>
   </ProjectOptions>

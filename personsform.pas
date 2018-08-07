@@ -18,7 +18,6 @@ type
   { TfrmPersons }
 
   TfrmPersons = class(TForm)
-    sgdPersonList: TStringGrid;
     procedure FormCreate(Sender: TObject);
   private
     FData: TPersonList;
@@ -72,7 +71,7 @@ begin
   begin
     FMediator := TtiModelMediator.Create(Self);
     FMediator.Name:= 'PersonListMediator';
-    FMediator.AddComposite('Name(100,"Name")',sgdPersonList);
+    //FMediator.AddComposite('Name(100,"Name")',sgdPersonList);
   end;
   FMediator.Subject:= gLedgerManager.PersonList;
   FMediator.Active:= True;
