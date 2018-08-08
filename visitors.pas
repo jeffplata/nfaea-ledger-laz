@@ -16,7 +16,7 @@ type
 
   { TReadPersonsVisitor }
 
-  TReadPersonVisitor = class(TtiVisitorSelect);
+  //TReadPersonVisitor = class(TtiVisitorSelect);
 
   TReadPersonsVisitor = Class(TtiVisitorSelect)
   Protected
@@ -87,6 +87,14 @@ end;
 procedure TReadPersonsVisitor.Init;
 begin
   Query.SQLText:= SQLReadPersons;
+  // where clause start
+  if TPersonList(Visited).PersonsFilter.Active then
+  begin
+    Query.SQL.Add(' WHERE');
+    Query.SQL.Add(' '+TPersonList(Visited).PersonsFilter.Criteria);
+    TPersonList(Visited).PersonsFilter.Active  := False;
+  end;
+  //where clause end
 end;
 
 function TReadPersonsVisitor.AcceptVisitor: Boolean;

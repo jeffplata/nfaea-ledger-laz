@@ -7,16 +7,26 @@ interface
 uses
   Classes, SysUtils
   ,tiObject
-  ,tiOPFManager
   ;
 
 type
+  { TReadPersonFilter }
+
+  TPersonsFilter = class
+  private
+    FActive: Boolean;
+    FCriteria: string;
+  public
+    property Active: Boolean read FActive write FActive;
+    property Criteria: string read FCriteria write FCriteria;
+  end;
 
   { TManualObject }
 
   TManualObject = class(TtiObject)
     public
-      procedure ManualSave;
+      procedure SaveObject;
+      procedure DeleteObject(FromList: TtiObjectList); //copied
   end;
 
   TPerson = class;
@@ -54,12 +64,16 @@ type
 
   TPersonList = class(TtiObjectList)
   private
+    FPersonsFilter: TPersonsFilter;
   protected
     function  GetItems(i: integer): TPerson; reintroduce;
     procedure SetItems(i: integer; const Value: TPerson); reintroduce;
   public
+    property PersonsFilter: TPersonsFilter read FPersonsFilter write FPersonsFilter;
     property  Items[i:integer]: TPerson read GetItems write SetItems;
     procedure Add(AObject:TPerson); reintroduce;
+    constructor Create; override;
+    destructor Destroy; override;
   end;
 
   { TService }
@@ -147,11 +161,19 @@ implementation
 
 { TManualObject }
 
-procedure TManualObject.ManualSave;
+procedure TManualObject.SaveObject;
 begin
   Dirty:= True;
   NotifyObservers;
-  GTIOPFManager.Save(Self);
+  Save;
+end;
+
+procedure TManualObject.DeleteObject( FromList: TtiObjectList);
+begin
+  Deleted:=True;
+  Save;
+  If Assigned(FromList) then
+     FromList.FreeDeleted;
 end;
 
 { TPersonLedger }
@@ -295,13 +317,25 @@ begin
   inherited Add(AObject);
 end;
 
+constructor TPersonList.Create;
+begin
+  inherited Create;
+  FPersonsFilter := TPersonsFilter.Create;
+  FPersonsFilter.Active:= False;
+end;
+
+destructor TPersonList.Destroy;
+begin
+  FPersonsFilter.Free;
+  inherited Destroy;
+end;
+
 { TPerson }
 
 procedure TPerson.SetDateJoined(AValue: TDate);
 begin
   if FDateJoined=AValue then Exit;
   FDateJoined:=AValue;
-  //NotifyObservers;
 end;
 
 function TPerson.GetDateJoinedAsString: string;
@@ -318,7 +352,6 @@ procedure TPerson.SetName(AValue: string);
 begin
   if FName=AValue then Exit;
   FName:=AValue;
-  //NotifyObservers;
 end;
 
 function TPerson.GetOwner: TPersonList;

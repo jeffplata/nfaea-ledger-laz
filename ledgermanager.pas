@@ -80,6 +80,7 @@ begin
   //P.DateJoined:= Now-1234;
   //FPersonList.Add(P);
 
+  FPersonList.Clear;
   GTIOPFManager.Read(FPersonList);
 end;
 

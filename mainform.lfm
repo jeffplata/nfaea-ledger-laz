@@ -1,11 +1,11 @@
 object frmMain: TfrmMain
   Left = 324
   Height = 390
-  Top = 190
+  Top = 167
   Width = 677
   Caption = 'NFAEA Ledger'
-  ClientHeight = 370
-  ClientWidth = 677
+  ClientHeight = 0
+  ClientWidth = 0
   Menu = MainMenu1
   OnCreate = FormCreate
   Position = poScreenCenter
@@ -21,11 +21,11 @@ object frmMain: TfrmMain
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
-      ClientHeight = 321
+      ClientHeight = 319
       ClientWidth = 669
       object sgdPersons: TStringGrid
         Left = 0
-        Height = 288
+        Height = 286
         Top = 33
         Width = 669
         Align = alBottom
@@ -40,7 +40,7 @@ object frmMain: TfrmMain
       end
       object edtFilter: TLabeledEdit
         Left = 32
-        Height = 21
+        Height = 23
         Top = 8
         Width = 144
         EditLabel.AnchorSideTop.Control = edtFilter
@@ -48,10 +48,10 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtFilter
         EditLabel.AnchorSideBottom.Control = edtFilter
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 5
-        EditLabel.Height = 13
+        EditLabel.Left = 3
+        EditLabel.Height = 15
         EditLabel.Top = 12
-        EditLabel.Width = 24
+        EditLabel.Width = 26
         EditLabel.Caption = 'Filter'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -87,19 +87,19 @@ object frmMain: TfrmMain
         Height = 22
         Top = 8
         Width = 75
-        Caption = 'Delete'
+        Action = actDeleteMember
         TabOrder = 4
       end
     end
     object tabServices: TTabSheet
       Caption = 'Services'
-      ClientHeight = 229
-      ClientWidth = 623
+      ClientHeight = 319
+      ClientWidth = 669
       object sgdServices: TStringGrid
         Left = 0
-        Height = 229
+        Height = 319
         Top = 0
-        Width = 623
+        Width = 669
         Align = alClient
         FixedCols = 0
         TabOrder = 0
@@ -167,6 +167,10 @@ object frmMain: TfrmMain
     object actAddMember: TAction
       Caption = 'Add'
       OnExecute = actAddMemberExecute
+    end
+    object actDeleteMember: TAction
+      Caption = 'Delete'
+      OnExecute = actDeleteMemberExecute
     end
   end
 end

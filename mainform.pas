@@ -11,7 +11,6 @@ uses
   ,tiModelMediator
   ,tiListMediators
   ,tiMediators
-  ,tiOID
   ,tiOIDInteger
   ;
 
@@ -23,6 +22,7 @@ type
     actHelpAbout: TAction;
     actEditMember: TAction;
     actAddMember: TAction;
+    actDeleteMember: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
     actFileEXit: TFileExit;
@@ -47,6 +47,7 @@ type
     tabPersons: TTabSheet;
     tabServices: TTabSheet;
     procedure actAddMemberExecute(Sender: TObject);
+    procedure actDeleteMemberExecute(Sender: TObject);
     procedure actEditMemberExecute(Sender: TObject);
     procedure actHelpAboutExecute(Sender: TObject);
     procedure actMembersExecute(Sender: TObject);
@@ -60,6 +61,7 @@ type
     procedure SetPersons(AValue: TPersonList);
     procedure SetupMediators;
     procedure SetupDatabase;
+    procedure FilterPersons( AText: string );
   public
     property Persons: TPersonList read FPersons write SetPersons;
   end;
@@ -94,7 +96,7 @@ begin
   if EditPerson(B) then
   begin
     P.Assign(B);
-    P.ManualSave;
+    P.SaveObject;
   end;
   B.Free;
 end;
@@ -107,11 +109,22 @@ begin
   if EditPerson(P) then
   begin
     Persons.Add(P);
-    P.ManualSave;
+    P.SaveObject;
     FPersonsMediator.SelectedObject[sgdPersons] := P;  // go to last inserted
   end
   else
     P.Free;
+end;
+
+procedure TfrmMain.actDeleteMemberExecute(Sender: TObject);
+var
+  P: TPerson;
+begin
+  //confirm first
+  begin
+    P := TPerson(FPersonsMediator.SelectedObject[sgdPersons]);
+    P.DeleteObject(Persons);
+  end;
 end;
 
 procedure TfrmMain.actMembersExecute(Sender: TObject);
@@ -124,9 +137,12 @@ begin
   if key = chr(13) then
   begin
     FPersons.BeginUpdate;
-    FPersons.Clear;
-    gLedgerManager.LoadPersons;
-    FPersons := gLedgerManager.PersonList;
+    //FPersons.Clear;
+    //gLedgerManager.LoadPersons;
+    //FPersons := gLedgerManager.PersonList;
+
+    FilterPersons( Trim(TEdit(Sender).Text) );
+
     FPersons.EndUpdate;
   end;
 end;
@@ -182,6 +198,13 @@ begin
   GTIOPFManager.ConnectDatabase('C:\projects\nfaea-ledger\NFAEA-LEDGER.FDB','sysdba','masterkey');
   gen := TtiOIDGeneratorInteger.CreateEx(5);
   GTIOPFManager.DefaultOIDGenerator := gen;
+end;
+
+procedure TfrmMain.FilterPersons(AText: string);
+begin
+  Persons.PersonsFilter.Active:= (AText <> '');
+  Persons.PersonsFilter.Criteria:= 'NAME containing '+QuotedStr(AText);
+  gLedgerManager.LoadPersons;
 end;
 
 
