@@ -55,6 +55,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure edtFilterChange(Sender: TObject);
     procedure sgdPersonsDblClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
   private
     FPersonsMediator: TtiModelMediator;
     FPersons: TPersonList;
@@ -169,6 +170,12 @@ end;
 procedure TfrmMain.sgdPersonsDblClick(Sender: TObject);
 begin
   actEditMember.Execute;
+end;
+
+procedure TfrmMain.SpeedButton1Click(Sender: TObject);
+begin
+  edtFilter.SetFocus;
+  edtFilter.Text:= '';
 end;
 
 
