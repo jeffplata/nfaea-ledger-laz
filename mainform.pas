@@ -23,6 +23,7 @@ type
     actEditMember: TAction;
     actAddMember: TAction;
     actDeleteMember: TAction;
+    actMemberCSVLoad: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
     actFileEXit: TFileExit;
@@ -39,6 +40,7 @@ type
     MenuItem6: TMenuItem;
     MenuItem7: TMenuItem;
     MenuItem8: TMenuItem;
+    MenuItem9: TMenuItem;
     PageControl1: TPageControl;
     SpeedButton1: TSpeedButton;
     StatusBar1: TStatusBar;
@@ -50,6 +52,7 @@ type
     procedure actDeleteMemberExecute(Sender: TObject);
     procedure actEditMemberExecute(Sender: TObject);
     procedure actHelpAboutExecute(Sender: TObject);
+    procedure actMemberCSVLoadExecute(Sender: TObject);
     procedure actMembersExecute(Sender: TObject);
     procedure edtFilterKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
@@ -75,6 +78,7 @@ uses
   PersonEditForm
   ,ledgermanager
   ,tiOPFManager
+  ,MemberCSVLoad
   ;
 
 {$R *.lfm}
@@ -84,6 +88,17 @@ uses
 procedure TfrmMain.actHelpAboutExecute(Sender: TObject);
 begin
   ShowMessage('NFAEA Loans Management System');
+end;
+
+procedure TfrmMain.actMemberCSVLoadExecute(Sender: TObject);
+begin
+  with TOpenDialog.Create(Self) do
+  try
+    if Execute then
+      ShowMemberCSVLoad(FileName);
+  finally
+    Free;
+  end;
 end;
 
 procedure TfrmMain.actEditMemberExecute(Sender: TObject);
@@ -106,9 +121,11 @@ procedure TfrmMain.actAddMemberExecute(Sender: TObject);
 var
   P : TPerson;
 begin
-  P := TPerson.CreateNew;
+  //P := TPerson.CreateNew;
+  P := TPerson.Create;
   if EditPerson(P) then
   begin
+    GTIOPFManager.DefaultOIDGenerator.AssignNextOID(P.OID); // we generate oid only when before saving
     Persons.Add(P);
     P.SaveObject;
     FPersonsMediator.SelectedObject[sgdPersons] := P;  // go to last inserted
@@ -121,7 +138,7 @@ procedure TfrmMain.actDeleteMemberExecute(Sender: TObject);
 var
   P: TPerson;
 begin
-  //confirm first
+  if MessageDlg('Delete?','Delete this record?',mtConfirmation,[mbYes, mbNo],0) = mrYes then
   begin
     P := TPerson(FPersonsMediator.SelectedObject[sgdPersons]);
     P.DeleteObject(Persons);
