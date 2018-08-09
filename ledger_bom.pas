@@ -164,7 +164,7 @@ implementation
 procedure TManualObject.SaveObject;
 begin
   Dirty:= True;
-  NotifyObservers;
+  //NotifyObservers;
   Save;
 end;
 

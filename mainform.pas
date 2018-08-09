@@ -113,6 +113,7 @@ begin
   begin
     P.Assign(B);
     P.SaveObject;
+    P.NotifyObservers;
   end;
   B.Free;
 end;

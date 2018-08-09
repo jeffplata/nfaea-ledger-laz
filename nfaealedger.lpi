@@ -78,6 +78,7 @@
         <Filename Value="membercsvload.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmMemberCSVLoad"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MemberCSVLoad"/>
       </Unit6>

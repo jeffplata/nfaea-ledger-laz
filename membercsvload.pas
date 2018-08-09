@@ -33,6 +33,7 @@ implementation
 
 uses
   ledger_bom
+  ,tiOPFManager
   ;
 
 procedure ShowMemberCSVLoad(AFileName: string);
@@ -53,7 +54,7 @@ begin
     //verify columns are ok
     //NAME, DATEJOINED
     For i := 0 to s_.Count-1 do
-      if SdfDataSet1.Schema.IndexOf(s_[i]) = 0 then
+      if SdfDataSet1.Schema.IndexOf(s_[i]) = -1 then
         sMissing:= sMissing + s_[i] + #13#10;
 
     if sMissing<> '' then
@@ -62,7 +63,7 @@ begin
     btnSave.Enabled:= (sMissing = '');
 
     if ShowModal=mrOk then
-    // save to db
+      SaveToDB;
   finally
     Free;
   end;
@@ -77,7 +78,9 @@ end;
 procedure TfrmMemberCSVLoad.SaveToDB;
 var
   P: TPerson;
+  Per: TPerson;
   L: TPersonList;
+  i: Integer;
 begin
   // iterate
   DBGrid1.BeginUpdate;
@@ -88,12 +91,21 @@ begin
     begin
       P := TPerson.CreateNew;
       P.Name:=       SdfDataSet1.FieldByName('NAME').AsString;
-      P.DateJoined:= SdfDataSet1.FieldByName('DATEJOINED').AsDateTime;
+      if SdfDataSet1.FieldByName('DATEJOINED').AsString = '' then
+        P.DateJoined:= 0
+      else
+        P.DateJoined:= SdfDataSet1.FieldByName('DATEJOINED').AsDateTime;
       L.Add(P);
 
       SdfDataSet1.Next;
     end;
 
+    for i := 0 to L.Count-1 do
+    begin
+      Per := TPerson(L.Items[i]);
+      GTIOPFManager.DefaultOIDGenerator.AssignNextOID(Per.OID);
+      Per.SaveObject;
+    end;
   finally
     L.Free;
     DBGrid1.EndUpdate;
