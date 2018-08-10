@@ -14,9 +14,16 @@ uses
 
 type
 
-  { TReadPersonsVisitor }
+  TReadServicesVisitor = Class(TtiVisitorSelect)
+  Protected
+    Procedure Init; override;
+    Function AcceptVisitor : Boolean; override;
+    Procedure SetupParams; override;
+    Procedure MapRowToObject; override;
+  end;
 
-  //TReadPersonVisitor = class(TtiVisitorSelect);
+
+  { TReadPersonsVisitor }
 
   TReadPersonsVisitor = Class(TtiVisitorSelect)
   Protected
@@ -47,6 +54,10 @@ const
   SQLUpdatePerson = 'update PERSON set NAME=:NAME, DATEJOINED=:DATEJOINED where OID=:OID';
   SQLDeletePerson = 'delete from PERSON where OID=:OID';
 
+  SQLReadServices = 'select OID, NAME, DATEJOINED from PERSON';
+  SQLCreatePerson = 'insert into PERSON(OID,NAME,DATEJOINED) values (:OID,:NAME,:DATEJOINED)';
+  SQLUpdatePerson = 'update PERSON set NAME=:NAME, DATEJOINED=:DATEJOINED where OID=:OID';
+  SQLDeletePerson = 'delete from PERSON where OID=:OID';
 
 { TSavePersonVisitor }
 

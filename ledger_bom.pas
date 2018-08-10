@@ -78,7 +78,7 @@ type
 
   { TService }
 
-  TService = class(TtiObject)
+  TService = class(TManualObject)
   private
     FInterestRate: Currency;
     FMaxAmount: Currency;

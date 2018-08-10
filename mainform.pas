@@ -30,6 +30,9 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
     edtFilter: TLabeledEdit;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
@@ -74,12 +77,17 @@ var
   frmMain: TfrmMain;
 
 implementation
+
 uses
   PersonEditForm
   ,ledgermanager
   ,tiOPFManager
   ,MemberCSVLoad
   ;
+
+const
+  cMsgDeleteOnePerson = 'Do you want to delete the selected record?';
+  cMsgDeletePersons = '%d selected records will be deleted.'#13#10'Do you want to continue?';
 
 {$R *.lfm}
 
@@ -138,12 +146,32 @@ end;
 procedure TfrmMain.actDeleteMemberExecute(Sender: TObject);
 var
   P: TPerson;
+  i: Integer;
+  s: String;
+  iRows: integer;
 begin
-  if MessageDlg('Delete?','Delete this record?',mtConfirmation,[mbYes, mbNo],0) = mrYes then
+  iRows := sgdPersons.Selection.bottom - sgdPersons.Selection.Top +1;
+  if iRows = 1 then
+    s := cMsgDeleteOnePerson
+  else
+    s := Format(cMsgDeletePersons,[iRows]);
+
+  if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
   begin
-    P := TPerson(FPersonsMediator.SelectedObject[sgdPersons]);
-    P.DeleteObject(Persons);
+    Persons.BeginUpdate;
+    try
+      for i := sgdPersons.Selection.Bottom downto sgdPersons.Selection.Top do
+        begin
+          P := TPerson(TPerson(Persons[i-1]));
+          P.DeleteObject(Persons);
+        end;
+    finally
+      Persons.EndUpdate;
+    end;
+    // position to the correct record, the first after the last deleted
+    sgdPersons.Row:= sgdPersons.Row - (iRows -1);
   end;
+
 end;
 
 procedure TfrmMain.actMembersExecute(Sender: TObject);

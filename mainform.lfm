@@ -21,11 +21,11 @@ object frmMain: TfrmMain
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
-      ClientHeight = 321
+      ClientHeight = 319
       ClientWidth = 669
       object sgdPersons: TStringGrid
         Left = 0
-        Height = 288
+        Height = 286
         Top = 33
         Width = 669
         Align = alBottom
@@ -33,14 +33,14 @@ object frmMain: TfrmMain
         ColCount = 0
         FixedCols = 0
         FixedRows = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
         RowCount = 0
-        ScrollBars = ssVertical
         TabOrder = 0
         OnDblClick = sgdPersonsDblClick
       end
       object edtFilter: TLabeledEdit
         Left = 32
-        Height = 21
+        Height = 23
         Top = 8
         Width = 144
         EditLabel.AnchorSideTop.Control = edtFilter
@@ -48,10 +48,10 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtFilter
         EditLabel.AnchorSideBottom.Control = edtFilter
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 5
-        EditLabel.Height = 13
+        EditLabel.Left = 3
+        EditLabel.Height = 15
         EditLabel.Top = 12
-        EditLabel.Width = 24
+        EditLabel.Width = 26
         EditLabel.Caption = 'Filter'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -98,12 +98,39 @@ object frmMain: TfrmMain
       ClientWidth = 669
       object sgdServices: TStringGrid
         Left = 0
-        Height = 319
-        Top = 0
+        Height = 286
+        Top = 33
         Width = 669
-        Align = alClient
+        Align = alBottom
+        ColCount = 0
         FixedCols = 0
+        FixedRows = 0
+        RowCount = 0
         TabOrder = 0
+      end
+      object Button4: TButton
+        Left = 8
+        Height = 22
+        Top = 8
+        Width = 75
+        Caption = 'Add'
+        TabOrder = 1
+      end
+      object Button5: TButton
+        Left = 88
+        Height = 22
+        Top = 8
+        Width = 75
+        Caption = 'Edit'
+        TabOrder = 2
+      end
+      object Button6: TButton
+        Left = 168
+        Height = 22
+        Top = 8
+        Width = 75
+        Caption = 'Delete'
+        TabOrder = 3
       end
     end
   end
