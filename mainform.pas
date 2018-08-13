@@ -23,6 +23,9 @@ type
     actEditMember: TAction;
     actAddMember: TAction;
     actDeleteMember: TAction;
+    actAddService: TAction;
+    actEditService: TAction;
+    actDeleteService: TAction;
     actMemberCSVLoad: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
@@ -52,25 +55,32 @@ type
     tabPersons: TTabSheet;
     tabServices: TTabSheet;
     procedure actAddMemberExecute(Sender: TObject);
+    procedure actAddServiceExecute(Sender: TObject);
     procedure actDeleteMemberExecute(Sender: TObject);
+    procedure actDeleteServiceExecute(Sender: TObject);
     procedure actEditMemberExecute(Sender: TObject);
+    procedure actEditServiceExecute(Sender: TObject);
     procedure actHelpAboutExecute(Sender: TObject);
     procedure actMemberCSVLoadExecute(Sender: TObject);
     procedure actMembersExecute(Sender: TObject);
     procedure edtFilterKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
-    procedure edtFilterChange(Sender: TObject);
     procedure sgdPersonsDblClick(Sender: TObject);
+    procedure sgdServicesDblClick(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
   private
     FPersonsMediator: TtiModelMediator;
+    FMedServices: TtiModelMediator;
     FPersons: TPersonList;
+    FServices: TServiceList;
     procedure SetPersons(AValue: TPersonList);
+    procedure SetServices(AValue: TServiceList);
     procedure SetupMediators;
     procedure SetupDatabase;
     procedure FilterPersons( AText: string );
   public
     property Persons: TPersonList read FPersons write SetPersons;
+    property Services: TServiceList read FServices write SetServices;
   end;
 
 var
@@ -80,14 +90,15 @@ implementation
 
 uses
   PersonEditForm
+  ,ServiceEditForm
   ,ledgermanager
   ,tiOPFManager
   ,MemberCSVLoad
   ;
 
 const
-  cMsgDeleteOnePerson = 'Do you want to delete the selected record?';
-  cMsgDeletePersons = '%d selected records will be deleted.'#13#10'Do you want to continue?';
+  cMsgDeleteOneRecord = 'Do you want to delete the selected record?';
+  cMsgDeleteRecords = '%d selected records will be deleted.'#13#10'Do you want to continue?';
 
 {$R *.lfm}
 
@@ -126,6 +137,23 @@ begin
   B.Free;
 end;
 
+procedure TfrmMain.actEditServiceExecute(Sender: TObject);
+var
+  O : TService;
+  B : TService; //Buffer for undo
+begin
+  O := TService(FMedServices.SelectedObject[sgdServices]);
+  B := TService.Create;
+  B.Assign(O);
+  if EditService(B) then
+  begin
+    O.Assign(B);
+    O.SaveObject;
+    O.NotifyObservers;
+  end;
+  B.Free;
+end;
+
 procedure TfrmMain.actAddMemberExecute(Sender: TObject);
 var
   P : TPerson;
@@ -143,18 +171,37 @@ begin
     P.Free;
 end;
 
+procedure TfrmMain.actAddServiceExecute(Sender: TObject);
+var
+  O : TService;
+begin
+  //P := TPerson.CreateNew;
+  O := TService.Create;
+  if EditService(O) then
+  begin
+    GTIOPFManager.DefaultOIDGenerator.AssignNextOID(O.OID); // we generate oid only when before saving
+    Services.Add(O);
+    O.SaveObject;
+    FMedServices.SelectedObject[sgdServices] := O;  // go to last inserted
+  end
+  else
+    O.Free;
+end;
+
 procedure TfrmMain.actDeleteMemberExecute(Sender: TObject);
 var
   P: TPerson;
   i: Integer;
   s: String;
   iRows: integer;
+  oldtop : integer;
 begin
+  oldtop := sgdPersons.Selection.Top;
   iRows := sgdPersons.Selection.bottom - sgdPersons.Selection.Top +1;
   if iRows = 1 then
-    s := cMsgDeleteOnePerson
+    s := cMsgDeleteOneRecord
   else
-    s := Format(cMsgDeletePersons,[iRows]);
+    s := Format(cMsgDeleteRecords,[iRows]);
 
   if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
   begin
@@ -169,9 +216,44 @@ begin
       Persons.EndUpdate;
     end;
     // position to the correct record, the first after the last deleted
-    sgdPersons.Row:= sgdPersons.Row - (iRows -1);
+    sgdPersons.Row:= oldtop;
+    //if iRows > 1 then
+    //  sgdPersons.Row:= sgdPersons.Row - (iRows -1);
   end;
+end;
 
+procedure TfrmMain.actDeleteServiceExecute(Sender: TObject);
+var
+  O: TService;
+  i: Integer;
+  s: String;
+  iRows: integer;
+  oldtop: integer;
+begin
+  oldtop := sgdServices.Selection.Top;
+  iRows := sgdServices.Selection.bottom - sgdServices.Selection.Top +1;
+  if iRows = 1 then
+    s := cMsgDeleteOneRecord
+  else
+    s := Format(cMsgDeleteRecords,[iRows]);
+
+  if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
+  begin
+    Services.BeginUpdate;
+    try
+      for i := sgdServices.Selection.Bottom downto sgdServices.Selection.Top do
+        begin
+          O := TService(TService(Services[i-1]));
+          O.DeleteObject(Services);
+        end;
+    finally
+      Services.EndUpdate;
+    end;
+    // position to the correct record, the first after the last deleted
+    sgdServices.Row := oldtop;
+    //if iRows > 1 then
+    //  sgdServices.Row:= sgdServices.Row - (iRows -1);
+  end;
 end;
 
 procedure TfrmMain.actMembersExecute(Sender: TObject);
@@ -200,22 +282,28 @@ begin
   RegisterFallBackListmediators;
 
   SetupDatabase;
+
   gLedgerManager.LoadPersons;
   FPersons := gLedgerManager.PersonList;
+
+  gLedgerManager.LoadServices;
+  FServices := gLedgerManager.Services;
 
   SetupMediators;
 
   PageControl1.ActivePage := tabPersons;
-end;
-
-procedure TfrmMain.edtFilterChange(Sender: TObject);
-begin
-
+  sgdServices.Columns[4].Width:= 100;
+  sgdPersons.Columns[2].Width:= 100;
 end;
 
 procedure TfrmMain.sgdPersonsDblClick(Sender: TObject);
 begin
   actEditMember.Execute;
+end;
+
+procedure TfrmMain.sgdServicesDblClick(Sender: TObject);
+begin
+  actEditService.Execute;
 end;
 
 procedure TfrmMain.SpeedButton1Click(Sender: TObject);
@@ -231,8 +319,15 @@ begin
   FPersons:=AValue;
 end;
 
+procedure TfrmMain.SetServices(AValue: TServiceList);
+begin
+  if FServices=AValue then Exit;
+  FServices:=AValue;
+end;
+
 procedure TfrmMain.SetupMediators;
 begin
+  //persons mediator
   if not assigned(FPersonsMediator) then
   begin
     FPersonsMediator := TtiModelMediator.Create(Self);
@@ -241,6 +336,17 @@ begin
   end;
   FPersonsMediator.Subject:= FPersons;
   FPersonsMediator.Active:= True;
+
+  //services mediator
+  if not assigned(FMedServices) then
+  begin
+    FMedServices := TtiModelMediator.Create(Self);
+    FMedServices.Name:= 'ServicesMediator';
+    FMedServices.AddComposite('Name(200,"Name");MaxAmount(100,"Max Amount");InterestRate(100,"Interest");MaxTerm(100,"Terms");ID(100," ")',sgdServices);
+  end;
+  FMedServices.Subject:= FServices;
+  FMedServices.Active:= True;
+
 end;
 
 procedure TfrmMain.SetupDatabase;

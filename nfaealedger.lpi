@@ -22,27 +22,33 @@
         <FormatVersion Value="1"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="6">
+    <RequiredPackages Count="8">
       <Item1>
-        <PackageName Value="FCL"/>
+        <PackageName Value="jujiboutils"/>
       </Item1>
       <Item2>
-        <PackageName Value="SDFLaz"/>
+        <PackageName Value="LazControls"/>
       </Item2>
       <Item3>
-        <PackageName Value="DateTimeCtrls"/>
+        <PackageName Value="FCL"/>
       </Item3>
       <Item4>
-        <PackageName Value="tiopfLCL"/>
+        <PackageName Value="SDFLaz"/>
       </Item4>
       <Item5>
-        <PackageName Value="tiOPF"/>
+        <PackageName Value="DateTimeCtrls"/>
       </Item5>
       <Item6>
-        <PackageName Value="LCL"/>
+        <PackageName Value="tiopfLCL"/>
       </Item6>
+      <Item7>
+        <PackageName Value="tiOPF"/>
+      </Item7>
+      <Item8>
+        <PackageName Value="LCL"/>
+      </Item8>
     </RequiredPackages>
-    <Units Count="7">
+    <Units Count="9">
       <Unit0>
         <Filename Value="nfaealedger.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -82,6 +88,18 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MemberCSVLoad"/>
       </Unit6>
+      <Unit7>
+        <Filename Value="ServiceEditForm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmServiceEdit"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="model_view.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Model_View"/>
+      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

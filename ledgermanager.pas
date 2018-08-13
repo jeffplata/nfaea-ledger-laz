@@ -16,14 +16,18 @@ type
   TLedgerManager = class(TtiObject)
   private
     FPersonList: TPersonList;
+    FServices: TServiceList;
     procedure SetPersonList(AValue: TPersonList);
+    procedure SetServices(AValue: TServiceList);
   protected
   public
     constructor Create; override;
     destructor Destroy; override;
     procedure LoadPersons;
+    procedure LoadServices;
   published
     property PersonList: TPersonList read FPersonList write SetPersonList;
+    property Services: TServiceList read FServices write SetServices;
   end;
 
   //global Singleton
@@ -53,16 +57,26 @@ begin
   FPersonList:=AValue;
 end;
 
+procedure TLedgerManager.SetServices(AValue: TServiceList);
+begin
+  if FServices=AValue then Exit;
+  FServices:=AValue;
+end;
+
 constructor TLedgerManager.Create;
 begin
   inherited Create;
   FPersonList := TPersonList.Create;
   FPersonList.Owner := Self;
+
+  FServices := TServiceList.Create;
+  FServices.Owner := Self;
 end;
 
 destructor TLedgerManager.Destroy;
 begin
   FPersonList.Free;
+  FServices.Free;
   inherited Destroy;
 end;
 
@@ -82,6 +96,12 @@ begin
 
   FPersonList.Clear;
   GTIOPFManager.Read(FPersonList);
+end;
+
+procedure TLedgerManager.LoadServices;
+begin
+  FServices.Clear;
+  GTIOPFManager.Read(FServices);
 end;
 
 

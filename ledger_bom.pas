@@ -38,6 +38,10 @@ type
   TPersonLedgerItem = class;
   TPersonLedger = class;
 
+  TLoan = class;
+  TLoanList = class;
+
+
   { TPerson }
 
   TPerson = class(TManualObject)
@@ -82,14 +86,18 @@ type
   private
     FInterestRate: Currency;
     FMaxAmount: Currency;
+    FMaxTerm: integer;
     FMinAmount: Currency;
+    FMinTerm: integer;
     FName: string;
-    FTerms: integer;
+    FRebateRate: Currency;
     procedure SetInterestRate(AValue: Currency);
     procedure SetMaxAmount(AValue: Currency);
+    procedure SetMaxTerm(AValue: integer);
     procedure SetMinAmount(AValue: Currency);
+    procedure SetMinTerm(AValue: integer);
     procedure SetName(AValue: string);
-    procedure SetTerms(AValue: integer);
+    procedure SetRebateRate(AValue: Currency);
   protected
     function  GetOwner: TServiceList; reintroduce;
     procedure SetOwner(const Value: TServiceList); reintroduce;
@@ -100,7 +108,9 @@ type
     property MaxAmount: Currency read FMaxAmount write SetMaxAmount;
     property MinAmount: Currency read FMinAmount write SetMinAmount;
     property InterestRate: Currency read FInterestRate write SetInterestRate;
-    property Terms: integer read FTerms write SetTerms;
+    property RebateRate: Currency read FRebateRate write SetRebateRate;
+    property MinTerm: integer read FMinTerm write SetMinTerm;
+    property MaxTerm: integer read FMaxTerm write SetMaxTerm;
   end;
 
   { TServiceList }
@@ -157,7 +167,60 @@ type
   published
   end;
 
+  { TLoan }
+
+  TLoan = class(TManualObject)
+  private
+  protected
+    function  GetOwner: TLoanList; reintroduce;
+    procedure SetOwner(const Value: TLoanList); reintroduce;
+  public
+    property  Owner: TLoanList read GetOwner write SetOwner;
+  end;
+
+  { TLoanList }
+
+  TLoanList = class(TtiObjectList)
+  private
+  protected
+    function  GetItems(i: integer): TLoan; reintroduce;
+    procedure SetItems(i: integer; const Value: TLoan); reintroduce;
+  public
+    property  Items[i:integer]: TLoan read GetItems write SetItems;
+    procedure Add(AObject:TLoan); reintroduce;
+  published
+  end;
+
 implementation
+
+{ TLoanList }
+
+function TLoanList.GetItems(i: integer): TLoan;
+begin
+  result := TLoan(inherited GetItems(i));
+end;
+
+procedure TLoanList.SetItems(i: integer; const Value: TLoan);
+begin
+  inherited SetItems(i, Value);
+end;
+
+procedure TLoanList.Add(AObject: TLoan);
+begin
+  inherited Add(AObject);
+end;
+
+{ TLoan }
+
+function TLoan.GetOwner: TLoanList;
+begin
+  result := TLoanList(inherited GetOwner);
+end;
+
+procedure TLoan.SetOwner(const Value: TLoanList);
+begin
+  inherited SetOwner(Value);
+end;
 
 { TManualObject }
 
@@ -272,10 +335,22 @@ begin
   FMaxAmount:=AValue;
 end;
 
+procedure TService.SetMaxTerm(AValue: integer);
+begin
+  if FMaxTerm=AValue then Exit;
+  FMaxTerm:=AValue;
+end;
+
 procedure TService.SetMinAmount(AValue: Currency);
 begin
   if FMinAmount=AValue then Exit;
   FMinAmount:=AValue;
+end;
+
+procedure TService.SetMinTerm(AValue: integer);
+begin
+  if FMinTerm=AValue then Exit;
+  FMinTerm:=AValue;
 end;
 
 procedure TService.SetName(AValue: string);
@@ -284,10 +359,10 @@ begin
   FName:=AValue;
 end;
 
-procedure TService.SetTerms(AValue: integer);
+procedure TService.SetRebateRate(AValue: Currency);
 begin
-  if FTerms=AValue then Exit;
-  FTerms:=AValue;
+  if FRebateRate=AValue then Exit;
+  FRebateRate:=AValue;
 end;
 
 function TService.GetOwner: TServiceList;

@@ -14,12 +14,23 @@ uses
 
 type
 
+  { TReadServicesVisitor }
+
   TReadServicesVisitor = Class(TtiVisitorSelect)
   Protected
     Procedure Init; override;
     Function AcceptVisitor : Boolean; override;
     Procedure SetupParams; override;
     Procedure MapRowToObject; override;
+  end;
+
+  { TSaveServiceVisitor }
+
+  TSaveServiceVisitor = Class(TtiVisitorUpdate)
+  Protected
+    Procedure Init; override;
+    Function AcceptVisitor : Boolean; override;
+    Procedure SetupParams; override;
   end;
 
 
@@ -54,10 +65,95 @@ const
   SQLUpdatePerson = 'update PERSON set NAME=:NAME, DATEJOINED=:DATEJOINED where OID=:OID';
   SQLDeletePerson = 'delete from PERSON where OID=:OID';
 
-  SQLReadServices = 'select OID, NAME, DATEJOINED from PERSON';
-  SQLCreatePerson = 'insert into PERSON(OID,NAME,DATEJOINED) values (:OID,:NAME,:DATEJOINED)';
-  SQLUpdatePerson = 'update PERSON set NAME=:NAME, DATEJOINED=:DATEJOINED where OID=:OID';
-  SQLDeletePerson = 'delete from PERSON where OID=:OID';
+  SQLReadServices = 'select * from SERVICE';
+  SQLCreateService = 'insert into SERVICE (OID, NAME, MAXAMOUNT, MINAMOUNT, INTERESTRATE, REBATE_RATE, MINTERM, MAXTERM) '+
+                     'values (:OID, :NAME, :MAXAMOUNT, :MINAMOUNT, :INTERESTRATE, :REBATE_RATE, :MINTERM, :MAXTERM)';
+  SQLUpdateService = 'update SERVICE set NAME=:NAME, MAXAMOUNT=:MAXAMOUNT, MINAMOUNT=:MINAMOUNT, '+
+                     'INTERESTRATE=:INTERESTRATE, REBATE_RATE=:REBATE_RATE, MINTERM=:MINTERM, MAXTERM=:MAXTERM where OID=:OID';
+  SQLDeleteService = 'delete from SERVICE where OID=:OID';
+
+{ TSaveServiceVisitor }
+
+procedure TSaveServiceVisitor.Init;
+begin
+  Case Visited.ObjectState of
+    posCreate:
+      Query.SQLText:=SQLCreateService;
+    posUpdate:
+      Query.SQLText:=SQLUpdateService;
+    posDelete:
+      Query.SQLText:=SQLDeleteService;
+  end;
+end;
+
+function TSaveServiceVisitor.AcceptVisitor: Boolean;
+begin
+  Result:=Visited is TService;
+  Result:=Result and (Visited.ObjectState in [posCreate,posdelete,posUpdate]);
+end;
+
+procedure TSaveServiceVisitor.SetupParams;
+var
+  O : TService;
+
+begin
+  O:=TService(Visited);
+  O.OID.AssignToTIQuery('OID',Query);
+  if (Visited.ObjectState<>posDelete) then
+  begin
+    Query.ParamAsString['NAME']        := O.Name;
+    Query.ParamAsFloat['MAXAMOUNT']    := O.MaxAmount;
+    Query.ParamAsFloat['MINAMOUNT']    := O.MinAmount;
+    Query.ParamAsFloat['INTERESTRATE'] := O.InterestRate;
+    Query.ParamAsFloat['REBATE_RATE'] := O.RebateRate;
+    Query.ParamAsInteger['MINTERM'] := O.MinTerm;
+    Query.ParamAsInteger['MAXTERM'] := O.MaxTerm;
+  end;
+end;
+
+{ TReadServicesVisitor }
+
+procedure TReadServicesVisitor.Init;
+begin
+  Query.SQLText:= SQLReadServices;
+  //// where clause start
+  //if TPersonList(Visited).PersonsFilter.Active then
+  //begin
+  //  Query.SQL.Add(' WHERE');
+  //  Query.SQL.Add(' '+TPersonList(Visited).PersonsFilter.Criteria);
+  //  TPersonList(Visited).PersonsFilter.Active  := False;
+  //end;
+  ////where clause end
+end;
+
+function TReadServicesVisitor.AcceptVisitor: Boolean;
+begin
+  Result:= Visited is TServiceList;
+end;
+
+procedure TReadServicesVisitor.SetupParams;
+begin
+
+end;
+
+procedure TReadServicesVisitor.MapRowToObject;
+var
+  O : TService;
+
+begin
+  O:= TService.Create;
+  O.OID.AssignFromTIQuery('OID',Query);
+
+  O.Name:= Query.FieldAsString['NAME'];
+  O.MaxAmount:= Query.FieldAsFloat['MAXAMOUNT'];
+  O.MinAmount:= Query.FieldAsFloat['MINAMOUNT'];
+  O.InterestRate:= Query.FieldAsFloat['INTERESTRATE'];
+  o.RebateRate:= Query.FieldAsFloat['REBATE_RATE'];
+  O.MinTerm:= Query.FieldAsInteger['MINTERM'];
+  O.MaxTerm:= Query.FieldAsInteger['MAXTERM'];
+  O.ObjectState:=posClean;
+  TServiceList(Visited).Add(O);
+end;
 
 { TSavePersonVisitor }
 
@@ -138,6 +234,9 @@ begin
   begin
     RegReadVisitor(TReadPersonsVisitor);
     RegSaveVisitor(TSavePersonVisitor);
+
+    RegReadVisitor(TReadServicesVisitor);
+    RegSaveVisitor(TSaveServiceVisitor);
   end;
 end;
 
