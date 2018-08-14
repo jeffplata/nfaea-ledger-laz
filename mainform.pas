@@ -48,12 +48,14 @@ type
     MenuItem8: TMenuItem;
     MenuItem9: TMenuItem;
     PageControl1: TPageControl;
+    sgdLoans: TStringGrid;
     SpeedButton1: TSpeedButton;
     StatusBar1: TStatusBar;
     sgdPersons: TStringGrid;
     sgdServices: TStringGrid;
     tabPersons: TTabSheet;
     tabServices: TTabSheet;
+    tabLoans: TTabSheet;
     procedure actAddMemberExecute(Sender: TObject);
     procedure actAddServiceExecute(Sender: TObject);
     procedure actDeleteMemberExecute(Sender: TObject);
