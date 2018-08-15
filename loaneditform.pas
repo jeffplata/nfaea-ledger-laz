@@ -6,9 +6,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Menus, JLabeledCurrencyEdit
-  ,ledger_bom
-  ,tiModelMediator;
+  ExtCtrls, Menus, EditBtn, JLabeledCurrencyEdit,
+  ledger_bom, tiModelMediator;
 
 type
 
@@ -20,6 +19,11 @@ type
     Button1: TButton;
     Button2: TButton;
     cmbService: TComboBox;
+    dtpPaymentStarts: TDateEdit;
+    dtpPaymentEnds: TDateEdit;
+    dtpDocDate: TDateEdit;
+    edtAmortization: TJLabeledCurrencyEdit;
+    edtTotal: TJLabeledCurrencyEdit;
     GroupBox1: TGroupBox;
     edtPrincipal: TJLabeledCurrencyEdit;
     JLabeledCurrencyEdit10: TJLabeledCurrencyEdit;
@@ -27,17 +31,21 @@ type
     JLabeledCurrencyEdit12: TJLabeledCurrencyEdit;
     JLabeledCurrencyEdit13: TJLabeledCurrencyEdit;
     JLabeledCurrencyEdit14: TJLabeledCurrencyEdit;
-    JLabeledCurrencyEdit2: TJLabeledCurrencyEdit;
-    JLabeledCurrencyEdit3: TJLabeledCurrencyEdit;
+    edtInterest: TJLabeledCurrencyEdit;
+    edtInterestRate: TJLabeledCurrencyEdit;
     edtPreviousBalance: TJLabeledCurrencyEdit;
     edtRebates: TJLabeledCurrencyEdit;
-    JLabeledCurrencyEdit6: TJLabeledCurrencyEdit;
+    edtRebateRate: TJLabeledCurrencyEdit;
     edtNetProceeds: TJLabeledCurrencyEdit;
     JLabeledCurrencyEdit8: TJLabeledCurrencyEdit;
     JLabeledCurrencyEdit9: TJLabeledCurrencyEdit;
     Label1: TLabel;
     edtPerson: TLabeledEdit;
     edtTerms: TLabeledEdit;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    edtDocNumber: TLabeledEdit;
     LabeledEdit3: TLabeledEdit;
   private
     FData: TLoan;
@@ -84,7 +92,19 @@ begin
   if not Assigned(FMediator) then
   begin
     FMediator := TtiModelMediator.Create(Self);
+    FMediator.AddProperty('DocNumber', edtDocNumber);
+    FMediator.AddProperty('DocDate', dtpDocDate);
     FMediator.AddProperty('Principal', edtPrincipal);
+    FMediator.AddProperty('Interest', edtInterest);
+    FMediator.AddProperty('InterestRate', edtInterestRate);
+    FMediator.AddProperty('Total', edtTotal);
+    FMediator.AddProperty('PreviousBalance', edtPreviousBalance);
+    FMediator.AddProperty('Rebates', edtRebates);
+    FMediator.AddProperty('RebateRate', edtRebateRate);
+    FMediator.AddProperty('NetProceeds', edtNetProceeds);
+    FMediator.AddProperty('Amortization', edtAmortization);
+    FMediator.AddProperty('PaymentStart', dtpPaymentStarts);
+    FMediator.AddProperty('PaymentEnd', dtpPaymentEnds);
     FMediator.AddProperty('Service',cmbService).ValueList := gLedgerManager.Services;
 
   end;

@@ -175,7 +175,7 @@ type
   private
     FAmortization: Currency;
     FDocDate: TDate;
-    FDocNum: string;
+    FDocNumber: string;
     FInterest: Currency;
     FInterestRate: Currency;
     FNetProceeds: Currency;
@@ -185,13 +185,14 @@ type
     FPerson: TPerson;
     FPreviousBalance: Currency;
     FPrincipal: Currency;
+    FRebateRate: currency;
     FRebates: Currency;
     FService: TService;
     FTerms: Integer;
     FTotal: Currency;
     procedure SetAmortization(AValue: Currency);
     procedure SetDocDate(AValue: TDate);
-    procedure SetDocNum(AValue: string);
+    procedure SetDocNumber(AValue: string);
     procedure SetInterest(AValue: Currency);
     procedure SetInterestRate(AValue: Currency);
     procedure SetNetProceeds(AValue: Currency);
@@ -201,6 +202,7 @@ type
     procedure SetPerson(AValue: TPerson);
     procedure SetPreviousBalance(AValue: Currency);
     procedure SetPrincipal(AValue: Currency);
+    procedure SetRebateRate(AValue: currency);
     procedure SetRebates(AValue: Currency);
     procedure SetService(AValue: TService);
     procedure SetTerms(AValue: Integer);
@@ -213,7 +215,7 @@ type
   published
     property Person: TPerson read FPerson write SetPerson;
     property Service: TService read FService write SetService;
-    property DocNum: string read FDocNum write SetDocNum;
+    property DocNumber: string read FDocNumber write SetDocNumber;
     property DocDate: TDate read FDocDate write SetDocDate;
     property Notes: string read FNotes write SetNotes;
     property Principal: Currency read FPrincipal write SetPrincipal;
@@ -221,6 +223,7 @@ type
     property Total: Currency read FTotal write SetTotal;
     Property PreviousBalance: Currency read FPreviousBalance write SetPreviousBalance;
     Property Rebates: Currency read FRebates write SetRebates;
+    property RebateRate: currency read FRebateRate write SetRebateRate;
     Property NetProceeds: Currency read FNetProceeds write SetNetProceeds;
     Property InterestRate: Currency read FInterestRate write SetInterestRate;
     Property Terms: Integer read FTerms write SetTerms;
@@ -299,10 +302,10 @@ begin
   FDocDate:=AValue;
 end;
 
-procedure TLoan.SetDocNum(AValue: string);
+procedure TLoan.SetDocNumber(AValue: string);
 begin
-  if FDocNum=AValue then Exit;
-  FDocNum:=AValue;
+  if FDocNumber=AValue then Exit;
+  FDocNumber:=AValue;
 end;
 
 procedure TLoan.SetInterest(AValue: Currency);
@@ -351,6 +354,12 @@ procedure TLoan.SetPrincipal(AValue: Currency);
 begin
   if FPrincipal=AValue then Exit;
   FPrincipal:=AValue;
+end;
+
+procedure TLoan.SetRebateRate(AValue: currency);
+begin
+  if FRebateRate=AValue then Exit;
+  FRebateRate:=AValue;
 end;
 
 procedure TLoan.SetRebates(AValue: Currency);
