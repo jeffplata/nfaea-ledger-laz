@@ -11,15 +11,6 @@ uses
 
 type
 
-  //{ TCurrencyEdit }
-  //
-  //TCurrencyEdit = class(TJLabeledCurrencyEdit)
-  //private
-  //  function GetText: string;
-  //published
-  //  property Text: string read GetText;
-  //end;
-
   { TfrmServiceEdit }
 
   TfrmServiceEdit = class(TForm)
@@ -67,13 +58,6 @@ begin
 end;
 
 {$R *.lfm}
-
-//{ TCurrencyEdit }
-//
-//function TCurrencyEdit.GetText: string;
-//begin
-//  Result := FormatFloat('%15.2f',Value);
-//end;
 
 
 { TfrmServiceEdit }

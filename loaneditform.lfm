@@ -7,15 +7,16 @@ object frmLoanEdit: TfrmLoanEdit
   ClientHeight = 337
   ClientWidth = 567
   LCLVersion = '1.8.2.0'
-  object LabeledEdit1: TLabeledEdit
+  object edtPerson: TLabeledEdit
     Left = 104
     Height = 23
     Top = 21
     Width = 164
-    EditLabel.AnchorSideTop.Control = LabeledEdit1
+    Color = clInfoBk
+    EditLabel.AnchorSideTop.Control = edtPerson
     EditLabel.AnchorSideTop.Side = asrCenter
-    EditLabel.AnchorSideRight.Control = LabeledEdit1
-    EditLabel.AnchorSideBottom.Control = LabeledEdit1
+    EditLabel.AnchorSideRight.Control = edtPerson
+    EditLabel.AnchorSideBottom.Control = edtPerson
     EditLabel.AnchorSideBottom.Side = asrBottom
     EditLabel.Left = 54
     EditLabel.Height = 15
@@ -25,17 +26,18 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
     LabelSpacing = 5
+    ReadOnly = True
     TabOrder = 0
-    Text = 'LabeledEdit1'
+    Text = 'edtPerson'
   end
-  object ComboBox1: TComboBox
+  object cmbService: TComboBox
     Left = 104
     Height = 23
     Top = 55
     Width = 164
     ItemHeight = 15
+    Style = csDropDownList
     TabOrder = 1
-    Text = 'ComboBox1'
   end
   object Label1: TLabel
     Left = 43
@@ -47,14 +49,14 @@ object frmLoanEdit: TfrmLoanEdit
     ParentColor = False
   end
   object btnSearchMember: TButton
-    Left = 278
+    Left = 272
     Height = 23
     Top = 21
     Width = 75
     Caption = 'Search'
     TabOrder = 2
   end
-  object JLabeledCurrencyEdit1: TJLabeledCurrencyEdit
+  object edtPrincipal: TJLabeledCurrencyEdit
     Left = 104
     Height = 23
     Top = 88
@@ -63,10 +65,10 @@ object frmLoanEdit: TfrmLoanEdit
     Decimals = 2
     Value = 0
     NegativeColor = clDefault
-    EditLabel.AnchorSideTop.Control = JLabeledCurrencyEdit1
+    EditLabel.AnchorSideTop.Control = edtPrincipal
     EditLabel.AnchorSideTop.Side = asrCenter
-    EditLabel.AnchorSideRight.Control = JLabeledCurrencyEdit1
-    EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit1
+    EditLabel.AnchorSideRight.Control = edtPrincipal
+    EditLabel.AnchorSideBottom.Control = edtPrincipal
     EditLabel.AnchorSideBottom.Side = asrBottom
     EditLabel.Left = 55
     EditLabel.Height = 15
@@ -80,15 +82,15 @@ object frmLoanEdit: TfrmLoanEdit
     ParentFont = False
     TabOrder = 3
   end
-  object LabeledEdit2: TLabeledEdit
+  object edtTerms: TLabeledEdit
     Left = 104
     Height = 23
     Top = 120
     Width = 80
-    EditLabel.AnchorSideTop.Control = LabeledEdit2
+    EditLabel.AnchorSideTop.Control = edtTerms
     EditLabel.AnchorSideTop.Side = asrCenter
-    EditLabel.AnchorSideRight.Control = LabeledEdit2
-    EditLabel.AnchorSideBottom.Control = LabeledEdit2
+    EditLabel.AnchorSideRight.Control = edtTerms
+    EditLabel.AnchorSideBottom.Control = edtTerms
     EditLabel.AnchorSideBottom.Side = asrBottom
     EditLabel.Left = 66
     EditLabel.Height = 15
@@ -99,7 +101,6 @@ object frmLoanEdit: TfrmLoanEdit
     LabelPosition = lpLeft
     LabelSpacing = 5
     TabOrder = 4
-    Text = 'LabeledEdit2'
   end
   object JLabeledCurrencyEdit2: TJLabeledCurrencyEdit
     Left = 104
@@ -152,7 +153,7 @@ object frmLoanEdit: TfrmLoanEdit
     ReadOnly = True
     TabOrder = 6
   end
-  object JLabeledCurrencyEdit4: TJLabeledCurrencyEdit
+  object edtPreviousBalance: TJLabeledCurrencyEdit
     Left = 104
     Height = 23
     Top = 184
@@ -161,10 +162,10 @@ object frmLoanEdit: TfrmLoanEdit
     Decimals = 2
     Value = 0
     NegativeColor = clDefault
-    EditLabel.AnchorSideTop.Control = JLabeledCurrencyEdit4
+    EditLabel.AnchorSideTop.Control = edtPreviousBalance
     EditLabel.AnchorSideTop.Side = asrCenter
-    EditLabel.AnchorSideRight.Control = JLabeledCurrencyEdit4
-    EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit4
+    EditLabel.AnchorSideRight.Control = edtPreviousBalance
+    EditLabel.AnchorSideBottom.Control = edtPreviousBalance
     EditLabel.AnchorSideBottom.Side = asrBottom
     EditLabel.Left = 10
     EditLabel.Height = 15
@@ -176,7 +177,7 @@ object frmLoanEdit: TfrmLoanEdit
     LabelSpacing = 5
     TabOrder = 7
   end
-  object JLabeledCurrencyEdit5: TJLabeledCurrencyEdit
+  object edtRebates: TJLabeledCurrencyEdit
     Left = 104
     Height = 23
     Top = 216
@@ -185,10 +186,10 @@ object frmLoanEdit: TfrmLoanEdit
     Decimals = 2
     Value = 0
     NegativeColor = clDefault
-    EditLabel.AnchorSideTop.Control = JLabeledCurrencyEdit5
+    EditLabel.AnchorSideTop.Control = edtRebates
     EditLabel.AnchorSideTop.Side = asrCenter
-    EditLabel.AnchorSideRight.Control = JLabeledCurrencyEdit5
-    EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit5
+    EditLabel.AnchorSideRight.Control = edtRebates
+    EditLabel.AnchorSideBottom.Control = edtRebates
     EditLabel.AnchorSideBottom.Side = asrBottom
     EditLabel.Left = 58
     EditLabel.Height = 15
@@ -226,7 +227,7 @@ object frmLoanEdit: TfrmLoanEdit
     ReadOnly = True
     TabOrder = 9
   end
-  object JLabeledCurrencyEdit7: TJLabeledCurrencyEdit
+  object edtNetProceeds: TJLabeledCurrencyEdit
     Left = 104
     Height = 23
     Top = 248
@@ -235,10 +236,10 @@ object frmLoanEdit: TfrmLoanEdit
     Decimals = 2
     Value = 0
     NegativeColor = clDefault
-    EditLabel.AnchorSideTop.Control = JLabeledCurrencyEdit7
+    EditLabel.AnchorSideTop.Control = edtNetProceeds
     EditLabel.AnchorSideTop.Side = asrCenter
-    EditLabel.AnchorSideRight.Control = JLabeledCurrencyEdit7
-    EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit7
+    EditLabel.AnchorSideRight.Control = edtNetProceeds
+    EditLabel.AnchorSideBottom.Control = edtNetProceeds
     EditLabel.AnchorSideBottom.Side = asrBottom
     EditLabel.Left = 17
     EditLabel.Height = 15
@@ -422,7 +423,6 @@ object frmLoanEdit: TfrmLoanEdit
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
       TabOrder = 5
-      OnChange = JLabeledCurrencyEdit12Change
     end
     object JLabeledCurrencyEdit13: TJLabeledCurrencyEdit
       Left = 80
@@ -447,7 +447,6 @@ object frmLoanEdit: TfrmLoanEdit
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
       TabOrder = 6
-      OnChange = JLabeledCurrencyEdit12Change
     end
     object JLabeledCurrencyEdit14: TJLabeledCurrencyEdit
       Left = 80
@@ -472,7 +471,6 @@ object frmLoanEdit: TfrmLoanEdit
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
       TabOrder = 7
-      OnChange = JLabeledCurrencyEdit12Change
     end
     object btnSearchMember1: TButton
       Left = 144

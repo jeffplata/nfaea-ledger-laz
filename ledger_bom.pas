@@ -91,6 +91,7 @@ type
     FMinTerm: integer;
     FName: string;
     FRebateRate: Currency;
+    function GetCaption: string;
     procedure SetInterestRate(AValue: Currency);
     procedure SetMaxAmount(AValue: Currency);
     procedure SetMaxTerm(AValue: integer);
@@ -104,6 +105,7 @@ type
   public
     property  Owner: TServiceList read GetOwner write SetOwner;
   published
+    property Caption: string read GetCaption;
     property Name: string read FName write SetName;
     property MaxAmount: Currency read FMaxAmount write SetMaxAmount;
     property MinAmount: Currency read FMinAmount write SetMinAmount;
@@ -171,11 +173,60 @@ type
 
   TLoan = class(TManualObject)
   private
+    FAmortization: Currency;
+    FDocDate: TDate;
+    FDocNum: string;
+    FInterest: Currency;
+    FInterestRate: Currency;
+    FNetProceeds: Currency;
+    FNotes: string;
+    FPaymentEnd: Tdate;
+    FPaymentStart: Tdate;
+    FPerson: TPerson;
+    FPreviousBalance: Currency;
+    FPrincipal: Currency;
+    FRebates: Currency;
+    FService: TService;
+    FTerms: Integer;
+    FTotal: Currency;
+    procedure SetAmortization(AValue: Currency);
+    procedure SetDocDate(AValue: TDate);
+    procedure SetDocNum(AValue: string);
+    procedure SetInterest(AValue: Currency);
+    procedure SetInterestRate(AValue: Currency);
+    procedure SetNetProceeds(AValue: Currency);
+    procedure SetNotes(AValue: string);
+    procedure SetPaymentEnd(AValue: Tdate);
+    procedure SetPaymentStart(AValue: Tdate);
+    procedure SetPerson(AValue: TPerson);
+    procedure SetPreviousBalance(AValue: Currency);
+    procedure SetPrincipal(AValue: Currency);
+    procedure SetRebates(AValue: Currency);
+    procedure SetService(AValue: TService);
+    procedure SetTerms(AValue: Integer);
+    procedure SetTotal(AValue: Currency);
   protected
     function  GetOwner: TLoanList; reintroduce;
     procedure SetOwner(const Value: TLoanList); reintroduce;
   public
     property  Owner: TLoanList read GetOwner write SetOwner;
+  published
+    property Person: TPerson read FPerson write SetPerson;
+    property Service: TService read FService write SetService;
+    property DocNum: string read FDocNum write SetDocNum;
+    property DocDate: TDate read FDocDate write SetDocDate;
+    property Notes: string read FNotes write SetNotes;
+    property Principal: Currency read FPrincipal write SetPrincipal;
+    property Interest: Currency read FInterest write SetInterest;
+    property Total: Currency read FTotal write SetTotal;
+    Property PreviousBalance: Currency read FPreviousBalance write SetPreviousBalance;
+    Property Rebates: Currency read FRebates write SetRebates;
+    Property NetProceeds: Currency read FNetProceeds write SetNetProceeds;
+    Property InterestRate: Currency read FInterestRate write SetInterestRate;
+    Property Terms: Integer read FTerms write SetTerms;
+    Property Amortization: Currency read FAmortization write SetAmortization;
+    Property PaymentStart: Tdate read FPaymentStart write SetPaymentStart;
+    Property PaymentEnd: Tdate read FPaymentEnd write SetPaymentEnd;
   end;
 
   { TLoanList }
@@ -211,6 +262,102 @@ begin
 end;
 
 { TLoan }
+
+procedure TLoan.SetService(AValue: TService);
+begin
+  if FService=AValue then Exit;
+  FService:=AValue;
+end;
+
+procedure TLoan.SetTerms(AValue: Integer);
+begin
+  if FTerms=AValue then Exit;
+  FTerms:=AValue;
+end;
+
+procedure TLoan.SetTotal(AValue: Currency);
+begin
+  if FTotal=AValue then Exit;
+  FTotal:=AValue;
+end;
+
+procedure TLoan.SetPerson(AValue: TPerson);
+begin
+  if FPerson=AValue then Exit;
+  FPerson:=AValue;
+end;
+
+procedure TLoan.SetAmortization(AValue: Currency);
+begin
+  if FAmortization=AValue then Exit;
+  FAmortization:=AValue;
+end;
+
+procedure TLoan.SetDocDate(AValue: TDate);
+begin
+  if FDocDate=AValue then Exit;
+  FDocDate:=AValue;
+end;
+
+procedure TLoan.SetDocNum(AValue: string);
+begin
+  if FDocNum=AValue then Exit;
+  FDocNum:=AValue;
+end;
+
+procedure TLoan.SetInterest(AValue: Currency);
+begin
+  if FInterest=AValue then Exit;
+  FInterest:=AValue;
+end;
+
+procedure TLoan.SetInterestRate(AValue: Currency);
+begin
+  if FInterestRate=AValue then Exit;
+  FInterestRate:=AValue;
+end;
+
+procedure TLoan.SetNetProceeds(AValue: Currency);
+begin
+  if FNetProceeds=AValue then Exit;
+  FNetProceeds:=AValue;
+end;
+
+procedure TLoan.SetNotes(AValue: string);
+begin
+  if FNotes=AValue then Exit;
+  FNotes:=AValue;
+end;
+
+procedure TLoan.SetPaymentEnd(AValue: Tdate);
+begin
+  if FPaymentEnd=AValue then Exit;
+  FPaymentEnd:=AValue;
+end;
+
+procedure TLoan.SetPaymentStart(AValue: Tdate);
+begin
+  if FPaymentStart=AValue then Exit;
+  FPaymentStart:=AValue;
+end;
+
+procedure TLoan.SetPreviousBalance(AValue: Currency);
+begin
+  if FPreviousBalance=AValue then Exit;
+  FPreviousBalance:=AValue;
+end;
+
+procedure TLoan.SetPrincipal(AValue: Currency);
+begin
+  if FPrincipal=AValue then Exit;
+  FPrincipal:=AValue;
+end;
+
+procedure TLoan.SetRebates(AValue: Currency);
+begin
+  if FRebates=AValue then Exit;
+  FRebates:=AValue;
+end;
 
 function TLoan.GetOwner: TLoanList;
 begin
@@ -322,6 +469,11 @@ begin
 end;
 
 { TService }
+
+function TService.GetCaption: string;
+begin
+  Result := Name;
+end;
 
 procedure TService.SetInterestRate(AValue: Currency);
 begin

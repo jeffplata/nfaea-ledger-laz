@@ -26,6 +26,9 @@ type
     actAddService: TAction;
     actEditService: TAction;
     actDeleteService: TAction;
+    actAddLoan: TAction;
+    actEditLoan: TAction;
+    actDeleteLoan: TAction;
     actMemberCSVLoad: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
@@ -36,7 +39,11 @@ type
     Button4: TButton;
     Button5: TButton;
     Button6: TButton;
+    btnAddLoan: TButton;
+    btnEditLoan: TButton;
+    btnDeleteLoan: TButton;
     edtFilter: TLabeledEdit;
+    edtFilterLoans: TLabeledEdit;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
@@ -50,16 +57,19 @@ type
     PageControl1: TPageControl;
     sgdLoans: TStringGrid;
     SpeedButton1: TSpeedButton;
+    spbClearLoanFilter: TSpeedButton;
     StatusBar1: TStatusBar;
     sgdPersons: TStringGrid;
     sgdServices: TStringGrid;
     tabPersons: TTabSheet;
     tabServices: TTabSheet;
     tabLoans: TTabSheet;
+    procedure actAddLoanExecute(Sender: TObject);
     procedure actAddMemberExecute(Sender: TObject);
     procedure actAddServiceExecute(Sender: TObject);
     procedure actDeleteMemberExecute(Sender: TObject);
     procedure actDeleteServiceExecute(Sender: TObject);
+    procedure actEditLoanExecute(Sender: TObject);
     procedure actEditMemberExecute(Sender: TObject);
     procedure actEditServiceExecute(Sender: TObject);
     procedure actHelpAboutExecute(Sender: TObject);
@@ -73,6 +83,7 @@ type
   private
     FPersonsMediator: TtiModelMediator;
     FMedServices: TtiModelMediator;
+    FMedLoans: TtiModelMediator;
     FPersons: TPersonList;
     FServices: TServiceList;
     procedure SetPersons(AValue: TPersonList);
@@ -93,6 +104,7 @@ implementation
 uses
   PersonEditForm
   ,ServiceEditForm
+  ,LoanEditForm
   ,ledgermanager
   ,tiOPFManager
   ,MemberCSVLoad
@@ -173,6 +185,22 @@ begin
     P.Free;
 end;
 
+procedure TfrmMain.actAddLoanExecute(Sender: TObject);
+  var
+    O : TLoan;
+  begin
+    O := TLoan.Create;
+    if EditLoan(O) then
+    begin
+      GTIOPFManager.DefaultOIDGenerator.AssignNextOID(O.OID); // we generate oid only when before saving
+      gLedgerManager.Loans.Add(O);
+      O.SaveObject;
+      FMedLoans.SelectedObject[sgdLoans] := O;  // go to last inserted
+    end
+    else
+      O.Free;
+end;
+
 procedure TfrmMain.actAddServiceExecute(Sender: TObject);
 var
   O : TService;
@@ -189,6 +217,7 @@ begin
   else
     O.Free;
 end;
+
 
 procedure TfrmMain.actDeleteMemberExecute(Sender: TObject);
 var
@@ -256,6 +285,23 @@ begin
     //if iRows > 1 then
     //  sgdServices.Row:= sgdServices.Row - (iRows -1);
   end;
+end;
+
+procedure TfrmMain.actEditLoanExecute(Sender: TObject);
+  var
+    O : TLoan;
+    B : TLoan; //Buffer for undo
+  begin
+    O := TLoan(FMedLoans.SelectedObject[sgdLoans]);
+    B := TLoan.Create;
+    B.Assign(O);
+    if EditLoan(B) then
+    begin
+      O.Assign(B);
+      O.SaveObject;
+      O.NotifyObservers;
+    end;
+    B.Free;
 end;
 
 procedure TfrmMain.actMembersExecute(Sender: TObject);

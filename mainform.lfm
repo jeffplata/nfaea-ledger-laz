@@ -15,9 +15,9 @@ object frmMain: TfrmMain
     Height = 347
     Top = 0
     Width = 677
-    ActivePage = tabPersons
+    ActivePage = tabLoans
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
@@ -151,6 +151,56 @@ object frmMain: TfrmMain
         RowCount = 0
         TabOrder = 0
       end
+      object edtFilterLoans: TLabeledEdit
+        Left = 32
+        Height = 23
+        Top = 8
+        Width = 144
+        EditLabel.AnchorSideTop.Control = edtFilterLoans
+        EditLabel.AnchorSideTop.Side = asrCenter
+        EditLabel.AnchorSideRight.Control = edtFilterLoans
+        EditLabel.AnchorSideBottom.Control = edtFilterLoans
+        EditLabel.AnchorSideBottom.Side = asrBottom
+        EditLabel.Left = 3
+        EditLabel.Height = 15
+        EditLabel.Top = 12
+        EditLabel.Width = 26
+        EditLabel.Caption = 'Filter'
+        EditLabel.ParentColor = False
+        LabelPosition = lpLeft
+        TabOrder = 1
+      end
+      object spbClearLoanFilter: TSpeedButton
+        Left = 180
+        Height = 22
+        Top = 8
+        Width = 23
+        Caption = 'X'
+      end
+      object btnAddLoan: TButton
+        Left = 224
+        Height = 22
+        Top = 8
+        Width = 75
+        Action = actAddLoan
+        TabOrder = 2
+      end
+      object btnEditLoan: TButton
+        Left = 304
+        Height = 22
+        Top = 8
+        Width = 75
+        Action = actEditLoan
+        TabOrder = 3
+      end
+      object btnDeleteLoan: TButton
+        Left = 384
+        Height = 22
+        Top = 8
+        Width = 75
+        Action = actDeleteLoan
+        TabOrder = 4
+      end
     end
   end
   object StatusBar1: TStatusBar
@@ -237,6 +287,17 @@ object frmMain: TfrmMain
     object actDeleteService: TAction
       Caption = 'Delete'
       OnExecute = actDeleteServiceExecute
+    end
+    object actAddLoan: TAction
+      Caption = 'Add'
+      OnExecute = actAddLoanExecute
+    end
+    object actEditLoan: TAction
+      Caption = 'Edit'
+      OnExecute = actEditLoanExecute
+    end
+    object actDeleteLoan: TAction
+      Caption = 'Delete'
     end
   end
 end

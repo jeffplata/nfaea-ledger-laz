@@ -104,6 +104,7 @@
         <Filename Value="loaneditform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmLoanEdit"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="LoanEditForm"/>
       </Unit9>

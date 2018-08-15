@@ -39,6 +39,7 @@ begin
   // Specific
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TService, 'MaxAmount');
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TService, 'MinAmount');
+  gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoan, 'Principal');
 
 end;
 
