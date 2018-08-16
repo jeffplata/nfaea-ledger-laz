@@ -1,15 +1,15 @@
 object frmLoanEdit: TfrmLoanEdit
   Left = 388
-  Height = 477
-  Top = 192
+  Height = 497
+  Top = 172
   Width = 567
   Caption = 'Edit Loan'
-  ClientHeight = 477
+  ClientHeight = 497
   ClientWidth = 567
   LCLVersion = '1.8.2.0'
   object edtPerson: TLabeledEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 80
     Width = 164
     Color = clInfoBk
@@ -18,10 +18,10 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideRight.Control = edtPerson
     EditLabel.AnchorSideBottom.Control = edtPerson
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 61
-    EditLabel.Height = 13
+    EditLabel.Left = 54
+    EditLabel.Height = 15
     EditLabel.Top = 84
-    EditLabel.Width = 38
+    EditLabel.Width = 45
     EditLabel.Caption = 'Member'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
@@ -31,18 +31,18 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object cmbService: TComboBox
     Left = 104
-    Height = 21
+    Height = 23
     Top = 107
     Width = 164
-    ItemHeight = 13
+    ItemHeight = 15
     Style = csDropDownList
     TabOrder = 4
   end
   object Label1: TLabel
-    Left = 48
-    Height = 13
+    Left = 42
+    Height = 15
     Top = 113
-    Width = 50
+    Width = 55
     Alignment = taRightJustify
     Caption = 'Loan Type'
     ParentColor = False
@@ -57,7 +57,7 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object edtPrincipal: TJLabeledCurrencyEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 134
     Width = 80
     DisplayFormat = '#,0.00'
@@ -69,10 +69,10 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideRight.Control = edtPrincipal
     EditLabel.AnchorSideBottom.Control = edtPrincipal
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 62
-    EditLabel.Height = 13
+    EditLabel.Left = 55
+    EditLabel.Height = 15
     EditLabel.Top = 138
-    EditLabel.Width = 37
+    EditLabel.Width = 44
     EditLabel.Caption = 'Amount'
     EditLabel.ParentColor = False
     Font.Style = [fsBold]
@@ -83,7 +83,7 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object edtTerms: TLabeledEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 161
     Width = 80
     EditLabel.AnchorSideTop.Control = edtTerms
@@ -91,19 +91,20 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideRight.Control = edtTerms
     EditLabel.AnchorSideBottom.Control = edtTerms
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 70
-    EditLabel.Height = 13
+    EditLabel.Left = 66
+    EditLabel.Height = 15
     EditLabel.Top = 165
-    EditLabel.Width = 29
+    EditLabel.Width = 33
     EditLabel.Caption = 'Terms'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
     LabelSpacing = 5
     TabOrder = 7
+    Text = '0'
   end
   object edtInterest: TJLabeledCurrencyEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 188
     Width = 80
     DisplayFormat = '#,0.00'
@@ -116,7 +117,7 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideBottom.Control = edtInterest
     EditLabel.AnchorSideBottom.Side = asrBottom
     EditLabel.Left = 60
-    EditLabel.Height = 13
+    EditLabel.Height = 15
     EditLabel.Top = 192
     EditLabel.Width = 39
     EditLabel.Caption = 'Interest'
@@ -128,7 +129,7 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object edtInterestRate: TJLabeledCurrencyEdit
     Left = 208
-    Height = 21
+    Height = 23
     Top = 188
     Width = 48
     DisplayFormat = '#,0.00%'
@@ -141,10 +142,10 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideRight.Control = edtInterestRate
     EditLabel.AnchorSideBottom.Control = edtInterestRate
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 193
-    EditLabel.Height = 13
+    EditLabel.Left = 192
+    EditLabel.Height = 15
     EditLabel.Top = 192
-    EditLabel.Width = 10
+    EditLabel.Width = 11
     EditLabel.Caption = '@'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
@@ -155,7 +156,7 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object edtPreviousBalance: TJLabeledCurrencyEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 242
     Width = 80
     DisplayFormat = '#,0.00'
@@ -167,10 +168,10 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideRight.Control = edtPreviousBalance
     EditLabel.AnchorSideBottom.Control = edtPreviousBalance
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 18
-    EditLabel.Height = 13
+    EditLabel.Left = 10
+    EditLabel.Height = 15
     EditLabel.Top = 246
-    EditLabel.Width = 81
+    EditLabel.Width = 89
     EditLabel.Caption = 'Previous Balance'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
@@ -179,7 +180,7 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object edtRebates: TJLabeledCurrencyEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 269
     Width = 80
     DisplayFormat = '#,0.00'
@@ -191,10 +192,10 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideRight.Control = edtRebates
     EditLabel.AnchorSideBottom.Control = edtRebates
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 59
-    EditLabel.Height = 13
+    EditLabel.Left = 58
+    EditLabel.Height = 15
     EditLabel.Top = 273
-    EditLabel.Width = 40
+    EditLabel.Width = 41
     EditLabel.Caption = 'Rebates'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
@@ -203,7 +204,7 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object edtRebateRate: TJLabeledCurrencyEdit
     Left = 208
-    Height = 21
+    Height = 23
     Top = 269
     Width = 48
     DisplayFormat = '#,0.00%'
@@ -216,10 +217,10 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideRight.Control = edtRebateRate
     EditLabel.AnchorSideBottom.Control = edtRebateRate
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 193
-    EditLabel.Height = 13
+    EditLabel.Left = 192
+    EditLabel.Height = 15
     EditLabel.Top = 273
-    EditLabel.Width = 10
+    EditLabel.Width = 11
     EditLabel.Caption = '@'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
@@ -230,7 +231,7 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object edtNetProceeds: TJLabeledCurrencyEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 296
     Width = 80
     DisplayFormat = '#,0.00'
@@ -243,10 +244,10 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideRight.Control = edtNetProceeds
     EditLabel.AnchorSideBottom.Control = edtNetProceeds
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 24
-    EditLabel.Height = 13
+    EditLabel.Left = 17
+    EditLabel.Height = 15
     EditLabel.Top = 300
-    EditLabel.Width = 75
+    EditLabel.Width = 82
     EditLabel.Caption = 'NET PROCEEDS'
     EditLabel.ParentColor = False
     Font.Style = [fsBold]
@@ -259,7 +260,7 @@ object frmLoanEdit: TfrmLoanEdit
   object Button1: TButton
     Left = 394
     Height = 25
-    Top = 442
+    Top = 462
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'Ok'
@@ -269,7 +270,7 @@ object frmLoanEdit: TfrmLoanEdit
   object Button2: TButton
     Left = 474
     Height = 25
-    Top = 442
+    Top = 462
     Width = 75
     Anchors = [akRight, akBottom]
     Cancel = True
@@ -283,13 +284,13 @@ object frmLoanEdit: TfrmLoanEdit
     Top = 115
     Width = 271
     Caption = 'Previous Loan Info'
-    ClientHeight = 196
+    ClientHeight = 194
     ClientWidth = 267
     ParentFont = False
     TabOrder = 17
     object LabeledEdit3: TLabeledEdit
       Left = 56
-      Height = 21
+      Height = 23
       Top = 8
       Width = 80
       Color = clActiveBorder
@@ -298,10 +299,10 @@ object frmLoanEdit: TfrmLoanEdit
       EditLabel.AnchorSideRight.Control = LabeledEdit3
       EditLabel.AnchorSideBottom.Control = LabeledEdit3
       EditLabel.AnchorSideBottom.Side = asrBottom
-      EditLabel.Left = 30
-      EditLabel.Height = 13
+      EditLabel.Left = 29
+      EditLabel.Height = 15
       EditLabel.Top = 12
-      EditLabel.Width = 23
+      EditLabel.Width = 24
       EditLabel.Caption = 'Date'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
@@ -310,7 +311,7 @@ object frmLoanEdit: TfrmLoanEdit
     end
     object JLabeledCurrencyEdit8: TJLabeledCurrencyEdit
       Left = 56
-      Height = 21
+      Height = 23
       Top = 32
       Width = 80
       DisplayFormat = '#,0.00'
@@ -323,10 +324,10 @@ object frmLoanEdit: TfrmLoanEdit
       EditLabel.AnchorSideRight.Control = JLabeledCurrencyEdit8
       EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit8
       EditLabel.AnchorSideBottom.Side = asrBottom
-      EditLabel.Left = 14
-      EditLabel.Height = 13
+      EditLabel.Left = 7
+      EditLabel.Height = 15
       EditLabel.Top = 36
-      EditLabel.Width = 39
+      EditLabel.Width = 46
       EditLabel.Caption = 'Principal'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
@@ -335,7 +336,7 @@ object frmLoanEdit: TfrmLoanEdit
     end
     object JLabeledCurrencyEdit9: TJLabeledCurrencyEdit
       Left = 352
-      Height = 21
+      Height = 23
       Top = 152
       Width = 80
       DisplayFormat = '#,0.00'
@@ -347,10 +348,10 @@ object frmLoanEdit: TfrmLoanEdit
       EditLabel.AnchorSideRight.Control = JLabeledCurrencyEdit9
       EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit9
       EditLabel.AnchorSideBottom.Side = asrBottom
-      EditLabel.Left = 310
-      EditLabel.Height = 13
+      EditLabel.Left = 303
+      EditLabel.Height = 15
       EditLabel.Top = 156
-      EditLabel.Width = 39
+      EditLabel.Width = 46
       EditLabel.Caption = 'Principal'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
@@ -358,7 +359,7 @@ object frmLoanEdit: TfrmLoanEdit
     end
     object JLabeledCurrencyEdit10: TJLabeledCurrencyEdit
       Left = 56
-      Height = 21
+      Height = 23
       Top = 56
       Width = 80
       DisplayFormat = '#,0.00'
@@ -372,7 +373,7 @@ object frmLoanEdit: TfrmLoanEdit
       EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit10
       EditLabel.AnchorSideBottom.Side = asrBottom
       EditLabel.Left = 14
-      EditLabel.Height = 13
+      EditLabel.Height = 15
       EditLabel.Top = 60
       EditLabel.Width = 39
       EditLabel.Caption = 'Interest'
@@ -383,7 +384,7 @@ object frmLoanEdit: TfrmLoanEdit
     end
     object JLabeledCurrencyEdit11: TJLabeledCurrencyEdit
       Left = 56
-      Height = 21
+      Height = 23
       Top = 80
       Width = 80
       DisplayFormat = '#,0.00'
@@ -396,10 +397,10 @@ object frmLoanEdit: TfrmLoanEdit
       EditLabel.AnchorSideRight.Control = JLabeledCurrencyEdit11
       EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit11
       EditLabel.AnchorSideBottom.Side = asrBottom
-      EditLabel.Left = 29
-      EditLabel.Height = 13
+      EditLabel.Left = 26
+      EditLabel.Height = 15
       EditLabel.Top = 84
-      EditLabel.Width = 24
+      EditLabel.Width = 27
       EditLabel.Caption = 'Total'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
@@ -408,7 +409,7 @@ object frmLoanEdit: TfrmLoanEdit
     end
     object JLabeledCurrencyEdit12: TJLabeledCurrencyEdit
       Left = 56
-      Height = 21
+      Height = 23
       Top = 112
       Width = 80
       DisplayFormat = '#,0.00'
@@ -421,10 +422,10 @@ object frmLoanEdit: TfrmLoanEdit
       EditLabel.AnchorSideRight.Control = JLabeledCurrencyEdit12
       EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit12
       EditLabel.AnchorSideBottom.Side = asrBottom
-      EditLabel.Left = 16
-      EditLabel.Height = 13
+      EditLabel.Left = 12
+      EditLabel.Height = 15
       EditLabel.Top = 116
-      EditLabel.Width = 37
+      EditLabel.Width = 41
       EditLabel.Caption = 'Balance'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
@@ -433,7 +434,7 @@ object frmLoanEdit: TfrmLoanEdit
     end
     object JLabeledCurrencyEdit13: TJLabeledCurrencyEdit
       Left = 80
-      Height = 21
+      Height = 23
       Top = 136
       Width = 80
       DisplayFormat = '#,0.00'
@@ -446,10 +447,10 @@ object frmLoanEdit: TfrmLoanEdit
       EditLabel.AnchorSideRight.Control = JLabeledCurrencyEdit13
       EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit13
       EditLabel.AnchorSideBottom.Side = asrBottom
-      EditLabel.Left = 38
-      EditLabel.Height = 13
+      EditLabel.Left = 31
+      EditLabel.Height = 15
       EditLabel.Top = 140
-      EditLabel.Width = 39
+      EditLabel.Width = 46
       EditLabel.Caption = 'Principal'
       EditLabel.ParentColor = False
       LabelPosition = lpLeft
@@ -458,7 +459,7 @@ object frmLoanEdit: TfrmLoanEdit
     end
     object JLabeledCurrencyEdit14: TJLabeledCurrencyEdit
       Left = 80
-      Height = 21
+      Height = 23
       Top = 160
       Width = 80
       DisplayFormat = '#,0.00'
@@ -472,7 +473,7 @@ object frmLoanEdit: TfrmLoanEdit
       EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit14
       EditLabel.AnchorSideBottom.Side = asrBottom
       EditLabel.Left = 38
-      EditLabel.Height = 13
+      EditLabel.Height = 15
       EditLabel.Top = 164
       EditLabel.Width = 39
       EditLabel.Caption = 'Interest'
@@ -492,7 +493,7 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object edtTotal: TJLabeledCurrencyEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 215
     Width = 80
     DisplayFormat = '#,0.00'
@@ -505,10 +506,10 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideRight.Control = edtTotal
     EditLabel.AnchorSideBottom.Control = edtTotal
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 67
-    EditLabel.Height = 13
+    EditLabel.Left = 62
+    EditLabel.Height = 15
     EditLabel.Top = 219
-    EditLabel.Width = 32
+    EditLabel.Width = 37
     EditLabel.Caption = 'TOTAL'
     EditLabel.ParentColor = False
     Font.Style = [fsBold]
@@ -520,7 +521,7 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object edtAmortization: TJLabeledCurrencyEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 343
     Width = 80
     DisplayFormat = '#,0.00'
@@ -532,10 +533,10 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideRight.Control = edtAmortization
     EditLabel.AnchorSideBottom.Control = edtAmortization
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 25
-    EditLabel.Height = 13
+    EditLabel.Left = 14
+    EditLabel.Height = 15
     EditLabel.Top = 347
-    EditLabel.Width = 74
+    EditLabel.Width = 85
     EditLabel.Caption = 'Monthly Amort.'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
@@ -544,7 +545,7 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object dtpPaymentStarts: TDateEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 368
     Width = 108
     CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
@@ -557,7 +558,7 @@ object frmLoanEdit: TfrmLoanEdit
   end
   object dtpPaymentEnds: TDateEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 393
     Width = 108
     CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
@@ -572,26 +573,26 @@ object frmLoanEdit: TfrmLoanEdit
     Text = 'dtpPaymentEnds'
   end
   object Label2: TLabel
-    Left = 24
-    Height = 13
+    Left = 19
+    Height = 15
     Top = 372
-    Width = 74
+    Width = 79
     Alignment = taRightJustify
     Caption = 'Payment Starts'
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 30
-    Height = 13
+    Left = 23
+    Height = 15
     Top = 396
-    Width = 68
+    Width = 75
     Alignment = taRightJustify
     Caption = 'Payment Ends'
     ParentColor = False
   end
   object dtpDocDate: TDateEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 52
     Width = 108
     CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
@@ -603,17 +604,17 @@ object frmLoanEdit: TfrmLoanEdit
     Text = 'dtpDocDate'
   end
   object Label4: TLabel
-    Left = 37
-    Height = 13
+    Left = 30
+    Height = 15
     Top = 56
-    Width = 61
+    Width = 68
     Alignment = taRightJustify
     Caption = 'Date Applied'
     ParentColor = False
   end
   object edtDocNumber: TLabeledEdit
     Left = 104
-    Height = 21
+    Height = 23
     Top = 23
     Width = 80
     EditLabel.AnchorSideTop.Control = edtDocNumber
@@ -621,11 +622,11 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideRight.Control = edtDocNumber
     EditLabel.AnchorSideBottom.Control = edtDocNumber
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 13
-    EditLabel.Height = 13
+    EditLabel.Left = 33
+    EditLabel.Height = 15
     EditLabel.Top = 27
-    EditLabel.Width = 88
-    EditLabel.Caption = 'Document Number'
+    EditLabel.Width = 68
+    EditLabel.Caption = 'Doc Number'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
     TabOrder = 0
