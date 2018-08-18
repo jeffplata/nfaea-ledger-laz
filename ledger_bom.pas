@@ -29,8 +29,10 @@ type
       procedure DeleteObject(FromList: TtiObjectList); //copied
   end;
 
+  TPersonBasic = class;
   TPerson = class;
   TPersonList = class;
+  TPersonsLookup = class;
 
   TService = class;
   TServiceList = class;
@@ -41,17 +43,40 @@ type
   TLoan = class;
   TLoanList = class;
 
+  { TPersonBasic }
+
+  TPersonBasic = class(TManualObject)
+  private
+    FName: string;
+    procedure SetName(AValue: string);
+  published
+    property Name: string read FName write SetName;
+  end;
+
+  { TPersonsLookUp }
+
+  TPersonsLookUp = class(TtiObjectList)
+  private
+  protected
+    function  GetItems(i: integer): TPerson; reintroduce;
+    procedure SetItems(i: integer; const Value: TPerson); reintroduce;
+  public
+    property  Items[i:integer]: TPerson read GetItems write SetItems;
+    procedure Add(AObject:TPerson); reintroduce;
+  end;
+
+
 
   { TPerson }
 
-  TPerson = class(TManualObject)
+  TPerson = class(TPersonBasic)
   private
     FDateJoined: TDate;
-    FName: string;
+    //FName: string;
     function GetDateJoinedAsString: string;
     function GetID: string;
     procedure SetDateJoined(AValue: TDate);
-    procedure SetName(AValue: string);
+    //procedure SetName(AValue: string);
   protected
     function  GetOwner: TPersonList; reintroduce;
     procedure SetOwner(const Value: TPersonList); reintroduce;
@@ -59,7 +84,7 @@ type
     property  Owner: TPersonList read GetOwner write SetOwner;
   published
     property ID: string read GetID;
-    property Name: string read FName write SetName;
+    //property Name: string read FName write SetName;
     property DateJoined: TDate read FDateJoined write SetDateJoined;
     property DateJoinedAsString: string read GetDateJoinedAsString;
   end;
@@ -246,6 +271,31 @@ type
   end;
 
 implementation
+
+{ TPersonsLookUp }
+
+function TPersonsLookUp.GetItems(i: integer): TPerson;
+begin
+  result := TPerson(inherited GetItems(i));
+end;
+
+procedure TPersonsLookUp.SetItems(i: integer; const Value: TPerson);
+begin
+  inherited SetItems(i, Value);
+end;
+
+procedure TPersonsLookUp.Add(AObject: TPerson);
+begin
+  inherited Add(AObject);
+end;
+
+{ TPersonBasic }
+
+procedure TPersonBasic.SetName(AValue: string);
+begin
+  if FName=AValue then Exit;
+  FName:=AValue;
+end;
 
 { TLoanList }
 
@@ -584,11 +634,11 @@ begin
   result := OID.AsString;
 end;
 
-procedure TPerson.SetName(AValue: string);
-begin
-  if FName=AValue then Exit;
-  FName:=AValue;
-end;
+//procedure TPerson.SetName(AValue: string);
+//begin
+//  if FName=AValue then Exit;
+//  FName:=AValue;
+//end;
 
 function TPerson.GetOwner: TPersonList;
 begin
