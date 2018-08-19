@@ -48,7 +48,7 @@
         <PackageName Value="LCL"/>
       </Item8>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="11">
       <Unit0>
         <Filename Value="nfaealedger.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -108,6 +108,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="LoanEditForm"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="personslookupform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmLkuPersons"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="PersonsLookupForm"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

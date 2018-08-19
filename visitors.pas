@@ -14,6 +14,16 @@ uses
 
 type
 
+  { TReadPersonsLkUpVisitor }
+
+  TReadPersonsLkUpVisitor = Class(TtiVisitorSelect)
+  Protected
+    Procedure Init; override;
+    Function AcceptVisitor : Boolean; override;
+    Procedure SetupParams; override;
+    Procedure MapRowToObject; override;
+  end;
+
   { TReadServicesVisitor }
 
   TReadServicesVisitor = Class(TtiVisitorSelect)
@@ -64,6 +74,7 @@ const
   SQLCreatePerson = 'insert into PERSON(OID,NAME,DATEJOINED) values (:OID,:NAME,:DATEJOINED)';
   SQLUpdatePerson = 'update PERSON set NAME=:NAME, DATEJOINED=:DATEJOINED where OID=:OID';
   SQLDeletePerson = 'delete from PERSON where OID=:OID';
+  SQLLookUpPersons = 'select first 500 OID, NAME from PERSON';
 
   SQLReadServices = 'select * from SERVICE';
   SQLCreateService = 'insert into SERVICE (OID, NAME, MAXAMOUNT, MINAMOUNT, INTERESTRATE, REBATE_RATE, MINTERM, MAXTERM) '+
@@ -71,6 +82,44 @@ const
   SQLUpdateService = 'update SERVICE set NAME=:NAME, MAXAMOUNT=:MAXAMOUNT, MINAMOUNT=:MINAMOUNT, '+
                      'INTERESTRATE=:INTERESTRATE, REBATE_RATE=:REBATE_RATE, MINTERM=:MINTERM, MAXTERM=:MAXTERM where OID=:OID';
   SQLDeleteService = 'delete from SERVICE where OID=:OID';
+
+{ TReadPersonsLkUpVisitor }
+
+procedure TReadPersonsLkUpVisitor.Init;
+begin
+  Query.SQLText:= SQLLookUpPersons;
+  // where clause start
+  if TPersonsLookUp(Visited).ListFilter.Active then
+  begin
+    Query.SQL.Add(' WHERE');
+    Query.SQL.Add(' '+TPersonsLookUp(Visited).ListFilter.Criteria);
+    TPersonsLookUp(Visited).ListFilter.Active  := False;
+  end;
+  //where clause end
+end;
+
+function TReadPersonsLkUpVisitor.AcceptVisitor: Boolean;
+begin
+  Result:=Visited is TPersonsLookUp;
+end;
+
+procedure TReadPersonsLkUpVisitor.SetupParams;
+begin
+
+end;
+
+procedure TReadPersonsLkUpVisitor.MapRowToObject;
+  var
+    O : TPersonBasic;
+
+  begin
+    O:= TPersonBasic.Create;
+    O.OID.AssignFromTIQuery('OID',Query);
+
+    O.Name:= Query.FieldAsString['NAME'];
+    O.ObjectState:=posClean;
+    TPersonsLookUp(Visited).Add(O);
+end;
 
 { TSaveServiceVisitor }
 

@@ -10,9 +10,8 @@ uses
   ;
 
 type
-  { TReadPersonFilter }
 
-  TPersonsFilter = class
+  TObjectListFilter = class
   private
     FActive: Boolean;
     FCriteria: string;
@@ -20,6 +19,8 @@ type
     property Active: Boolean read FActive write FActive;
     property Criteria: string read FCriteria write FCriteria;
   end;
+
+  TPersonsFilter = class(TObjectListFilter);
 
   { TManualObject }
 
@@ -57,12 +58,16 @@ type
 
   TPersonsLookUp = class(TtiObjectList)
   private
+    FListFilter: TPersonsFilter;
   protected
-    function  GetItems(i: integer): TPerson; reintroduce;
-    procedure SetItems(i: integer; const Value: TPerson); reintroduce;
+    function  GetItems(i: integer): TPersonBasic; reintroduce;
+    procedure SetItems(i: integer; const Value: TPersonBasic); reintroduce;
   public
-    property  Items[i:integer]: TPerson read GetItems write SetItems;
-    procedure Add(AObject:TPerson); reintroduce;
+    property ListFilter: TPersonsFilter read FListFilter write FListFilter;
+    property  Items[i:integer]: TPersonBasic read GetItems write SetItems;
+    procedure Add(AObject:TPersonBasic); reintroduce;
+    constructor Create; override;
+    destructor Destroy; override;
   end;
 
 
@@ -274,19 +279,32 @@ implementation
 
 { TPersonsLookUp }
 
-function TPersonsLookUp.GetItems(i: integer): TPerson;
+function TPersonsLookUp.GetItems(i: integer): TPersonBasic;
 begin
-  result := TPerson(inherited GetItems(i));
+  result := TPersonBasic(inherited GetItems(i));
 end;
 
-procedure TPersonsLookUp.SetItems(i: integer; const Value: TPerson);
+procedure TPersonsLookUp.SetItems(i: integer; const Value: TPersonBasic);
 begin
   inherited SetItems(i, Value);
 end;
 
-procedure TPersonsLookUp.Add(AObject: TPerson);
+procedure TPersonsLookUp.Add(AObject: TPersonBasic);
 begin
   inherited Add(AObject);
+end;
+
+constructor TPersonsLookUp.Create;
+begin
+  inherited Create;
+  FListFilter.Create;
+  FListFilter.Active:= False;
+end;
+
+destructor TPersonsLookUp.Destroy;
+begin
+  FListFilter.Free;
+  inherited Destroy;
 end;
 
 { TPersonBasic }

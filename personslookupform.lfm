@@ -1,0 +1,10 @@
+object frmLkuPersons: TfrmLkuPersons
+  Left = 418
+  Height = 245
+  Top = 240
+  Width = 391
+  BorderStyle = bsDialog
+  Caption = 'Members'
+  Position = poMainFormCenter
+  LCLVersion = '1.8.2.0'
+end

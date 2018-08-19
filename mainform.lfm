@@ -15,17 +15,17 @@ object frmMain: TfrmMain
     Height = 347
     Top = 0
     Width = 677
-    ActivePage = tabLoans
+    ActivePage = tabPersons
     Align = alClient
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
-      ClientHeight = 319
+      ClientHeight = 321
       ClientWidth = 669
       object sgdPersons: TStringGrid
         Left = 0
-        Height = 286
+        Height = 288
         Top = 33
         Width = 669
         Align = alBottom
@@ -40,7 +40,7 @@ object frmMain: TfrmMain
       end
       object edtFilter: TLabeledEdit
         Left = 32
-        Height = 23
+        Height = 21
         Top = 8
         Width = 144
         EditLabel.AnchorSideTop.Control = edtFilter
@@ -48,10 +48,10 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtFilter
         EditLabel.AnchorSideBottom.Control = edtFilter
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 3
-        EditLabel.Height = 15
+        EditLabel.Left = 5
+        EditLabel.Height = 13
         EditLabel.Top = 12
-        EditLabel.Width = 26
+        EditLabel.Width = 24
         EditLabel.Caption = 'Filter'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -135,11 +135,11 @@ object frmMain: TfrmMain
     end
     object tabLoans: TTabSheet
       Caption = 'Loans'
-      ClientHeight = 319
+      ClientHeight = 321
       ClientWidth = 669
       object sgdLoans: TStringGrid
         Left = 0
-        Height = 286
+        Height = 288
         Top = 33
         Width = 669
         Align = alBottom
@@ -153,7 +153,7 @@ object frmMain: TfrmMain
       end
       object edtFilterLoans: TLabeledEdit
         Left = 32
-        Height = 23
+        Height = 21
         Top = 8
         Width = 144
         EditLabel.AnchorSideTop.Control = edtFilterLoans
@@ -161,10 +161,10 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtFilterLoans
         EditLabel.AnchorSideBottom.Control = edtFilterLoans
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 3
-        EditLabel.Height = 15
+        EditLabel.Left = 5
+        EditLabel.Height = 13
         EditLabel.Top = 12
-        EditLabel.Width = 26
+        EditLabel.Width = 24
         EditLabel.Caption = 'Filter'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
