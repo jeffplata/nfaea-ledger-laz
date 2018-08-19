@@ -45,17 +45,11 @@ uses
 
 function SelectPerson: TPersonBasic;
 begin
+  Result := nil;
   with TfrmLkuPersons.Create(Application) do
   try
     gLedgerManager.LoadPersonsLookup;
-    data.BeginUpdate;
-    try
     Data := gLedgerManager.PersonsLookup;
-      sdfsdffff
-    finally
-    data.EndUpdate;
-
-    end;
     if ShowModal = mrOk then
       Result := TPersonBasic(FMediator.SelectedObject[StringGrid1]);
   finally
@@ -75,14 +69,14 @@ end;
 
 procedure TfrmLkuPersons.SetupMediator;
 begin
-    if not Assigned(FMediator) then
-    begin
-      FMediator := TtiModelMediator.Create(Self);
-      FMediator.Name:= 'PersonLookupMediator';
-      FMediator.AddComposite('Name',StringGrid1);
-    end;
-    FMediator.Subject := FData;
-    FMediator.Active:= True;
+  if not Assigned(FMediator) then
+  begin
+    FMediator := TtiModelMediator.Create(Self);
+    FMediator.Name:= 'PersonsLkUpMediator';
+    FMediator.AddComposite('Name',StringGrid1);
+  end;
+  FMediator.Subject := FData;
+  FMediator.Active:= True;
 end;
 
 

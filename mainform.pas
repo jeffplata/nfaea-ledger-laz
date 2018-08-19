@@ -186,19 +186,19 @@ begin
 end;
 
 procedure TfrmMain.actAddLoanExecute(Sender: TObject);
-  var
-    O : TLoan;
+var
+  O : TLoan;
+begin
+  O := TLoan.Create;
+  if EditLoan(O) then
   begin
-    O := TLoan.Create;
-    if EditLoan(O) then
-    begin
-      GTIOPFManager.DefaultOIDGenerator.AssignNextOID(O.OID); // we generate oid only when before saving
-      gLedgerManager.Loans.Add(O);
-      O.SaveObject;
-      FMedLoans.SelectedObject[sgdLoans] := O;  // go to last inserted
-    end
-    else
-      O.Free;
+    GTIOPFManager.DefaultOIDGenerator.AssignNextOID(O.OID); // we generate oid only when before saving
+    gLedgerManager.Loans.Add(O);
+    O.SaveObject;
+    FMedLoans.SelectedObject[sgdLoans] := O;  // go to last inserted
+  end
+  else
+    O.Free;
 end;
 
 procedure TfrmMain.actAddServiceExecute(Sender: TObject);

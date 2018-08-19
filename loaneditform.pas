@@ -84,9 +84,15 @@ end;
 { TfrmLoanEdit }
 
 procedure TfrmLoanEdit.actSelectPersonExecute(Sender: TObject);
+var
+  temp: TPersonBasic;
 begin
-  FData.Person := SelectPerson;
-  FData.NotifyObservers;
+  temp := SelectPerson;     dfdhhdhdf
+  if temp <> nil then
+  begin
+    FData.Person := temp;
+    FData.NotifyObservers;
+  end;
 end;
 
 procedure TfrmLoanEdit.SetData(AValue: TLoan);
@@ -102,6 +108,7 @@ begin
   if not Assigned(FMediator) then
   begin
     FMediator := TtiModelMediator.Create(Self);
+    FMediator.Name := 'LoanEditMediator';
     FMediator.AddProperty('DocNumber', edtDocNumber);
     FMediator.AddProperty('DocDate', dtpDocDate);
     FMediator.AddProperty('Person.Name', edtPerson);
