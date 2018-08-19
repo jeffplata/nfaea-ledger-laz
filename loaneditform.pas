@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Menus, EditBtn, JLabeledCurrencyEdit,
+  ExtCtrls, Menus, EditBtn, ActnList, JLabeledCurrencyEdit,
   ledger_bom, tiModelMediator;
 
 type
@@ -14,6 +14,8 @@ type
   { TfrmLoanEdit }
 
   TfrmLoanEdit = class(TForm)
+    actSelectPerson: TAction;
+    ActionList1: TActionList;
     btnSearchMember: TButton;
     btnSearchMember1: TButton;
     Button1: TButton;
@@ -47,6 +49,7 @@ type
     Label4: TLabel;
     edtDocNumber: TLabeledEdit;
     LabeledEdit3: TLabeledEdit;
+    procedure actSelectPersonExecute(Sender: TObject);
   private
     FData: TLoan;
     FMediator: TtiModelMediator;
@@ -62,6 +65,7 @@ implementation
 
 uses
   ledgermanager
+  ,PersonsLookupForm
   ;
 
 function EditLoan(AData: TLoan): boolean;
@@ -79,6 +83,12 @@ end;
 
 { TfrmLoanEdit }
 
+procedure TfrmLoanEdit.actSelectPersonExecute(Sender: TObject);
+begin
+  FData.Person := SelectPerson;
+  FData.NotifyObservers;
+end;
+
 procedure TfrmLoanEdit.SetData(AValue: TLoan);
 begin
   if FData=AValue then Exit;
@@ -94,6 +104,7 @@ begin
     FMediator := TtiModelMediator.Create(Self);
     FMediator.AddProperty('DocNumber', edtDocNumber);
     FMediator.AddProperty('DocDate', dtpDocDate);
+    FMediator.AddProperty('Person.Name', edtPerson);
     FMediator.AddProperty('Principal', edtPrincipal);
     FMediator.AddProperty('Interest', edtInterest);
     FMediator.AddProperty('InterestRate', edtInterestRate);

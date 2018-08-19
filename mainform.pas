@@ -314,9 +314,6 @@ begin
   if key = chr(13) then
   begin
     FPersons.BeginUpdate;
-    //FPersons.Clear;
-    //gLedgerManager.LoadPersons;
-    //FPersons := gLedgerManager.PersonList;
 
     FilterPersons( Trim(TEdit(Sender).Text) );
 

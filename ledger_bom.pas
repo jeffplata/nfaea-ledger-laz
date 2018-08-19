@@ -58,12 +58,12 @@ type
 
   TPersonsLookUp = class(TtiObjectList)
   private
-    FListFilter: TPersonsFilter;
+    FListFilter: TObjectListFilter;
   protected
     function  GetItems(i: integer): TPersonBasic; reintroduce;
     procedure SetItems(i: integer; const Value: TPersonBasic); reintroduce;
   public
-    property ListFilter: TPersonsFilter read FListFilter write FListFilter;
+    property ListFilter: TObjectListFilter read FListFilter write FListFilter;
     property  Items[i:integer]: TPersonBasic read GetItems write SetItems;
     procedure Add(AObject:TPersonBasic); reintroduce;
     constructor Create; override;
@@ -212,7 +212,7 @@ type
     FNotes: string;
     FPaymentEnd: Tdate;
     FPaymentStart: Tdate;
-    FPerson: TPerson;
+    FPerson: TPersonBasic;
     FPreviousBalance: Currency;
     FPrincipal: Currency;
     FRebateRate: currency;
@@ -229,7 +229,8 @@ type
     procedure SetNotes(AValue: string);
     procedure SetPaymentEnd(AValue: Tdate);
     procedure SetPaymentStart(AValue: Tdate);
-    procedure SetPerson(AValue: TPerson);
+    //procedure SetPerson(AValue: TPerson);
+    procedure SetPerson(AValue: TPersonBasic);
     procedure SetPreviousBalance(AValue: Currency);
     procedure SetPrincipal(AValue: Currency);
     procedure SetRebateRate(AValue: currency);
@@ -242,8 +243,10 @@ type
     procedure SetOwner(const Value: TLoanList); reintroduce;
   public
     property  Owner: TLoanList read GetOwner write SetOwner;
+    constructor Create; override;
+    destructor Destroy; override;
   published
-    property Person: TPerson read FPerson write SetPerson;
+    property Person: TPersonBasic read FPerson write SetPerson;
     property Service: TService read FService write SetService;
     property DocNumber: string read FDocNumber write SetDocNumber;
     property DocDate: TDate read FDocDate write SetDocDate;
@@ -297,7 +300,7 @@ end;
 constructor TPersonsLookUp.Create;
 begin
   inherited Create;
-  FListFilter.Create;
+  FListFilter := TObjectListFilter.Create;
   FListFilter.Active:= False;
 end;
 
@@ -352,7 +355,13 @@ begin
   FTotal:=AValue;
 end;
 
-procedure TLoan.SetPerson(AValue: TPerson);
+//procedure TLoan.SetPerson(AValue: TPerson);
+//begin
+//  if FPerson=AValue then Exit;
+//  FPerson:=AValue;
+//end;
+
+procedure TLoan.SetPerson(AValue: TPersonBasic);
 begin
   if FPerson=AValue then Exit;
   FPerson:=AValue;
@@ -444,6 +453,18 @@ end;
 procedure TLoan.SetOwner(const Value: TLoanList);
 begin
   inherited SetOwner(Value);
+end;
+
+constructor TLoan.Create;
+begin
+  inherited Create;
+  FPerson := TPerson.Create;
+end;
+
+destructor TLoan.Destroy;
+begin
+  FPerson.Free;
+  inherited Destroy;
 end;
 
 { TManualObject }

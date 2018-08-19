@@ -17,9 +17,11 @@ type
   private
     FLoans: TLoanList;
     FPersonList: TPersonList;
+    FPersonsLookup: TPersonsLookUp;
     FServices: TServiceList;
     procedure SetLoans(AValue: TLoanList);
     procedure SetPersonList(AValue: TPersonList);
+    procedure SetPersonsLookup(AValue: TPersonsLookUp);
     procedure SetServices(AValue: TServiceList);
   protected
   public
@@ -27,10 +29,12 @@ type
     destructor Destroy; override;
     procedure LoadPersons;
     procedure LoadServices;
+    procedure LoadPersonsLookup;
   published
     property PersonList: TPersonList read FPersonList write SetPersonList;
     property Services: TServiceList read FServices write SetServices;
     property Loans: TLoanList read FLoans write SetLoans;
+    property PersonsLookup: TPersonsLookUp read FPersonsLookup write SetPersonsLookup;
   end;
 
   //global Singleton
@@ -40,7 +44,8 @@ implementation
 
 uses
   sysutils
-  , tiOPFManager;
+  , tiOPFManager
+  ;
 
 var
   uLedgerManager: TLedgerManager;
@@ -58,6 +63,12 @@ procedure TLedgerManager.SetPersonList(AValue: TPersonList);
 begin
   if FPersonList=AValue then Exit;
   FPersonList:=AValue;
+end;
+
+procedure TLedgerManager.SetPersonsLookup(AValue: TPersonsLookUp);
+begin
+  if FPersonsLookup=AValue then Exit;
+  FPersonsLookup:=AValue;
 end;
 
 procedure TLedgerManager.SetLoans(AValue: TLoanList);
@@ -83,6 +94,9 @@ begin
 
   FLoans := TLoanList.Create;
   FLoans.Owner := Self;
+
+  FPersonsLookup := TPersonsLookUp.Create;
+  FPersonsLookup.Owner := Self;
 end;
 
 destructor TLedgerManager.Destroy;
@@ -90,6 +104,7 @@ begin
   FPersonList.Free;
   FServices.Free;
   FLoans.Free;
+  FPersonsLookup.Free;
   inherited Destroy;
 end;
 
@@ -115,6 +130,15 @@ procedure TLedgerManager.LoadServices;
 begin
   FServices.Clear;
   GTIOPFManager.Read(FServices);
+end;
+
+procedure TLedgerManager.LoadPersonsLookup;
+begin
+  if FPersonsLookup.Count = 0 then
+  begin
+    FPersonsLookup.Clear;
+    GTIOPFManager.Read(FPersonsLookup);
+  end;
 end;
 
 

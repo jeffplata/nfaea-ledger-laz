@@ -112,6 +112,7 @@
         <Filename Value="personslookupform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmLkuPersons"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="PersonsLookupForm"/>
       </Unit10>

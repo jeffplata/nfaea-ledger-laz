@@ -74,7 +74,7 @@ const
   SQLCreatePerson = 'insert into PERSON(OID,NAME,DATEJOINED) values (:OID,:NAME,:DATEJOINED)';
   SQLUpdatePerson = 'update PERSON set NAME=:NAME, DATEJOINED=:DATEJOINED where OID=:OID';
   SQLDeletePerson = 'delete from PERSON where OID=:OID';
-  SQLLookUpPersons = 'select first 500 OID, NAME from PERSON';
+  SQLLookUpPersons = 'select OID, NAME from PERSON';
 
   SQLReadServices = 'select * from SERVICE';
   SQLCreateService = 'insert into SERVICE (OID, NAME, MAXAMOUNT, MINAMOUNT, INTERESTRATE, REBATE_RATE, MINTERM, MAXTERM) '+
@@ -286,6 +286,8 @@ begin
 
     RegReadVisitor(TReadServicesVisitor);
     RegSaveVisitor(TSaveServiceVisitor);
+
+    RegReadVisitor(TReadPersonsLkUpVisitor);
   end;
 end;
 
