@@ -88,10 +88,15 @@ var
   temp: TPersonBasic;
 begin
   temp := SelectPerson;
-  if temp <> nil then
-  begin
-    FData.Person := temp;
-    FData.NotifyObservers;
+  try
+    if temp <> nil then
+    begin
+      FData.Person.Assign(temp); // := temp;
+      FData.NotifyObservers;
+    end;
+  finally
+    temp := nil;
+    temp.Free;
   end;
 end;
 

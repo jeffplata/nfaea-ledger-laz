@@ -458,7 +458,7 @@ end;
 constructor TLoan.Create;
 begin
   inherited Create;
-  FPerson := TPerson.Create;
+  FPerson := TPersonBasic.Create;
 end;
 
 destructor TLoan.Destroy;

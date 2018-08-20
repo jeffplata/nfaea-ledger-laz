@@ -5,10 +5,9 @@ unit PersonsLookupForm;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Grids,
-  ExtCtrls, Buttons, EditBtn, StdCtrls
-  ,ledger_bom
-  ,tiModelMediator
+  Classes, SysUtils, FileUtil, ListViewFilterEdit, ListFilterEdit, Forms,
+  Controls, Graphics, Dialogs, Grids, ExtCtrls, Buttons, EditBtn, StdCtrls,
+  ComCtrls, ledger_bom, tiModelMediator
   ;
 
 type
@@ -19,6 +18,7 @@ type
     btnOk: TButton;
     btnCancel: TButton;
     LabeledEdit1: TLabeledEdit;
+    ListBox1: TListBox;
     SpeedButton1: TSpeedButton;
     StringGrid1: TStringGrid;
   private
@@ -73,7 +73,8 @@ begin
   begin
     FMediator := TtiModelMediator.Create(Self);
     FMediator.Name:= 'PersonsLkUpMediator';
-    FMediator.AddComposite('Name',StringGrid1);
+    //FMediator.AddComposite('Name',StringGrid1);
+    FMediator.AddComposite('Name',ListBox1);    sdfsdfsdfsd
   end;
   FMediator.Subject := FData;
   FMediator.Active:= True;
