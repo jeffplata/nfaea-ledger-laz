@@ -87,7 +87,7 @@ procedure TfrmLoanEdit.actSelectPersonExecute(Sender: TObject);
 var
   temp: TPersonBasic;
 begin
-  temp := SelectPerson;     dfdhhdhdf
+  temp := SelectPerson;
   if temp <> nil then
   begin
     FData.Person := temp;
