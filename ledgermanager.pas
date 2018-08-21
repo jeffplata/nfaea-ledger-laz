@@ -29,7 +29,8 @@ type
     destructor Destroy; override;
     procedure LoadPersons;
     procedure LoadServices;
-    procedure LoadPersonsLookup;
+    procedure LoadPersonsLookup( force: boolean = False );
+    procedure LoadLoans;
   published
     property PersonList: TPersonList read FPersonList write SetPersonList;
     property Services: TServiceList read FServices write SetServices;
@@ -88,6 +89,7 @@ begin
   inherited Create;
   FPersonList := TPersonList.Create;
   FPersonList.Owner := Self;
+  FPersonList.PersonsFilter.Criteria:= 'NAME containing %s';
 
   FServices := TServiceList.Create;
   FServices.Owner := Self;
@@ -97,6 +99,8 @@ begin
 
   FPersonsLookup := TPersonsLookUp.Create;
   FPersonsLookup.Owner := Self;
+  FPersonsLookup.ListFilter.Criteria:= 'NAME containing %s';
+
 end;
 
 destructor TLedgerManager.Destroy;
@@ -132,13 +136,19 @@ begin
   GTIOPFManager.Read(FServices);
 end;
 
-procedure TLedgerManager.LoadPersonsLookup;
+procedure TLedgerManager.LoadPersonsLookup(force: boolean);
 begin
-  if FPersonsLookup.Count = 0 then
+  if force or (FPersonsLookup.Count = 0) then
   begin
     FPersonsLookup.Clear;
     GTIOPFManager.Read(FPersonsLookup);
   end;
+end;
+
+procedure TLedgerManager.LoadLoans;
+begin
+  FLoans.Clear;
+  GTIOPFManager.Read(FLoans);
 end;
 
 

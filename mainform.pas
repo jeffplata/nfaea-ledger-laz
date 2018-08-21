@@ -293,6 +293,7 @@ procedure TfrmMain.actEditLoanExecute(Sender: TObject);
     B : TLoan; //Buffer for undo
   begin
     O := TLoan(FMedLoans.SelectedObject[sgdLoans]);
+    if not assigned(O) then exit; //<==
     B := TLoan.Create;
     B.Assign(O);
     if EditLoan(B) then
@@ -391,6 +392,16 @@ begin
   end;
   FMedServices.Subject:= FServices;
   FMedServices.Active:= True;
+
+  //loans mediator
+  if not assigned(FMedLoans) then
+  begin
+    FMedLoans := TtiModelMediator.Create(Self);
+    FMedLoans.Name:= 'LoansMediator';
+    FMedLoans.AddComposite('Person.Name(200,"Member");Service.Name(100,"Loan Type");TotalAmount(100,"Amount");ID(100," ")',sgdLoans);
+  end;
+  FMedLoans.Subject:= gLedgerManager.Loans;
+  FMedLoans.Active:= True;
 
 end;
 

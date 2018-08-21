@@ -48,7 +48,7 @@
         <PackageName Value="LCL"/>
       </Item8>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="14">
       <Unit0>
         <Filename Value="nfaealedger.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -116,6 +116,23 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="PersonsLookupForm"/>
       </Unit10>
+      <Unit11>
+        <Filename Value="resourcedm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="dmResources"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <UnitName Value="ResourceDM"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="SQLWhereBuilderNV.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="objectlistfilter.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ObjectListFilter"/>
+      </Unit13>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

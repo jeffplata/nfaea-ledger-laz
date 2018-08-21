@@ -3,10 +3,14 @@ object frmLkuPersons: TfrmLkuPersons
   Height = 280
   Top = 240
   Width = 392
+  ActiveControl = LabeledEdit1
   BorderStyle = bsDialog
   Caption = 'Members'
   ClientHeight = 280
   ClientWidth = 392
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poMainFormCenter
   LCLVersion = '1.8.2.0'
   object StringGrid1: TStringGrid
@@ -14,12 +18,15 @@ object frmLkuPersons: TfrmLkuPersons
     Height = 208
     Top = 32
     Width = 376
+    Anchors = [akTop, akLeft, akRight, akBottom]
     ColCount = 0
     FixedCols = 0
     FixedRows = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goRangeSelect, goSmoothScroll]
     RowCount = 0
     ScrollBars = ssAutoVertical
     TabOrder = 0
+    OnDblClick = StringGrid1DblClick
   end
   object LabeledEdit1: TLabeledEdit
     Left = 48
@@ -40,7 +47,8 @@ object frmLkuPersons: TfrmLkuPersons
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
     TabOrder = 1
-    Text = 'Filter'
+    OnChange = LabeledEdit1Change
+    OnKeyDown = LabeledEdit1KeyDown
   end
   object SpeedButton1: TSpeedButton
     Left = 360
@@ -48,6 +56,7 @@ object frmLkuPersons: TfrmLkuPersons
     Top = 8
     Width = 23
     Anchors = [akTop, akRight]
+    OnClick = SpeedButton1Click
   end
   object btnOk: TButton
     Left = 228
@@ -56,6 +65,7 @@ object frmLkuPersons: TfrmLkuPersons
     Width = 75
     Anchors = [akRight, akBottom]
     Caption = 'Ok'
+    Default = True
     ModalResult = 1
     TabOrder = 2
   end
@@ -65,16 +75,16 @@ object frmLkuPersons: TfrmLkuPersons
     Top = 248
     Width = 75
     Anchors = [akRight, akBottom]
+    Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 3
   end
-  object ListBox1: TListBox
-    Left = 57
-    Height = 114
-    Top = 126
-    Width = 327
-    ItemHeight = 0
-    TabOrder = 4
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 500
+    OnTimer = Timer1Timer
+    left = 21
+    top = 247
   end
 end

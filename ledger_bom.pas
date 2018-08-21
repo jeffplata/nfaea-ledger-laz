@@ -7,18 +7,14 @@ interface
 uses
   Classes, SysUtils
   ,tiObject
+  ,ObjectListFilter
   ;
 
 type
 
-  TObjectListFilter = class
-  private
-    FActive: Boolean;
-    FCriteria: string;
-  public
-    property Active: Boolean read FActive write FActive;
-    property Criteria: string read FCriteria write FCriteria;
-  end;
+  { TObjectListFilter }
+
+
 
   TPersonsFilter = class(TObjectListFilter);
 
@@ -279,6 +275,11 @@ type
   end;
 
 implementation
+uses
+  variants
+  ;
+
+
 
 { TPersonsLookUp }
 
@@ -354,12 +355,6 @@ begin
   if FTotal=AValue then Exit;
   FTotal:=AValue;
 end;
-
-//procedure TLoan.SetPerson(AValue: TPerson);
-//begin
-//  if FPerson=AValue then Exit;
-//  FPerson:=AValue;
-//end;
 
 procedure TLoan.SetPerson(AValue: TPersonBasic);
 begin

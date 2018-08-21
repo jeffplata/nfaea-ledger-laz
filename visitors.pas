@@ -63,6 +63,18 @@ type
     Procedure SetupParams; override;
   end;
 
+  { TReadLoansVisitor }
+
+  TReadLoansVisitor = Class(TtiVisitorSelect)
+  Protected
+    Procedure Init; override;
+    Function AcceptVisitor : Boolean; override;
+    Procedure SetupParams; override;
+    Procedure MapRowToObject; override;
+  end;
+
+
+
   procedure RegisterVisitors;
 
 
@@ -83,6 +95,41 @@ const
                      'INTERESTRATE=:INTERESTRATE, REBATE_RATE=:REBATE_RATE, MINTERM=:MINTERM, MAXTERM=:MAXTERM where OID=:OID';
   SQLDeleteService = 'delete from SERVICE where OID=:OID';
 
+  SQLReadLoans = 'select * from LOAN';
+  SQLCreateLoan = '';
+  SQLUpdateLoan = '';
+  SQLDeleteLoan = '';
+
+{ TReadLoansVisitor }
+
+procedure TReadLoansVisitor.Init;
+begin
+  Query.SQLText:= SQLReadLoans;
+  // where clause start
+  //if TPersonList(Visited).PersonsFilter.Active then
+  //begin
+  //  Query.SQL.Add(' WHERE');
+  //  Query.SQL.Add(' '+TPersonList(Visited).PersonsFilter.Criteria);
+  //  TPersonList(Visited).PersonsFilter.Active  := False;
+  //end;
+  //where clause end
+end;
+
+function TReadLoansVisitor.AcceptVisitor: Boolean;
+begin
+  Result:=inherited AcceptVisitor;
+end;
+
+procedure TReadLoansVisitor.SetupParams;
+begin
+  inherited SetupParams;
+end;
+
+procedure TReadLoansVisitor.MapRowToObject;
+begin
+  inherited MapRowToObject;
+end;
+
 { TReadPersonsLkUpVisitor }
 
 procedure TReadPersonsLkUpVisitor.Init;
@@ -93,7 +140,7 @@ begin
   begin
     Query.SQL.Add(' WHERE');
     Query.SQL.Add(' '+TPersonsLookUp(Visited).ListFilter.Criteria);
-    TPersonsLookUp(Visited).ListFilter.Active  := False;
+    //TPersonsLookUp(Visited).ListFilter.Active  := False;
   end;
   //where clause end
 end;
@@ -165,14 +212,6 @@ end;
 procedure TReadServicesVisitor.Init;
 begin
   Query.SQLText:= SQLReadServices;
-  //// where clause start
-  //if TPersonList(Visited).PersonsFilter.Active then
-  //begin
-  //  Query.SQL.Add(' WHERE');
-  //  Query.SQL.Add(' '+TPersonList(Visited).PersonsFilter.Criteria);
-  //  TPersonList(Visited).PersonsFilter.Active  := False;
-  //end;
-  ////where clause end
 end;
 
 function TReadServicesVisitor.AcceptVisitor: Boolean;
@@ -288,6 +327,8 @@ begin
     RegSaveVisitor(TSaveServiceVisitor);
 
     RegReadVisitor(TReadPersonsLkUpVisitor);
+
+    RegReadVisitor(TReadLoansVisitor);  sdsfsdfsdf write TSaveLoanVisitor
   end;
 end;
 
