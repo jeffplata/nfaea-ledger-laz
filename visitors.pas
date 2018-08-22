@@ -73,6 +73,14 @@ type
     Procedure MapRowToObject; override;
   end;
 
+  { TSaveLoanVisitor }
+
+  TSaveLoanVisitor = Class(TtiVisitorUpdate)
+  Protected
+    Procedure Init; override;
+    Function AcceptVisitor : Boolean; override;
+    Procedure SetupParams; override;
+  end;
 
 
   procedure RegisterVisitors;
@@ -96,23 +104,111 @@ const
   SQLDeleteService = 'delete from SERVICE where OID=:OID';
 
   SQLReadLoans = 'select * from LOAN';
-  SQLCreateLoan = '';
-  SQLUpdateLoan = '';
-  SQLDeleteLoan = '';
+  SQLCreateLoan =
+      'INSERT INTO LOAN (PERSON_OID, SERVICE_OID, DOCNUMBER, DOCDATE, NOTES, PRINCIPAL,'+
+      '    INTEREST, TOTAL, PREVIOUSBALANCE, REBATES, NETPROCEEDS, INTERESTRATE,'+
+      '    REBATERATE, TERMS, AMORTIZATION, PAYMENTSTART, PAYMENTEND)'+
+      'VALUES ('+
+      '    :PERSON_OID, '+
+      '    :SERVICE_OID, '+
+      '    :DOCNUMBER, '+
+      '    :DOCDATE, '+
+      '    :NOTES, '+
+      '    :PRINCIPAL, '+
+      '    :INTEREST, '+
+      '    :TOTAL, '+
+      '    :PREVIOUSBALANCE, '+
+      '    :REBATES, '+
+      '    :NETPROCEEDS, '+
+      '    :INTERESTRATE, '+
+      '    :REBATERATE, '+
+      '    :TERMS, '+
+      '    :AMORTIZATION, '+
+      '    :PAYMENTSTART, '+
+      '    :PAYMENTEND'+
+      ');'
+      ;
+
+  SQLUpdateLoan =
+      'UPDATE LOAN a'+
+      'SET '+
+      '    a.PERSON_OID = :PERSON_OID, '+
+      '    a.SERVICE_OID = :SERVICE_OID, '+
+      '    a.DOCNUMBER = :DOCNUMBER, '+
+      '    a.DOCDATE = :DOCDATE, '+
+      '    a.NOTES = :NOTES, '+
+      '    a.PRINCIPAL = :PRINCIPAL, '+
+      '    a.INTEREST = :INTEREST, '+
+      '    a.TOTAL = :TOTAL, '+
+      '    a.PREVIOUSBALANCE = :PREVIOUSBALANCE, '+
+      '    a.REBATES = :REBATES, '+
+      '    a.NETPROCEEDS = :NETPROCEEDS, '+
+      '    a.INTERESTRATE = :INTERESTRATE, '+
+      '    a.REBATERATE = :REBATERATE, '+
+      '    a.TERMS = :TERMS, '+
+      '    a.AMORTIZATION = :AMORTIZATION, '+
+      '    a.PAYMENTSTART = :PAYMENTSTART, '+
+      '    a.PAYMENTEND = :PAYMENTEND '+
+      'WHERE '+
+      '    a.OID = :OID'
+      ;
+
+  SQLDeleteLoan = 'delete from LOAN where OID=:OID';
+
+{ TSaveLoanVisitor }
+
+procedure TSaveLoanVisitor.Init;
+begin
+  Case Visited.ObjectState of
+    posCreate:
+      Query.SQLText:=SQLCreateLoan;
+    posUpdate:
+      Query.SQLText:=SQLUpdateLoan;
+    posDelete:
+      Query.SQLText:=SQLDeleteLoan;
+  end;
+end;
+
+function TSaveLoanVisitor.AcceptVisitor: Boolean;
+begin
+  Result:=Visited is TLoan;
+  Result:=Result and (Visited.ObjectState in [posCreate,posdelete,posUpdate]);
+end;
+
+procedure TSaveLoanVisitor.SetupParams;
+  var
+    O : TLoan;
+  begin
+    O:=TLoan(Visited); fasfsdsdf
+    O.OID.AssignToTIQuery('OID',Query);
+    if (Visited.ObjectState<>posDelete) then
+    begin
+      Query.ParamAsString['PERSON_OID']          := O.Person.OID.AsString;
+      Query.ParamAsString['SERVICE_OID']         := O.Service.OID.AsString;
+      Query.ParamAsString['DOCNUMBER']           := O.DocNumber;
+      Query.ParamAsString['DOCDATE']             := O.DocDate;
+      Query.ParamAsString['NOTES']               := O.Notes;
+      Query.ParamAsString['PRINCIPAL']           := O.Principal;
+      Query.ParamAsString['INTEREST']            := O.Interest;
+      Query.ParamAsString['TOTAL']               := O.Total;
+      Query.ParamAsString['PREVIOUSBALANCE']     := O.PreviousBalance;
+      Query.ParamAsString['REBATES']             := O.Rebates;
+      Query.ParamAsString['NETPROCEEDS']         := O.NetProceeds;
+      Query.ParamAsString['INTERESTRATE']        := O.InterestRate;
+      Query.ParamAsString['REBATERATE']          := O.RebateRate;
+      Query.ParamAsString['TERMS']               := O.Terms;
+      Query.ParamAsString['AMORTIZATION']        := O.Amortization;
+      Query.ParamAsString['PAYMENTSTART']        := O.PaymentStart;
+      Query.ParamAsString['PAYMENTEND']          := O.PaymentEnd;
+    end;
+  end;
+
 
 { TReadLoansVisitor }
 
 procedure TReadLoansVisitor.Init;
 begin
   Query.SQLText:= SQLReadLoans;
-  // where clause start
-  //if TPersonList(Visited).PersonsFilter.Active then
-  //begin
-  //  Query.SQL.Add(' WHERE');
-  //  Query.SQL.Add(' '+TPersonList(Visited).PersonsFilter.Criteria);
-  //  TPersonList(Visited).PersonsFilter.Active  := False;
-  //end;
-  //where clause end
 end;
 
 function TReadLoansVisitor.AcceptVisitor: Boolean;

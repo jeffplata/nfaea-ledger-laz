@@ -252,9 +252,9 @@ type
     property Total: Currency read FTotal write SetTotal;
     Property PreviousBalance: Currency read FPreviousBalance write SetPreviousBalance;
     Property Rebates: Currency read FRebates write SetRebates;
-    property RebateRate: currency read FRebateRate write SetRebateRate;
     Property NetProceeds: Currency read FNetProceeds write SetNetProceeds;
     Property InterestRate: Currency read FInterestRate write SetInterestRate;
+    property RebateRate: currency read FRebateRate write SetRebateRate;
     Property Terms: Integer read FTerms write SetTerms;
     Property Amortization: Currency read FAmortization write SetAmortization;
     Property PaymentStart: Tdate read FPaymentStart write SetPaymentStart;
