@@ -50,6 +50,9 @@ type
     edtDocNumber: TLabeledEdit;
     LabeledEdit3: TLabeledEdit;
     procedure actSelectPersonExecute(Sender: TObject);
+    procedure cmbServiceCloseUp(Sender: TObject);
+    procedure cmbServiceKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
+      );
   private
     FData: TLoan;
     FMediator: TtiModelMediator;
@@ -66,6 +69,7 @@ implementation
 uses
   ledgermanager
   ,PersonsLookupForm
+  ,LCLType
   ;
 
 function EditLoan(AData: TLoan): boolean;
@@ -100,6 +104,24 @@ begin
   end;
 end;
 
+
+procedure TfrmLoanEdit.cmbServiceCloseUp(Sender: TObject);
+begin
+  if cmbService.ItemIndex < 0 then exit; //<==
+  AdjustPrincipal;fdssd
+  Data.InterestRate:= Data.Service.InterestRate;
+  Data.Interest:= Data.Principal*Data.InterestRate*0.01*(Data.Terms/12);
+  Data.Total:= Data.Principal + Data.Interest;
+  Data.NotifyObservers;
+end;
+
+
+procedure TfrmLoanEdit.cmbServiceKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  cmbService.OnCloseUp(Sender);
+end;
+
 procedure TfrmLoanEdit.SetData(AValue: TLoan);
 begin
   if FData=AValue then Exit;
@@ -117,7 +139,9 @@ begin
     FMediator.AddProperty('DocNumber', edtDocNumber);
     FMediator.AddProperty('DocDate', dtpDocDate);
     FMediator.AddProperty('Person.Name', edtPerson);
+    FMediator.AddProperty('Service',cmbService).ValueList := gLedgerManager.Services;
     FMediator.AddProperty('Principal', edtPrincipal);
+    FMediator.AddProperty('Terms', edtTerms);
     FMediator.AddProperty('Interest', edtInterest);
     FMediator.AddProperty('InterestRate', edtInterestRate);
     FMediator.AddProperty('Total', edtTotal);
@@ -128,8 +152,6 @@ begin
     FMediator.AddProperty('Amortization', edtAmortization);
     FMediator.AddProperty('PaymentStart', dtpPaymentStarts);
     FMediator.AddProperty('PaymentEnd', dtpPaymentEnds);
-    FMediator.AddProperty('Service',cmbService).ValueList := gLedgerManager.Services;
-
   end;
   FMediator.Subject := FData;
   FMediator.Active:= True;

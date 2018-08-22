@@ -179,27 +179,27 @@ procedure TSaveLoanVisitor.SetupParams;
   var
     O : TLoan;
   begin
-    O:=TLoan(Visited); fasfsdsdf
+    O:=TLoan(Visited);
     O.OID.AssignToTIQuery('OID',Query);
     if (Visited.ObjectState<>posDelete) then
     begin
       Query.ParamAsString['PERSON_OID']          := O.Person.OID.AsString;
       Query.ParamAsString['SERVICE_OID']         := O.Service.OID.AsString;
       Query.ParamAsString['DOCNUMBER']           := O.DocNumber;
-      Query.ParamAsString['DOCDATE']             := O.DocDate;
+      Query.ParamAsDateTime['DOCDATE']             := O.DocDate;
       Query.ParamAsString['NOTES']               := O.Notes;
-      Query.ParamAsString['PRINCIPAL']           := O.Principal;
-      Query.ParamAsString['INTEREST']            := O.Interest;
-      Query.ParamAsString['TOTAL']               := O.Total;
-      Query.ParamAsString['PREVIOUSBALANCE']     := O.PreviousBalance;
-      Query.ParamAsString['REBATES']             := O.Rebates;
-      Query.ParamAsString['NETPROCEEDS']         := O.NetProceeds;
-      Query.ParamAsString['INTERESTRATE']        := O.InterestRate;
-      Query.ParamAsString['REBATERATE']          := O.RebateRate;
-      Query.ParamAsString['TERMS']               := O.Terms;
-      Query.ParamAsString['AMORTIZATION']        := O.Amortization;
-      Query.ParamAsString['PAYMENTSTART']        := O.PaymentStart;
-      Query.ParamAsString['PAYMENTEND']          := O.PaymentEnd;
+      Query.ParamAsFloat['PRINCIPAL']           := O.Principal;
+      Query.ParamAsFloat['INTEREST']            := O.Interest;
+      Query.ParamAsFloat['TOTAL']               := O.Total;
+      Query.ParamAsFloat['PREVIOUSBALANCE']     := O.PreviousBalance;
+      Query.ParamAsFloat['REBATES']             := O.Rebates;
+      Query.ParamAsFloat['NETPROCEEDS']         := O.NetProceeds;
+      Query.ParamAsFloat['INTERESTRATE']        := O.InterestRate;
+      Query.ParamAsFloat['REBATERATE']          := O.RebateRate;
+      Query.ParamAsInteger['TERMS']               := O.Terms;
+      Query.ParamAsFloat['AMORTIZATION']        := O.Amortization;
+      Query.ParamAsDateTime['PAYMENTSTART']        := O.PaymentStart;
+      Query.ParamAsDateTime['PAYMENTEND']          := O.PaymentEnd;
     end;
   end;
 
@@ -297,9 +297,9 @@ begin
     Query.ParamAsFloat['MAXAMOUNT']    := O.MaxAmount;
     Query.ParamAsFloat['MINAMOUNT']    := O.MinAmount;
     Query.ParamAsFloat['INTERESTRATE'] := O.InterestRate;
-    Query.ParamAsFloat['REBATE_RATE'] := O.RebateRate;
-    Query.ParamAsInteger['MINTERM'] := O.MinTerm;
-    Query.ParamAsInteger['MAXTERM'] := O.MaxTerm;
+    Query.ParamAsFloat['REBATE_RATE']  := O.RebateRate;
+    Query.ParamAsInteger['MINTERM']    := O.MinTerm;
+    Query.ParamAsInteger['MAXTERM']    := O.MaxTerm;
   end;
 end;
 
@@ -424,7 +424,8 @@ begin
 
     RegReadVisitor(TReadPersonsLkUpVisitor);
 
-    RegReadVisitor(TReadLoansVisitor);  sdsfsdfsdf write TSaveLoanVisitor
+    RegReadVisitor(TReadLoansVisitor);
+    RegSaveVisitor(TSaveLoanVisitor);
   end;
 end;
 

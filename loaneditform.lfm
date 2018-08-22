@@ -35,6 +35,8 @@ object frmLoanEdit: TfrmLoanEdit
     Top = 107
     Width = 164
     ItemHeight = 13
+    OnCloseUp = cmbServiceCloseUp
+    OnKeyUp = cmbServiceKeyUp
     Style = csDropDownList
     TabOrder = 4
   end
