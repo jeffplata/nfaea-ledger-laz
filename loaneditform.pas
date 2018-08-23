@@ -161,3 +161,31 @@ end;
 
 end.
 
+onchange loan type:
+-------------
+if amount > max or 0
+  amount = max
+
+if terms > max or 0
+  terms = max
+
+RecomputeTotal()
+
+
+on change amount:
+---------
+RecomputeTotal()
+
+
+
+
+RecomputeTotal()
+interest = p * ir * 0.01 *t/12
+total = p + i
+net = total - pbal + reb
+amort = pi/terms
+
+
+RecomputeNetProceeds()
+net = total - pbal + reb
+
