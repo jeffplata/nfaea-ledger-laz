@@ -1,15 +1,14 @@
-object frmLkuPersons: TfrmLkuPersons
+object frmLookUp: TfrmLookUp
   Left = 418
   Height = 280
   Top = 240
   Width = 392
   ActiveControl = LabeledEdit1
   BorderStyle = bsDialog
-  Caption = 'Members'
+  Caption = 'Lookup Form'
   ClientHeight = 280
   ClientWidth = 392
   OnCloseQuery = FormCloseQuery
-  OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poMainFormCenter
   LCLVersion = '1.8.2.0'

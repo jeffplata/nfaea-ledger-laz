@@ -69,6 +69,7 @@ implementation
 uses
   ledgermanager
   ,PersonsLookupForm
+  ,LookupForm
   ,LCLType
   ;
 
@@ -91,11 +92,24 @@ procedure TfrmLoanEdit.actSelectPersonExecute(Sender: TObject);
 var
   temp: TPersonBasic;
 begin
-  temp := SelectPerson;
+  //temp := SelectPerson;
+  //try
+  //  if temp <> nil then
+  //  begin
+  //    FData.Person.Assign(temp); // := temp;
+  //    FData.NotifyObservers;
+  //  end;
+  //finally
+  //  temp := nil;
+  //  temp.Free;
+  //end;
+  temp := TPersonBasic.Create;
   try
+    gLedgerManager.LoadPersonsLookup;  sdfsdfsdf
+    SelectObject( TClassOfObject(temp),gLedgerManager.PersonsLookup,'NAME containing ?','Name' );
     if temp <> nil then
     begin
-      FData.Person.Assign(temp); // := temp;
+      FData.Person.Assign(temp);
       FData.NotifyObservers;
     end;
   finally
@@ -108,7 +122,7 @@ end;
 procedure TfrmLoanEdit.cmbServiceCloseUp(Sender: TObject);
 begin
   if cmbService.ItemIndex < 0 then exit; //<==
-  AdjustPrincipal;fdssd
+  //AdjustPrincipal;fdssd
   Data.InterestRate:= Data.Service.InterestRate;
   Data.Interest:= Data.Principal*Data.InterestRate*0.01*(Data.Terms/12);
   Data.Total:= Data.Principal + Data.Interest;

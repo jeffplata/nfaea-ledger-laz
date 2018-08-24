@@ -109,29 +109,28 @@
         <UnitName Value="LoanEditForm"/>
       </Unit9>
       <Unit10>
-        <Filename Value="personslookupform.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="frmLkuPersons"/>
-        <HasResources Value="True"/>
-        <ResourceBaseClass Value="Form"/>
-        <UnitName Value="PersonsLookupForm"/>
-      </Unit10>
-      <Unit11>
         <Filename Value="resourcedm.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="dmResources"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="ResourceDM"/>
-      </Unit11>
-      <Unit12>
+      </Unit10>
+      <Unit11>
         <Filename Value="SQLWhereBuilderNV.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit12>
-      <Unit13>
+      </Unit11>
+      <Unit12>
         <Filename Value="objectlistfilter.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ObjectListFilter"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="LookupForm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmLookUp"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
       </Unit13>
     </Units>
   </ProjectOptions>
