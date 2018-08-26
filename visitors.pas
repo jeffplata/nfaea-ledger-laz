@@ -88,6 +88,10 @@ type
 
 implementation
 
+uses
+  ledgermanager
+  ;
+
 
 const
   SQLReadPersons = 'select OID, NAME, DATEJOINED from PERSON';
@@ -105,10 +109,11 @@ const
 
   SQLReadLoans = 'select * from LOAN';
   SQLCreateLoan =
-      'INSERT INTO LOAN (PERSON_OID, SERVICE_OID, DOCNUMBER, DOCDATE, NOTES, PRINCIPAL,'+
+      'INSERT INTO LOAN (OID, PERSON_OID, SERVICE_OID, DOCNUMBER, DOCDATE, NOTES, PRINCIPAL,'+
       '    INTEREST, TOTAL, PREVIOUSBALANCE, REBATES, NETPROCEEDS, INTERESTRATE,'+
       '    REBATERATE, TERMS, AMORTIZATION, PAYMENTSTART, PAYMENTEND)'+
       'VALUES ('+
+      '    :OID, '+
       '    :PERSON_OID, '+
       '    :SERVICE_OID, '+
       '    :DOCNUMBER, '+
@@ -130,7 +135,7 @@ const
       ;
 
   SQLUpdateLoan =
-      'UPDATE LOAN a'+
+      'UPDATE LOAN a '+
       'SET '+
       '    a.PERSON_OID = :PERSON_OID, '+
       '    a.SERVICE_OID = :SERVICE_OID, '+
@@ -183,23 +188,23 @@ procedure TSaveLoanVisitor.SetupParams;
     O.OID.AssignToTIQuery('OID',Query);
     if (Visited.ObjectState<>posDelete) then
     begin
-      Query.ParamAsString['PERSON_OID']          := O.Person.OID.AsString;
-      Query.ParamAsString['SERVICE_OID']         := O.Service.OID.AsString;
-      Query.ParamAsString['DOCNUMBER']           := O.DocNumber;
-      Query.ParamAsDateTime['DOCDATE']             := O.DocDate;
-      Query.ParamAsString['NOTES']               := O.Notes;
-      Query.ParamAsFloat['PRINCIPAL']           := O.Principal;
-      Query.ParamAsFloat['INTEREST']            := O.Interest;
-      Query.ParamAsFloat['TOTAL']               := O.Total;
-      Query.ParamAsFloat['PREVIOUSBALANCE']     := O.PreviousBalance;
-      Query.ParamAsFloat['REBATES']             := O.Rebates;
-      Query.ParamAsFloat['NETPROCEEDS']         := O.NetProceeds;
-      Query.ParamAsFloat['INTERESTRATE']        := O.InterestRate;
-      Query.ParamAsFloat['REBATERATE']          := O.RebateRate;
-      Query.ParamAsInteger['TERMS']               := O.Terms;
-      Query.ParamAsFloat['AMORTIZATION']        := O.Amortization;
-      Query.ParamAsDateTime['PAYMENTSTART']        := O.PaymentStart;
-      Query.ParamAsDateTime['PAYMENTEND']          := O.PaymentEnd;
+      Query.ParamAsString['PERSON_OID']     := O.Person.OID.AsString;
+      Query.ParamAsString['SERVICE_OID']    := O.Service.OID.AsString;
+      Query.ParamAsString['DOCNUMBER']      := O.DocNumber;
+      Query.ParamAsDateTime['DOCDATE']      := O.DocDate;
+      Query.ParamAsString['NOTES']          := O.Notes;
+      Query.ParamAsFloat['PRINCIPAL']       := O.Principal;
+      Query.ParamAsFloat['INTEREST']        := O.Interest;
+      Query.ParamAsFloat['TOTAL']           := O.Total;
+      Query.ParamAsFloat['PREVIOUSBALANCE'] := O.PreviousBalance;
+      Query.ParamAsFloat['REBATES']         := O.Rebates;
+      Query.ParamAsFloat['NETPROCEEDS']     := O.NetProceeds;
+      Query.ParamAsFloat['INTERESTRATE']    := O.InterestRate;
+      Query.ParamAsFloat['REBATERATE']      := O.RebateRate;
+      Query.ParamAsInteger['TERMS']         := O.Terms;
+      Query.ParamAsFloat['AMORTIZATION']    := O.Amortization;
+      Query.ParamAsDateTime['PAYMENTSTART'] := O.PaymentStart;
+      Query.ParamAsDateTime['PAYMENTEND']   := O.PaymentEnd;
     end;
   end;
 
@@ -213,18 +218,60 @@ end;
 
 function TReadLoansVisitor.AcceptVisitor: Boolean;
 begin
-  Result:=inherited AcceptVisitor;
+  //Result:= inherited AcceptVisitor;
+  Result := Visited is TLoanList;
 end;
 
 procedure TReadLoansVisitor.SetupParams;
 begin
-  inherited SetupParams;
+
 end;
 
 procedure TReadLoansVisitor.MapRowToObject;
-begin
-  inherited MapRowToObject;
-end;
+  var
+    O : TLoan;
+
+    S:TService;
+    P:TPersonBasic;
+
+  begin
+    O:= TLoan.Create;
+    O.OID.AssignFromTIQuery('OID',Query);
+
+    //O.Person.OID.AsString  := Query.FieldAsString['PERSON_OID'];
+    //O.Service.OID.AsString := Query.FieldAsString['SERVICE_OID'];
+
+    O.DocNumber            := Query.FieldAsString['DOCNUMBER'];
+    O.DocDate              := Query.FieldAsDateTime['DOCDATE'];
+    O.Notes                := Query.FieldAsString['NOTES'];
+    O.Principal            := Query.FieldAsFloat['PRINCIPAL'];
+    O.Interest             := Query.FieldAsFloat['INTEREST'];
+    O.Total                := Query.FieldAsFloat['TOTAL'];
+    O.PreviousBalance      := Query.FieldAsFloat['PREVIOUSBALANCE'];
+    O.Rebates              := Query.FieldAsFloat['REBATES'];
+    O.NetProceeds          := Query.FieldAsFloat['NETPROCEEDS'];
+    O.InterestRate         := Query.FieldAsFloat['INTERESTRATE'];
+    O.RebateRate           := Query.FieldAsFloat['REBATERATE'];
+    O.Terms                := Query.FieldAsInteger['TERMS'];
+    O.Amortization         := Query.FieldAsFloat['AMORTIZATION'];
+    O.PaymentStart         := Query.FieldAsDateTime['PAYMENTSTART'];
+    O.PaymentEnd           := Query.FieldAsDateTime['PAYMENTEND'];
+
+    P := TPersonBasic(gLedgerManager.PersonList.Find(Query.FieldAsString['PERSON_OID']) );
+    S := TService(gLedgerManager.Services.Find(Query.FieldAsString['SERVICE_OID']) );
+
+    if P <> nil then
+      O.Person.Assign(P);
+    if S <> nil then
+      O.Service.Assign(S);
+    o.service.OID.assign(s.OID);
+
+    //O.Service.Assign( TService(gLedgerManager.Services.Find(Query.FieldAsString['SERVICE_OID']) ) );
+    //O.Person.Assign( TPerson(gLedgerManager.PersonList.Find(Query.FieldAsString['PERSON_OID']) ) );
+
+    O.ObjectState:=posClean;
+    TLoanList(Visited).Add(O);
+  end;
 
 { TReadPersonsLkUpVisitor }
 

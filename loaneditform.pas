@@ -53,11 +53,14 @@ type
     procedure cmbServiceCloseUp(Sender: TObject);
     procedure cmbServiceKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
       );
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
   private
     FData: TLoan;
     FMediator: TtiModelMediator;
     procedure SetData(AValue: TLoan);
     procedure SetupMediators;
+    procedure Init;
+    procedure UpdateLoanData;
   public
     property Data: TLoan read FData write SetData;
   end;
@@ -68,16 +71,20 @@ implementation
 
 uses
   ledgermanager
-  ,PersonsLookupForm
+  //,PersonsLookupForm
   ,LookupForm
   ,LCLType
   ;
 
 function EditLoan(AData: TLoan): boolean;
+var
+  i: integer;
 begin
   with TfrmLoanEdit.Create(nil) do
   try
     Data := Adata;
+    i := cmbService.Items.IndexOf(Data.Service.Name);
+    cmbService.ItemIndex:= i;
     result := (ShowModal = mrOK);
   finally
     Free;
@@ -92,24 +99,14 @@ procedure TfrmLoanEdit.actSelectPersonExecute(Sender: TObject);
 var
   temp: TPersonBasic;
 begin
-  //temp := SelectPerson;
-  //try
-  //  if temp <> nil then
-  //  begin
-  //    FData.Person.Assign(temp); // := temp;
-  //    FData.NotifyObservers;
-  //  end;
-  //finally
-  //  temp := nil;
-  //  temp.Free;
-  //end;
   temp := TPersonBasic.Create;
   try
-    gLedgerManager.LoadPersonsLookup;  sdfsdfsdf
+    gLedgerManager.LoadPersonsLookup;
     SelectObject( TClassOfObject(temp),gLedgerManager.PersonsLookup,'NAME containing ?','Name' );
     if temp <> nil then
     begin
       FData.Person.Assign(temp);
+      Init;
       FData.NotifyObservers;
     end;
   finally
@@ -121,19 +118,30 @@ end;
 
 procedure TfrmLoanEdit.cmbServiceCloseUp(Sender: TObject);
 begin
-  if cmbService.ItemIndex < 0 then exit; //<==
-  //AdjustPrincipal;fdssd
-  Data.InterestRate:= Data.Service.InterestRate;
-  Data.Interest:= Data.Principal*Data.InterestRate*0.01*(Data.Terms/12);
-  Data.Total:= Data.Principal + Data.Interest;
-  Data.NotifyObservers;
+  UpdateLoanData;
 end;
 
 
 procedure TfrmLoanEdit.cmbServiceKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  cmbService.OnCloseUp(Sender);
+  UpdateLoanData;
+end;
+
+procedure TfrmLoanEdit.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+var
+  s: string;
+begin
+  if ModalResult = mrOk then
+  begin
+    if not Data.IsValid(s) then
+    begin
+      ShowMessage(S);
+      CanClose:= False;
+    end
+    else
+      data.RecomputeTotals:= False;
+  end;
 end;
 
 procedure TfrmLoanEdit.SetData(AValue: TLoan);
@@ -171,35 +179,37 @@ begin
   FMediator.Active:= True;
 end;
 
-{ TfrmLoanEdit }
+procedure TfrmLoanEdit.Init;
+begin
+  Data.Service      := nil;   // clear loan type
+  Data.Principal    := 0;     // clear principal
+  Data.Terms        := 0;     // clear terms
+  data.InterestRate := 0;
+  data.RebateRate   := 0;
+
+  data.RecomputeTotals:= True;
+  data.RecomputeTotal;
+end;
+
+procedure TfrmLoanEdit.UpdateLoanData;
+begin
+  if cmbService.ItemIndex < 0 then exit; //<==
+
+  if (data.Principal > data.Service.MaxAmount) or (data.Principal = 0) then
+    data.Principal:= data.service.maxamount;
+
+  data.InterestRate:= data.Service.InterestRate;
+
+  if (data.Terms > data.service.MaxTerm) or (data.terms = 0) then
+    data.terms := data.service.MaxTerm;
+
+  data.RebateRate:= data.service.RebateRate;
+
+  data.RecomputeTotals:= True;
+  data.RecomputeTotal;
+end;
 
 end.
 
-onchange loan type:
--------------
-if amount > max or 0
-  amount = max
 
-if terms > max or 0
-  terms = max
-
-RecomputeTotal()
-
-
-on change amount:
----------
-RecomputeTotal()
-
-
-
-
-RecomputeTotal()
-interest = p * ir * 0.01 *t/12
-total = p + i
-net = total - pbal + reb
-amort = pi/terms
-
-
-RecomputeNetProceeds()
-net = total - pbal + reb
 

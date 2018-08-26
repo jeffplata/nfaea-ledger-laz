@@ -89,7 +89,6 @@ begin
   inherited Create;
   FPersonList := TPersonList.Create;
   FPersonList.Owner := Self;
-  FPersonList.PersonsFilter.Criteria:= 'NAME containing %s';
 
   FServices := TServiceList.Create;
   FServices.Owner := Self;
@@ -99,8 +98,6 @@ begin
 
   FPersonsLookup := TPersonsLookUp.Create;
   FPersonsLookup.Owner := Self;
-  FPersonsLookup.ListFilter.Criteria:= 'NAME containing %s';
-
 end;
 
 destructor TLedgerManager.Destroy;
@@ -113,19 +110,7 @@ begin
 end;
 
 procedure TLedgerManager.LoadPersons;
-//var
-//  P: TPerson;
 begin
-  //P := TPerson.Create;
-  //P.Name:= 'Jeff Plata';
-  //P.DateJoined:= Now;
-  //FPersonList.Add(P);
-  //
-  //P := TPerson.Create;
-  //P.Name:= 'John Carter';
-  //P.DateJoined:= Now-1234;
-  //FPersonList.Add(P);
-
   FPersonList.Clear;
   GTIOPFManager.Read(FPersonList);
 end;

@@ -59,7 +59,7 @@ type
     property Data: TtiObjectList read FData write SetData;
   end;
 
-  procedure SelectObject( O : TClassOfObject; AObjectList: TtiObjectList;
+  procedure SelectObject( var O : TClassOfObject; AObjectList: TtiObjectList;
     ASQLFilterText: string; AUIColumns: string );
 
 
@@ -73,16 +73,14 @@ uses
 
 {$R *.lfm}
 
-procedure SelectObject(O: TClassOfObject; AObjectList: TtiObjectList;
+procedure SelectObject(var O: TClassOfObject; AObjectList: TtiObjectList;
   ASQLFilterText: string; AUIColumns: string);
 const
   lFilter: string = '';
 begin
+  O := nil;
   with TfrmLookUp.Create(Application) do
   try
-    //gLedgerManager.LoadPersonsLookup;
-    // load data before calling this procedure
-    //Data := gLedgerManager.PersonsLookup;
     SQLFilterText:= ASQLFilterText;
     UIColumns:= AUIColumns;
     LabeledEdit1.Text := lFilter;
@@ -91,8 +89,6 @@ begin
     Init;
     if ShowModal = mrOk then
       O := TClassOfObject(FMediator.SelectedObject[StringGrid1]);
-      //O := FMediator.SelectedObject[StringGrid1];
-      //O.Assign( FMediator.SelectedObject[StringGrid1] );
   finally
     lFilter := LabeledEdit1.Text;
     Free;

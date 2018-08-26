@@ -15,9 +15,9 @@ object frmMain: TfrmMain
     Height = 347
     Top = 0
     Width = 677
-    ActivePage = tabPersons
+    ActivePage = tabLoans
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
@@ -58,13 +58,12 @@ object frmMain: TfrmMain
         TabOrder = 1
         OnKeyPress = edtFilterKeyPress
       end
-      object SpeedButton1: TSpeedButton
+      object spbMembersClear: TSpeedButton
         Left = 180
         Height = 22
         Top = 8
         Width = 23
-        Caption = 'X'
-        OnClick = SpeedButton1Click
+        OnClick = spbMembersClearClick
       end
       object Button1: TButton
         Left = 224
@@ -150,6 +149,7 @@ object frmMain: TfrmMain
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
         RowCount = 0
         TabOrder = 0
+        OnDblClick = sgdLoansDblClick
       end
       object edtFilterLoans: TLabeledEdit
         Left = 32
@@ -175,7 +175,6 @@ object frmMain: TfrmMain
         Height = 22
         Top = 8
         Width = 23
-        Caption = 'X'
       end
       object btnAddLoan: TButton
         Left = 224
@@ -295,9 +294,11 @@ object frmMain: TfrmMain
     object actEditLoan: TAction
       Caption = 'Edit'
       OnExecute = actEditLoanExecute
+      OnUpdate = actEditLoanUpdate
     end
     object actDeleteLoan: TAction
       Caption = 'Delete'
+      OnExecute = actDeleteLoanExecute
     end
   end
 end

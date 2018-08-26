@@ -213,9 +213,12 @@ type
     FPrincipal: Currency;
     FRebateRate: currency;
     FRebates: Currency;
+    FRecomputeTotals: boolean;
     FService: TService;
     FTerms: Integer;
     FTotal: Currency;
+    function GetPersonID: string;
+    function GetServiceID: string;
     procedure SetAmortization(AValue: Currency);
     procedure SetDocDate(AValue: TDate);
     procedure SetDocNumber(AValue: string);
@@ -239,9 +242,16 @@ type
     procedure SetOwner(const Value: TLoanList); reintroduce;
   public
     property  Owner: TLoanList read GetOwner write SetOwner;
+    property RecomputeTotals: boolean read FRecomputeTotals write FRecomputeTotals;
     constructor Create; override;
     destructor Destroy; override;
+    function IsValid(const pErrors: TtiObjectErrors): Boolean; override;
+    procedure AssignClassProps(ASource: TtiObject); override;
+    procedure RecomputeTotal;
+    procedure RecomputeNetProceeds;
   published
+    property PersonID: string read GetPersonID;
+    property SericeID: string read GetServiceID;
     property Person: TPersonBasic read FPerson write SetPerson;
     property Service: TService read FService write SetService;
     property DocNumber: string read FDocNumber write SetDocNumber;
@@ -278,6 +288,11 @@ implementation
 uses
   variants
   ;
+
+const
+  cNameMissing = 'Member name cannot be empty.';
+  cLoanTypeMissing = 'Loan Type cannot be empty.';
+  cValueNotAllowed = '%s is not allowed.''';
 
 
 
@@ -348,6 +363,7 @@ procedure TLoan.SetTerms(AValue: Integer);
 begin
   if FTerms=AValue then Exit;
   FTerms:=AValue;
+  RecomputeTotal;
 end;
 
 procedure TLoan.SetTotal(AValue: Currency);
@@ -366,6 +382,16 @@ procedure TLoan.SetAmortization(AValue: Currency);
 begin
   if FAmortization=AValue then Exit;
   FAmortization:=AValue;
+end;
+
+function TLoan.GetPersonID: string;
+begin
+  result := Person.OID.AsString;
+end;
+
+function TLoan.GetServiceID: string;
+begin
+  result := Service.OID.AsString;
 end;
 
 procedure TLoan.SetDocDate(AValue: TDate);
@@ -420,12 +446,14 @@ procedure TLoan.SetPreviousBalance(AValue: Currency);
 begin
   if FPreviousBalance=AValue then Exit;
   FPreviousBalance:=AValue;
+  RecomputeNetProceeds;
 end;
 
 procedure TLoan.SetPrincipal(AValue: Currency);
 begin
   if FPrincipal=AValue then Exit;
   FPrincipal:=AValue;
+  RecomputeTotal;
 end;
 
 procedure TLoan.SetRebateRate(AValue: currency);
@@ -438,6 +466,7 @@ procedure TLoan.SetRebates(AValue: Currency);
 begin
   if FRebates=AValue then Exit;
   FRebates:=AValue;
+  RecomputeNetProceeds;
 end;
 
 function TLoan.GetOwner: TLoanList;
@@ -454,12 +483,59 @@ constructor TLoan.Create;
 begin
   inherited Create;
   FPerson := TPersonBasic.Create;
+  FService := TService.Create;
+  FRecomputeTotals:= False;
 end;
 
 destructor TLoan.Destroy;
 begin
   FPerson.Free;
+  FService.Free;
   inherited Destroy;
+end;
+
+function TLoan.IsValid(const pErrors: TtiObjectErrors): Boolean;
+begin
+  result := inherited IsValid(pErrors);
+  if not result then exit; // <==
+
+  if Person.Name = '' then
+    pErrors.AddError('Name', cNameMissing);
+
+  if Person.Name <> '' then
+  begin
+    if Service = nil then
+      pErrors.AddError('Service.Name', cLoanTypeMissing)
+    else
+      if (Principal < service.MinAmount) or (Principal > service.MaxAmount) then
+        pErrors.AddError('Principal', Format(cValueNotAllowed, ['Principal value']));
+  end;
+
+  Result := pErrors.Count = 0;
+end;
+
+procedure TLoan.AssignClassProps(ASource: TtiObject);
+begin
+  FPerson.Assign(TLoan(ASource).Person);
+  FService.Assign(TLoan(ASource).Service );
+end;
+
+procedure TLoan.RecomputeTotal;
+begin
+  if not RecomputeTotals then Exit;  // <===
+  Interest:= Principal * InterestRate * 0.01 * (Terms/12);
+  Total:= Principal + Interest;
+  RecomputeNetProceeds;
+end;
+
+procedure TLoan.RecomputeNetProceeds;
+begin
+  NetProceeds:= Principal - PreviousBalance + Rebates;
+  if Terms > 0 then
+    Amortization:= Total / Terms
+  else
+    Amortization:= 0;
+  NotifyObservers;
 end;
 
 { TManualObject }

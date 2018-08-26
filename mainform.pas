@@ -12,6 +12,7 @@ uses
   ,tiListMediators
   ,tiMediators
   ,tiOIDInteger
+  , tiObject
   ;
 
 type
@@ -56,7 +57,7 @@ type
     MenuItem9: TMenuItem;
     PageControl1: TPageControl;
     sgdLoans: TStringGrid;
-    SpeedButton1: TSpeedButton;
+    spbMembersClear: TSpeedButton;
     spbClearLoanFilter: TSpeedButton;
     StatusBar1: TStatusBar;
     sgdPersons: TStringGrid;
@@ -67,9 +68,11 @@ type
     procedure actAddLoanExecute(Sender: TObject);
     procedure actAddMemberExecute(Sender: TObject);
     procedure actAddServiceExecute(Sender: TObject);
+    procedure actDeleteLoanExecute(Sender: TObject);
     procedure actDeleteMemberExecute(Sender: TObject);
     procedure actDeleteServiceExecute(Sender: TObject);
     procedure actEditLoanExecute(Sender: TObject);
+    procedure actEditLoanUpdate(Sender: TObject);
     procedure actEditMemberExecute(Sender: TObject);
     procedure actEditServiceExecute(Sender: TObject);
     procedure actHelpAboutExecute(Sender: TObject);
@@ -77,9 +80,10 @@ type
     procedure actMembersExecute(Sender: TObject);
     procedure edtFilterKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
+    procedure sgdLoansDblClick(Sender: TObject);
     procedure sgdPersonsDblClick(Sender: TObject);
     procedure sgdServicesDblClick(Sender: TObject);
-    procedure SpeedButton1Click(Sender: TObject);
+    procedure spbMembersClearClick(Sender: TObject);
   private
     FPersonsMediator: TtiModelMediator;
     FMedServices: TtiModelMediator;
@@ -94,6 +98,7 @@ type
   public
     property Persons: TPersonList read FPersons write SetPersons;
     property Services: TServiceList read FServices write SetServices;
+    procedure DeleteFromList(AStringGrid: TStringGrid; AList: TtiObjectList );
   end;
 
 var
@@ -108,6 +113,7 @@ uses
   ,ledgermanager
   ,tiOPFManager
   ,MemberCSVLoad
+  , ResourceDM
   ;
 
 const
@@ -218,73 +224,81 @@ begin
     O.Free;
 end;
 
+procedure TfrmMain.actDeleteLoanExecute(Sender: TObject);
+begin
+  DeleteFromList( sgdLoans, gLedgerManager.Loans );
+end;
+
 
 procedure TfrmMain.actDeleteMemberExecute(Sender: TObject);
-var
-  P: TPerson;
-  i: Integer;
-  s: String;
-  iRows: integer;
-  oldtop : integer;
+//var
+//  P: TPerson;
+//  i: Integer;
+//  s: String;
+//  iRows: integer;
+//  oldtop : integer;
 begin
-  oldtop := sgdPersons.Selection.Top;
-  iRows := sgdPersons.Selection.bottom - sgdPersons.Selection.Top +1;
-  if iRows = 1 then
-    s := cMsgDeleteOneRecord
-  else
-    s := Format(cMsgDeleteRecords,[iRows]);
+  DeleteFromList(sgdPersons, Persons);
+  //exit;
 
-  if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
-  begin
-    Persons.BeginUpdate;
-    try
-      for i := sgdPersons.Selection.Bottom downto sgdPersons.Selection.Top do
-        begin
-          P := TPerson(TPerson(Persons[i-1]));
-          P.DeleteObject(Persons);
-        end;
-    finally
-      Persons.EndUpdate;
-    end;
-    // position to the correct record, the first after the last deleted
-    sgdPersons.Row:= oldtop;
-    //if iRows > 1 then
-    //  sgdPersons.Row:= sgdPersons.Row - (iRows -1);
-  end;
+  //oldtop := sgdPersons.Selection.Top;
+  //iRows := sgdPersons.Selection.bottom - sgdPersons.Selection.Top +1;
+  //if iRows = 1 then
+  //  s := cMsgDeleteOneRecord
+  //else
+  //  s := Format(cMsgDeleteRecords,[iRows]);
+  //
+  //if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
+  //begin
+  //  Persons.BeginUpdate;
+  //  try
+  //    for i := sgdPersons.Selection.Bottom downto sgdPersons.Selection.Top do
+  //      begin
+  //        P := TPerson(Persons[i-1]);
+  //        P.DeleteObject(Persons);
+  //      end;
+  //  finally
+  //    Persons.EndUpdate;
+  //  end;
+  //  // position to the correct record, the first after the last deleted
+  //  sgdPersons.Row:= oldtop;
+  //end;
 end;
 
 procedure TfrmMain.actDeleteServiceExecute(Sender: TObject);
-var
-  O: TService;
-  i: Integer;
-  s: String;
-  iRows: integer;
-  oldtop: integer;
+//var
+//  O: TService;
+//  i: Integer;
+//  s: String;
+//  iRows: integer;
+//  oldtop: integer;
 begin
-  oldtop := sgdServices.Selection.Top;
-  iRows := sgdServices.Selection.bottom - sgdServices.Selection.Top +1;
-  if iRows = 1 then
-    s := cMsgDeleteOneRecord
-  else
-    s := Format(cMsgDeleteRecords,[iRows]);
+  DeleteFromList( sgdServices, Services );
 
-  if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
-  begin
-    Services.BeginUpdate;
-    try
-      for i := sgdServices.Selection.Bottom downto sgdServices.Selection.Top do
-        begin
-          O := TService(TService(Services[i-1]));
-          O.DeleteObject(Services);
-        end;
-    finally
-      Services.EndUpdate;
-    end;
-    // position to the correct record, the first after the last deleted
-    sgdServices.Row := oldtop;
-    //if iRows > 1 then
-    //  sgdServices.Row:= sgdServices.Row - (iRows -1);
-  end;
+  //oldtop := sgdServices.Selection.Top;
+  //iRows := sgdServices.Selection.bottom - sgdServices.Selection.Top +1;
+  //if iRows = 1 then
+  //  s := cMsgDeleteOneRecord
+  //else
+  //  s := Format(cMsgDeleteRecords,[iRows]);
+  //
+  //if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
+  //begin
+  //  Services.BeginUpdate;
+  //  try
+  //    for i := sgdServices.Selection.Bottom downto sgdServices.Selection.Top do
+  //      begin
+  //        O := TService(TService(Services[i-1]));
+  //        O.DeleteObject(Services);
+  //      end;
+  //  finally
+  //    Services.EndUpdate;
+  //  end;
+  //  // position to the correct record, the first after the last deleted
+  //  sgdServices.Row := oldtop;
+  //  //if iRows > 1 then
+  //  //  sgdServices.Row:= sgdServices.Row - (iRows -1);
+  //end;
 end;
 
 procedure TfrmMain.actEditLoanExecute(Sender: TObject);
@@ -303,6 +317,12 @@ procedure TfrmMain.actEditLoanExecute(Sender: TObject);
       O.NotifyObservers;
     end;
     B.Free;
+    ==> todo: service combobox is being replaced with regular on cancel
+end;
+
+procedure TfrmMain.actEditLoanUpdate(Sender: TObject);
+begin
+  TAction(Sender).Enabled := sgdLoans.Selection.Top > 0;
 end;
 
 procedure TfrmMain.actMembersExecute(Sender: TObject);
@@ -335,11 +355,25 @@ begin
   gLedgerManager.LoadServices;
   FServices := gLedgerManager.Services;
 
+  gLedgerManager.LoadLoans;
+
   SetupMediators;
 
   PageControl1.ActivePage := tabPersons;
   sgdServices.Columns[4].Width:= 100;
   sgdPersons.Columns[2].Width:= 100;
+
+  dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbMembersClear.Glyph);
+  dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLoanFilter.Glyph);
+
+  actEditLoan.OnUpdate:= @actEditLoanUpdate;
+  actDeleteLoan.OnUpdate:= @actEditLoanUpdate;
+end;
+
+
+procedure TfrmMain.sgdLoansDblClick(Sender: TObject);
+begin
+  actEditLoan.Execute;
 end;
 
 procedure TfrmMain.sgdPersonsDblClick(Sender: TObject);
@@ -352,7 +386,7 @@ begin
   actEditService.Execute;
 end;
 
-procedure TfrmMain.SpeedButton1Click(Sender: TObject);
+procedure TfrmMain.spbMembersClearClick(Sender: TObject);
 begin
   edtFilter.SetFocus;
   edtFilter.Text:= '';
@@ -398,7 +432,7 @@ begin
   begin
     FMedLoans := TtiModelMediator.Create(Self);
     FMedLoans.Name:= 'LoansMediator';
-    FMedLoans.AddComposite('Person.Name(200,"Member");Service.Name(100,"Loan Type");TotalAmount(100,"Amount");ID(100," ")',sgdLoans);
+    FMedLoans.AddComposite('PersonID;ServiceID;Person.Name(200,"Member");Service.Name(100,"Loan Type");TotalAmount(100,"Amount");ID(100," ")',sgdLoans);
   end;
   FMedLoans.Subject:= gLedgerManager.Loans;
   FMedLoans.Active:= True;
@@ -420,6 +454,41 @@ begin
   Persons.PersonsFilter.Active:= (AText <> '');
   Persons.PersonsFilter.Criteria:= 'NAME containing '+QuotedStr(AText);
   gLedgerManager.LoadPersons;
+end;
+
+procedure TfrmMain.DeleteFromList( AStringGrid: TStringGrid; AList: TtiObjectList  );
+var
+  O: TManualObject;
+  i: Integer;
+  s: String;
+  iRows: integer;
+  oldtop : integer;
+begin
+  oldtop := AStringGrid.Selection.Top;
+  if oldtop = 0 then exit; // <==
+
+  iRows := AStringGrid.Selection.bottom - AStringGrid.Selection.Top +1;
+  if iRows = 1 then
+    s := cMsgDeleteOneRecord
+  else
+    s := Format(cMsgDeleteRecords,[iRows]);
+
+  if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
+  begin
+    AList.BeginUpdate;
+    try
+      for i := AStringGrid.Selection.Bottom downto AStringGrid.Selection.Top do
+        begin
+          O := TManualObject(AList[i-1]);
+          O.DeleteObject(AList);
+        end;
+    finally
+      AList.EndUpdate;
+    end;
+    // position to the correct record, the first after the last deleted
+    AStringGrid.Row:= oldtop;
+    AStringGrid.TopRow:= AStringGrid.Row;
+  end;
 end;
 
 
