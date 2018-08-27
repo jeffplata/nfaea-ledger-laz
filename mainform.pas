@@ -164,6 +164,8 @@ var
 begin
   O := TService(FMedServices.SelectedObject[sgdServices]);
   B := TService.Create;
+  writeln(gLedgerManager.Services.AsDebugString);
+
   B.Assign(O);
   if EditService(B) then
   begin
@@ -308,6 +310,7 @@ procedure TfrmMain.actEditLoanExecute(Sender: TObject);
   begin
     O := TLoan(FMedLoans.SelectedObject[sgdLoans]);
     if not assigned(O) then exit; //<==
+
     B := TLoan.Create;
     B.Assign(O);
     if EditLoan(B) then
@@ -317,7 +320,7 @@ procedure TfrmMain.actEditLoanExecute(Sender: TObject);
       O.NotifyObservers;
     end;
     B.Free;
-    ==> todo: service combobox is being replaced with regular on cancel
+    //==> todo: service combobox is being replaced with regular on cancel
 end;
 
 procedure TfrmMain.actEditLoanUpdate(Sender: TObject);
@@ -432,7 +435,7 @@ begin
   begin
     FMedLoans := TtiModelMediator.Create(Self);
     FMedLoans.Name:= 'LoansMediator';
-    FMedLoans.AddComposite('PersonID;ServiceID;Person.Name(200,"Member");Service.Name(100,"Loan Type");TotalAmount(100,"Amount");ID(100," ")',sgdLoans);
+    FMedLoans.AddComposite('Person.Name(200,"Member");Service.Name(100,"Loan Type");Principal(100,"Amount");Interest;Total;DocDate(100,"Date");ID(100," ")',sgdLoans);
   end;
   FMedLoans.Subject:= gLedgerManager.Loans;
   FMedLoans.Active:= True;

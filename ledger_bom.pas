@@ -251,7 +251,7 @@ type
     procedure RecomputeNetProceeds;
   published
     property PersonID: string read GetPersonID;
-    property SericeID: string read GetServiceID;
+    property ServiceID: string read GetServiceID;
     property Person: TPersonBasic read FPerson write SetPerson;
     property Service: TService read FService write SetService;
     property DocNumber: string read FDocNumber write SetDocNumber;
@@ -292,7 +292,7 @@ uses
 const
   cNameMissing = 'Member name cannot be empty.';
   cLoanTypeMissing = 'Loan Type cannot be empty.';
-  cValueNotAllowed = '%s is not allowed.''';
+  cValueNotAllowed = '%s value is not valid.''';
 
 
 
@@ -489,7 +489,9 @@ end;
 
 destructor TLoan.Destroy;
 begin
+  FPerson := nil;
   FPerson.Free;
+  FService := nil;
   FService.Free;
   inherited Destroy;
 end;

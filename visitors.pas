@@ -264,7 +264,12 @@ procedure TReadLoansVisitor.MapRowToObject;
       O.Person.Assign(P);
     if S <> nil then
       O.Service.Assign(S);
-    o.service.OID.assign(s.OID);
+
+
+    O.Person.OID.AssignFromTIQuery('PERSON_OID', Query);
+    O.Service.OID.AssignFromTIQuery('SERVICE_OID',Query);
+
+    //o.service.OID.assign(s.OID);
 
     //O.Service.Assign( TService(gLedgerManager.Services.Find(Query.FieldAsString['SERVICE_OID']) ) );
     //O.Person.Assign( TPerson(gLedgerManager.PersonList.Find(Query.FieldAsString['PERSON_OID']) ) );

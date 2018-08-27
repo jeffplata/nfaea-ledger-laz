@@ -61,6 +61,7 @@ type
     procedure SetupMediators;
     procedure Init;
     procedure UpdateLoanData;
+    procedure UpdateComboBox;
   public
     property Data: TLoan read FData write SetData;
   end;
@@ -77,14 +78,15 @@ uses
   ;
 
 function EditLoan(AData: TLoan): boolean;
-var
-  i: integer;
+//var
+//  i: integer;
 begin
   with TfrmLoanEdit.Create(nil) do
   try
     Data := Adata;
-    i := cmbService.Items.IndexOf(Data.Service.Name);
-    cmbService.ItemIndex:= i;
+    //i := cmbService.Items.IndexOf(Data.Service.Name);
+    //cmbService.ItemIndex:= i;
+    UpdateComboBox;
     result := (ShowModal = mrOK);
   finally
     Free;
@@ -207,6 +209,20 @@ begin
 
   data.RecomputeTotals:= True;
   data.RecomputeTotal;
+
+  UpdateComboBox;
+
+end;
+
+procedure TfrmLoanEdit.UpdateComboBox;
+var
+  i: Integer;
+begin
+  if cmbService.Text <> Data.Service.Name then
+  begin
+    i := cmbService.Items.IndexOf(Data.Service.Name);
+    cmbService.ItemIndex:= i;
+  end;
 end;
 
 end.
