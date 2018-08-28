@@ -233,74 +233,13 @@ end;
 
 
 procedure TfrmMain.actDeleteMemberExecute(Sender: TObject);
-//var
-//  P: TPerson;
-//  i: Integer;
-//  s: String;
-//  iRows: integer;
-//  oldtop : integer;
 begin
   DeleteFromList(sgdPersons, Persons);
-  //exit;
-
-  //oldtop := sgdPersons.Selection.Top;
-  //iRows := sgdPersons.Selection.bottom - sgdPersons.Selection.Top +1;
-  //if iRows = 1 then
-  //  s := cMsgDeleteOneRecord
-  //else
-  //  s := Format(cMsgDeleteRecords,[iRows]);
-  //
-  //if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
-  //begin
-  //  Persons.BeginUpdate;
-  //  try
-  //    for i := sgdPersons.Selection.Bottom downto sgdPersons.Selection.Top do
-  //      begin
-  //        P := TPerson(Persons[i-1]);
-  //        P.DeleteObject(Persons);
-  //      end;
-  //  finally
-  //    Persons.EndUpdate;
-  //  end;
-  //  // position to the correct record, the first after the last deleted
-  //  sgdPersons.Row:= oldtop;
-  //end;
 end;
 
 procedure TfrmMain.actDeleteServiceExecute(Sender: TObject);
-//var
-//  O: TService;
-//  i: Integer;
-//  s: String;
-//  iRows: integer;
-//  oldtop: integer;
 begin
   DeleteFromList( sgdServices, Services );
-
-  //oldtop := sgdServices.Selection.Top;
-  //iRows := sgdServices.Selection.bottom - sgdServices.Selection.Top +1;
-  //if iRows = 1 then
-  //  s := cMsgDeleteOneRecord
-  //else
-  //  s := Format(cMsgDeleteRecords,[iRows]);
-  //
-  //if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
-  //begin
-  //  Services.BeginUpdate;
-  //  try
-  //    for i := sgdServices.Selection.Bottom downto sgdServices.Selection.Top do
-  //      begin
-  //        O := TService(TService(Services[i-1]));
-  //        O.DeleteObject(Services);
-  //      end;
-  //  finally
-  //    Services.EndUpdate;
-  //  end;
-  //  // position to the correct record, the first after the last deleted
-  //  sgdServices.Row := oldtop;
-  //  //if iRows > 1 then
-  //  //  sgdServices.Row:= sgdServices.Row - (iRows -1);
-  //end;
 end;
 
 procedure TfrmMain.actEditLoanExecute(Sender: TObject);
@@ -483,13 +422,20 @@ begin
       for i := AStringGrid.Selection.Bottom downto AStringGrid.Selection.Top do
         begin
           O := TManualObject(AList[i-1]);
-          O.DeleteObject(AList);
+          O.DeleteObject(AList, s);
+          O.ObjectState:= posClean;
+          if (Pos('FOREIGN KEY',s)>0) then
+            begin
+              showmessage( 'Not Deleted');
+              O.ObjectState:= posClean;
+            end;
         end;
     finally
       AList.EndUpdate;
     end;
     // position to the correct record, the first after the last deleted
     AStringGrid.Row:= oldtop;
+    // set TopRow so that the current selected record is not hidden from view
     AStringGrid.TopRow:= AStringGrid.Row;
   end;
 end;

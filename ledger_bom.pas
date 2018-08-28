@@ -23,7 +23,7 @@ type
   TManualObject = class(TtiObject)
     public
       procedure SaveObject;
-      procedure DeleteObject(FromList: TtiObjectList); //copied
+      procedure DeleteObject(FromList: TtiObjectList; var s: string ); //copied somewhere
   end;
 
   TPersonBasic = class;
@@ -549,12 +549,22 @@ begin
   Save;
 end;
 
-procedure TManualObject.DeleteObject( FromList: TtiObjectList);
+procedure TManualObject.DeleteObject(FromList: TtiObjectList; var s: string);
 begin
+  s := '';
   Deleted:=True;
-  Save;
-  If Assigned(FromList) then
-     FromList.FreeDeleted;
+  try
+    Save;  // Most likely, errors will sprout from here
+    if Owner <> nil then
+      If Assigned(FromList) then
+         FromList.FreeDeleted;
+  except
+    on e: Exception do
+    begin
+      s := e.Message;
+      Deleted := False;
+    end;
+  end;
 end;
 
 { TPersonLedger }
