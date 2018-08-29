@@ -31,6 +31,7 @@ type
   TPersonList = class;
   TPersonsLookup = class;
 
+  TServiceBasic = class;
   TService = class;
   TServiceList = class;
 
@@ -39,6 +40,54 @@ type
 
   TLoan = class;
   TLoanList = class;
+
+  TPayment = class;
+  TPaymentList = class;
+
+  { TPayment }
+
+  TPayment = class(TtiObject)
+  private
+    FAmount: Currency;
+    FDocDate: TDateTime;
+    FDocNumber: string;
+    FPerson: TPersonBasic;
+    FRemarks: string;
+    FService: TServiceBasic;
+    procedure SetAmount(AValue: Currency);
+    procedure SetDocDate(AValue: TDateTime);
+    procedure SetDocNumber(AValue: string);
+    procedure SetPerson(AValue: TPersonBasic);
+    procedure SetRemarks(AValue: string);
+    procedure SetService(AValue: TServiceBasic);
+  protected
+    function  GetOwner: TPaymentList; reintroduce;
+    procedure SetOwner(const Value: TPaymentList); reintroduce;
+  public
+    property  Owner: TPaymentList read GetOwner write SetOwner;
+    constructor Create; override;
+    destructor Destroy; override;
+  published
+    property Person: TPersonBasic read FPerson write SetPerson;
+    property Service: TServiceBasic read FService write SetService;
+    property DocDate: TDateTime read FDocDate write SetDocDate;
+    property DocNumber: string read FDocNumber write SetDocNumber;
+    property Amount: Currency read FAmount write SetAmount;
+    property Remarks: string read FRemarks write SetRemarks;
+  end;
+
+  { TPaymentList }
+
+  TPaymentList = class(TtiObjectList)
+  private
+  protected
+    function  GetItems(i: integer): TPayment; reintroduce;
+    procedure SetItems(i: integer; const Value: TPayment); reintroduce;
+  public
+    property  Items[i:integer]: TPayment read GetItems write SetItems;
+    procedure Add(AObject:TPayment); reintroduce;
+  published
+  end;
 
   { TPersonBasic }
 
@@ -104,6 +153,16 @@ type
     procedure Add(AObject:TPerson); reintroduce;
     constructor Create; override;
     destructor Destroy; override;
+  end;
+
+  { TServiceBasic }
+
+  TServiceBasic = class(TManualObject)
+  private
+    FName: string;
+    procedure SetName(AValue: string);
+  published
+    property Name: string read FName write SetName;
   end;
 
   { TService }
@@ -293,6 +352,95 @@ const
   cNameMissing = 'Member name cannot be empty.';
   cLoanTypeMissing = 'Loan Type cannot be empty.';
   cValueNotAllowed = '%s value is not valid.''';
+
+{ TServiceBasic }
+
+procedure TServiceBasic.SetName(AValue: string);
+begin
+  if FName=AValue then Exit;
+  FName:=AValue;
+end;
+
+{ TPaymentList }
+
+function TPaymentList.GetItems(i: integer): TPayment;
+begin
+  result := TPayment(inherited GetItems(i));
+end;
+
+procedure TPaymentList.SetItems(i: integer; const Value: TPayment);
+begin
+  inherited SetItems(i, Value);
+end;
+
+procedure TPaymentList.Add(AObject: TPayment);
+begin
+  inherited Add(AObject);
+end;
+
+{ TPayment }
+
+procedure TPayment.SetPerson(AValue: TPersonBasic);
+begin
+  if FPerson=AValue then Exit;
+  FPerson:=AValue;
+end;
+
+procedure TPayment.SetRemarks(AValue: string);
+begin
+  if FRemarks=AValue then Exit;
+  FRemarks:=AValue;
+end;
+
+procedure TPayment.SetAmount(AValue: Currency);
+begin
+  if FAmount=AValue then Exit;
+  FAmount:=AValue;
+end;
+
+procedure TPayment.SetDocDate(AValue: TDateTime);
+begin
+  if FDocDate=AValue then Exit;
+  FDocDate:=AValue;
+end;
+
+procedure TPayment.SetDocNumber(AValue: string);
+begin
+  if FDocNumber=AValue then Exit;
+  FDocNumber:=AValue;
+end;
+
+procedure TPayment.SetService(AValue: TServiceBasic);
+begin
+  if FService=AValue then Exit;
+  FService:=AValue;
+end;
+
+function TPayment.GetOwner: TPaymentList;
+begin
+  result := TPaymentList(inherited GetOwner);
+end;
+
+procedure TPayment.SetOwner(const Value: TPaymentList);
+begin
+  inherited SetOwner(Value);
+end;
+
+constructor TPayment.Create;
+begin
+  inherited Create;
+  FPerson := TPersonBasic.Create;
+  FService := TServiceBasic.Create;
+end;
+
+destructor TPayment.Destroy;
+begin
+  FPerson := nil;
+  FService := nil;
+  FPerson.Free;
+  FService.Free;
+  inherited Destroy;
+end;
 
 
 
@@ -563,6 +711,7 @@ begin
     begin
       s := e.Message;
       Deleted := False;
+      ObjectState:= posClean;
     end;
   end;
 end;

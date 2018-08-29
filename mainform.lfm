@@ -15,9 +15,9 @@ object frmMain: TfrmMain
     Height = 347
     Top = 0
     Width = 677
-    ActivePage = tabLoans
+    ActivePage = tabPayments
     Align = alClient
-    TabIndex = 2
+    TabIndex = 3
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
@@ -201,6 +201,75 @@ object frmMain: TfrmMain
         TabOrder = 4
       end
     end
+    object tabPayments: TTabSheet
+      Caption = 'Payments'
+      ClientHeight = 319
+      ClientWidth = 669
+      object edtFilterPayments: TLabeledEdit
+        Left = 32
+        Height = 23
+        Top = 8
+        Width = 144
+        EditLabel.AnchorSideTop.Control = edtFilterPayments
+        EditLabel.AnchorSideTop.Side = asrCenter
+        EditLabel.AnchorSideRight.Control = edtFilterPayments
+        EditLabel.AnchorSideBottom.Control = edtFilterPayments
+        EditLabel.AnchorSideBottom.Side = asrBottom
+        EditLabel.Left = 3
+        EditLabel.Height = 15
+        EditLabel.Top = 12
+        EditLabel.Width = 26
+        EditLabel.Caption = 'Filter'
+        EditLabel.ParentColor = False
+        LabelPosition = lpLeft
+        TabOrder = 0
+      end
+      object spbClearPaymentsFilter: TSpeedButton
+        Left = 180
+        Height = 22
+        Top = 8
+        Width = 23
+      end
+      object btnAddPayment: TButton
+        Left = 224
+        Height = 22
+        Top = 8
+        Width = 75
+        Action = actAddPayment
+        TabOrder = 1
+      end
+      object btnEditPayment: TButton
+        Left = 304
+        Height = 22
+        Top = 8
+        Width = 75
+        Action = actEditPayment
+        TabOrder = 2
+      end
+      object btnDeletePayment: TButton
+        Left = 384
+        Height = 22
+        Top = 8
+        Width = 75
+        Action = actDeletePayment
+        TabOrder = 3
+      end
+      object sgdPayments: TStringGrid
+        Left = 0
+        Height = 286
+        Top = 33
+        Width = 669
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ColCount = 0
+        FixedCols = 0
+        FixedRows = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
+        RowCount = 0
+        TabOrder = 4
+        OnDblClick = sgdLoansDblClick
+      end
+    end
   end
   object StatusBar1: TStatusBar
     Left = 0
@@ -299,6 +368,15 @@ object frmMain: TfrmMain
     object actDeleteLoan: TAction
       Caption = 'Delete'
       OnExecute = actDeleteLoanExecute
+    end
+    object actAddPayment: TAction
+      Caption = 'Add'
+    end
+    object actEditPayment: TAction
+      Caption = 'Edit'
+    end
+    object actDeletePayment: TAction
+      Caption = 'Delete'
     end
   end
 end

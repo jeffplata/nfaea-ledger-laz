@@ -30,10 +30,16 @@ type
     actAddLoan: TAction;
     actEditLoan: TAction;
     actDeleteLoan: TAction;
+    actAddPayment: TAction;
+    actEditPayment: TAction;
+    actDeletePayment: TAction;
     actMemberCSVLoad: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
     actFileEXit: TFileExit;
+    btnAddPayment: TButton;
+    btnDeletePayment: TButton;
+    btnEditPayment: TButton;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -45,6 +51,7 @@ type
     btnDeleteLoan: TButton;
     edtFilter: TLabeledEdit;
     edtFilterLoans: TLabeledEdit;
+    edtFilterPayments: TLabeledEdit;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem2: TMenuItem;
@@ -57,6 +64,8 @@ type
     MenuItem9: TMenuItem;
     PageControl1: TPageControl;
     sgdLoans: TStringGrid;
+    sgdPayments: TStringGrid;
+    spbClearPaymentsFilter: TSpeedButton;
     spbMembersClear: TSpeedButton;
     spbClearLoanFilter: TSpeedButton;
     StatusBar1: TStatusBar;
@@ -65,6 +74,7 @@ type
     tabPersons: TTabSheet;
     tabServices: TTabSheet;
     tabLoans: TTabSheet;
+    tabPayments: TTabSheet;
     procedure actAddLoanExecute(Sender: TObject);
     procedure actAddMemberExecute(Sender: TObject);
     procedure actAddServiceExecute(Sender: TObject);
@@ -88,6 +98,7 @@ type
     FPersonsMediator: TtiModelMediator;
     FMedServices: TtiModelMediator;
     FMedLoans: TtiModelMediator;
+    FMedPayments: TtiModelMediator;
     FPersons: TPersonList;
     FServices: TServiceList;
     procedure SetPersons(AValue: TPersonList);
@@ -119,7 +130,7 @@ uses
 const
   cMsgDeleteOneRecord = 'Do you want to delete the selected record?';
   cMsgDeleteRecords = '%d selected records will be deleted.'#13#10'Do you want to continue?';
-
+  cMsgCannotDelete = 'This object cannot be deleted'#13#10' as it is referenced by other objects';
 {$R *.lfm}
 
 { TfrmMain }
@@ -307,6 +318,7 @@ begin
 
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbMembersClear.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLoanFilter.Glyph);
+  dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPaymentsFilter.Glyph);
 
   actEditLoan.OnUpdate:= @actEditLoanUpdate;
   actDeleteLoan.OnUpdate:= @actEditLoanUpdate;
@@ -379,6 +391,15 @@ begin
   FMedLoans.Subject:= gLedgerManager.Loans;
   FMedLoans.Active:= True;
 
+  //payments mediator
+  if not assigned(FMedPayments) then
+  begin
+    FMedPayments := TtiModelMediator.Create(Self);
+    FMedPayments.AddComposite('Person.Name;DocDate;DocNumber;Service.Name;Amount;dummy(100," ")', sgdPayments);
+  end;
+  FMedPayments.Subject:= gLedgerManager.PaymentList;
+  FMedPayments.Active:= True;
+
 end;
 
 procedure TfrmMain.SetupDatabase;
@@ -405,10 +426,12 @@ var
   s: String;
   iRows: integer;
   oldtop : integer;
+  DeleteFailed: Boolean;
 begin
   oldtop := AStringGrid.Selection.Top;
   if oldtop = 0 then exit; // <==
 
+  DeleteFailed:= False;
   iRows := AStringGrid.Selection.bottom - AStringGrid.Selection.Top +1;
   if iRows = 1 then
     s := cMsgDeleteOneRecord
@@ -423,20 +446,22 @@ begin
         begin
           O := TManualObject(AList[i-1]);
           O.DeleteObject(AList, s);
-          O.ObjectState:= posClean;
           if (Pos('FOREIGN KEY',s)>0) then
             begin
-              showmessage( 'Not Deleted');
-              O.ObjectState:= posClean;
+              MessageDlg('Information',cMsgCannotDelete ,mtInformation,[mbOK],0);
+              DeleteFailed := True;
             end;
         end;
     finally
       AList.EndUpdate;
     end;
-    // position to the correct record, the first after the last deleted
-    AStringGrid.Row:= oldtop;
-    // set TopRow so that the current selected record is not hidden from view
-    AStringGrid.TopRow:= AStringGrid.Row;
+    if not DeleteFailed then
+    begin
+      // position to the correct record, the first after the last deleted
+      AStringGrid.Row:= oldtop;
+      // set TopRow so that the current selected record is not hidden from view
+      AStringGrid.TopRow:= AStringGrid.Row;
+    end;
   end;
 end;
 

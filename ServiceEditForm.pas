@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, SpinEx, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, EditBtn, MaskEdit, ExtCtrls, ledger_bom, tiModelMediator,
+  StdCtrls, EditBtn, MaskEdit, ExtCtrls, ComCtrls, ledger_bom, tiModelMediator,
   JLabeledCurrencyEdit;
 
 type
@@ -16,19 +16,21 @@ type
   TfrmServiceEdit = class(TForm)
     Button1: TButton;
     Button2: TButton;
-    edtInterest: TEdit;
-    edtRebate: TEdit;
-    edtMaxTerms: TEdit;
     edtDateJoined: TDateEdit;
-    edtName: TEdit;
-    edtMinTerms: TEdit;
+    edtInterest: TEdit;
     edtMaxAmount: TJLabeledCurrencyEdit;
+    edtMaxTerms: TEdit;
     edtMinAmount: TJLabeledCurrencyEdit;
+    edtMinTerms: TEdit;
+    edtName: TEdit;
+    edtRebate: TEdit;
     Label1: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
+    PageControl1: TPageControl;
+    tabGeneral: TTabSheet;
   private
     FData: TService;
     FMediator: TtiModelMediator;

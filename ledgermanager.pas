@@ -16,10 +16,12 @@ type
   TLedgerManager = class(TtiObject)
   private
     FLoans: TLoanList;
+    FPaymentList: TPaymentList;
     FPersonList: TPersonList;
     FPersonsLookup: TPersonsLookUp;
     FServices: TServiceList;
     procedure SetLoans(AValue: TLoanList);
+    procedure SetPaymentList(AValue: TPaymentList);
     procedure SetPersonList(AValue: TPersonList);
     procedure SetPersonsLookup(AValue: TPersonsLookUp);
     procedure SetServices(AValue: TServiceList);
@@ -36,6 +38,7 @@ type
     property Services: TServiceList read FServices write SetServices;
     property Loans: TLoanList read FLoans write SetLoans;
     property PersonsLookup: TPersonsLookUp read FPersonsLookup write SetPersonsLookup;
+    property PaymentList: TPaymentList read FPaymentList write SetPaymentList;
   end;
 
   //global Singleton
@@ -78,6 +81,12 @@ begin
   FLoans:=AValue;
 end;
 
+procedure TLedgerManager.SetPaymentList(AValue: TPaymentList);
+begin
+  if FPaymentList=AValue then Exit;
+  FPaymentList:=AValue;
+end;
+
 procedure TLedgerManager.SetServices(AValue: TServiceList);
 begin
   if FServices=AValue then Exit;
@@ -98,6 +107,9 @@ begin
 
   FPersonsLookup := TPersonsLookUp.Create;
   FPersonsLookup.Owner := Self;
+
+  FPaymentList :=  TPaymentList.Create;
+  FPaymentList.Owner := Self;
 end;
 
 destructor TLedgerManager.Destroy;
