@@ -1,0 +1,172 @@
+object frmPaymentEdit: TfrmPaymentEdit
+  Left = 432
+  Height = 274
+  Top = 224
+  Width = 312
+  BorderStyle = bsDialog
+  Caption = 'Edit Payment'
+  ClientHeight = 274
+  ClientWidth = 312
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  LCLVersion = '1.8.2.0'
+  object Button1: TButton
+    Left = 144
+    Height = 25
+    Top = 238
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Ok'
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 224
+    Height = 25
+    Top = 238
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 227
+    Top = 0
+    Width = 312
+    ActivePage = tabGeneral
+    Align = alTop
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabIndex = 0
+    TabOrder = 2
+    object tabGeneral: TTabSheet
+      Caption = 'General'
+      ClientHeight = 199
+      ClientWidth = 304
+      object Label1: TLabel
+        Left = 9
+        Height = 15
+        Top = 8
+        Width = 44
+        Alignment = taRightJustify
+        Caption = 'Number'
+        ParentColor = False
+      end
+      object edtNumber: TEdit
+        Left = 64
+        Height = 23
+        Top = 8
+        Width = 136
+        TabOrder = 0
+        Text = 'edtNumber'
+      end
+      object Label2: TLabel
+        Left = 29
+        Height = 15
+        Top = 40
+        Width = 24
+        Alignment = taRightJustify
+        Caption = 'Date'
+        ParentColor = False
+      end
+      object Label3: TLabel
+        Left = 8
+        Height = 15
+        Top = 72
+        Width = 45
+        Alignment = taRightJustify
+        Caption = 'Member'
+        ParentColor = False
+      end
+      object Label4: TLabel
+        Left = 16
+        Height = 15
+        Top = 104
+        Width = 37
+        Alignment = taRightJustify
+        Caption = 'Service'
+        ParentColor = False
+      end
+      object edtDate: TDateEdit
+        Left = 64
+        Height = 23
+        Top = 40
+        Width = 136
+        CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+        DateOrder = doNone
+        ButtonWidth = 23
+        NumGlyphs = 1
+        MaxLength = 0
+        TabOrder = 1
+        Text = 'edtDate'
+      end
+      object cmbService: TComboBox
+        Left = 64
+        Height = 23
+        Top = 104
+        Width = 136
+        ItemHeight = 15
+        Style = csDropDownList
+        TabOrder = 4
+      end
+      object Label5: TLabel
+        Left = 9
+        Height = 15
+        Top = 136
+        Width = 44
+        Alignment = taRightJustify
+        Caption = 'Amount'
+        ParentColor = False
+      end
+      object edtAmount: TJLabeledCurrencyEdit
+        Left = 64
+        Height = 23
+        Top = 136
+        Width = 136
+        DisplayFormat = '#,0.00'
+        Decimals = 2
+        Value = 0
+        NegativeColor = clDefault
+        EditLabel.AnchorSideLeft.Control = edtAmount
+        EditLabel.AnchorSideRight.Control = edtAmount
+        EditLabel.AnchorSideRight.Side = asrBottom
+        EditLabel.AnchorSideBottom.Control = edtAmount
+        EditLabel.Left = 64
+        EditLabel.Height = 1
+        EditLabel.Top = 132
+        EditLabel.Width = 136
+        EditLabel.ParentColor = False
+        TabOrder = 5
+      end
+      object edtMember: TEdit
+        Left = 64
+        Height = 23
+        Top = 72
+        Width = 136
+        Color = clInfoBk
+        ReadOnly = True
+        TabOrder = 2
+        Text = 'edtMember'
+      end
+      object btnSelectMember: TButton
+        Left = 203
+        Height = 21
+        Top = 73
+        Width = 75
+        Action = actSelectMember
+        Caption = 'Select'
+        TabOrder = 3
+      end
+    end
+  end
+  object ActionList1: TActionList
+    left = 248
+    top = 32
+    object actSelectMember: TAction
+      Caption = 'Member'
+      OnExecute = actSelectMemberExecute
+    end
+  end
+end

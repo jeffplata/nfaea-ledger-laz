@@ -32,6 +32,7 @@ type
   TPersonsLookup = class;
 
   TServiceBasic = class;
+  TServiceBasicList = class;
   TService = class;
   TServiceList = class;
 
@@ -46,7 +47,7 @@ type
 
   { TPayment }
 
-  TPayment = class(TtiObject)
+  TPayment = class(TManualObject)
   private
     FAmount: Currency;
     FDocDate: TDateTime;
@@ -67,6 +68,7 @@ type
     property  Owner: TPaymentList read GetOwner write SetOwner;
     constructor Create; override;
     destructor Destroy; override;
+    procedure AssignClassProps(ASource: TtiObject); override;
   published
     property Person: TPersonBasic read FPerson write SetPerson;
     property Service: TServiceBasic read FService write SetService;
@@ -161,8 +163,23 @@ type
   private
     FName: string;
     procedure SetName(AValue: string);
+    function GetCaption: string;
   published
+    property Caption: string read GetCaption;
     property Name: string read FName write SetName;
+  end;
+
+  { TServiceBasicList }
+
+  TServiceBasicList = class(TtiObjectList)
+  private
+  protected
+    function  GetItems(i: integer): TServiceBasic; reintroduce;
+    procedure SetItems(i: integer; const Value: TServiceBasic); reintroduce;
+  public
+    property  Items[i:integer]: TServiceBasic read GetItems write SetItems;
+    procedure Add(AObject:TServiceBasic); reintroduce;
+  published
   end;
 
   { TService }
@@ -287,7 +304,6 @@ type
     procedure SetNotes(AValue: string);
     procedure SetPaymentEnd(AValue: Tdate);
     procedure SetPaymentStart(AValue: Tdate);
-    //procedure SetPerson(AValue: TPerson);
     procedure SetPerson(AValue: TPersonBasic);
     procedure SetPreviousBalance(AValue: Currency);
     procedure SetPrincipal(AValue: Currency);
@@ -346,6 +362,7 @@ type
 implementation
 uses
   variants
+  , Model_View
   ;
 
 const
@@ -353,12 +370,34 @@ const
   cLoanTypeMissing = 'Loan Type cannot be empty.';
   cValueNotAllowed = '%s value is not valid.''';
 
+{ TServiceBasicList }
+
+function TServiceBasicList.GetItems(i: integer): TServiceBasic;
+begin
+  result := TServiceBasic(inherited GetItems(i));
+end;
+
+procedure TServiceBasicList.SetItems(i: integer; const Value: TServiceBasic);
+begin
+  inherited SetItems(i, Value);
+end;
+
+procedure TServiceBasicList.Add(AObject: TServiceBasic);
+begin
+  inherited Add(AObject);
+end;
+
 { TServiceBasic }
 
 procedure TServiceBasic.SetName(AValue: string);
 begin
   if FName=AValue then Exit;
   FName:=AValue;
+end;
+
+function TServiceBasic.GetCaption: string;
+begin
+  result := Name;
 end;
 
 { TPaymentList }
@@ -436,10 +475,18 @@ end;
 destructor TPayment.Destroy;
 begin
   FPerson := nil;
-  FService := nil;
   FPerson.Free;
+
+  FService := nil;
   FService.Free;
+
   inherited Destroy;
+end;
+
+procedure TPayment.AssignClassProps(ASource: TtiObject);
+begin
+  FPerson.Assign(TPayment(ASource).Person);
+  FService.Assign(TPayment(ASource).Service);
 end;
 
 
@@ -905,11 +952,6 @@ begin
   result := OID.AsString;
 end;
 
-//procedure TPerson.SetName(AValue: string);
-//begin
-//  if FName=AValue then Exit;
-//  FName:=AValue;
-//end;
 
 function TPerson.GetOwner: TPersonList;
 begin

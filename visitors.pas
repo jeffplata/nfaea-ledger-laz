@@ -376,6 +376,8 @@ procedure TReadServicesVisitor.MapRowToObject;
 var
   O : TService;
 
+  OB: TServiceBasic;
+
 begin
   O:= TService.Create;
   O.OID.AssignFromTIQuery('OID',Query);
@@ -389,6 +391,12 @@ begin
   O.MaxTerm:= Query.FieldAsInteger['MAXTERM'];
   O.ObjectState:=posClean;
   TServiceList(Visited).Add(O);
+
+  // meanwhile, popuplate also the basic list
+  OB := TServiceBasic.Create;
+  OB.OID.AssignFromTIQuery('OID',Query);
+  OB.Name:= O.Name;
+  gLedgerManager.ServiceBasicList.Add(OB);
 end;
 
 { TSavePersonVisitor }

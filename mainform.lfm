@@ -371,9 +371,11 @@ object frmMain: TfrmMain
     end
     object actAddPayment: TAction
       Caption = 'Add'
+      OnExecute = actAddPaymentExecute
     end
     object actEditPayment: TAction
       Caption = 'Edit'
+      OnExecute = actEditPaymentExecute
     end
     object actDeletePayment: TAction
       Caption = 'Delete'

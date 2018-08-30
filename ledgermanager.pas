@@ -19,11 +19,13 @@ type
     FPaymentList: TPaymentList;
     FPersonList: TPersonList;
     FPersonsLookup: TPersonsLookUp;
+    FServiceBasicList: TServiceBasicList;
     FServices: TServiceList;
     procedure SetLoans(AValue: TLoanList);
     procedure SetPaymentList(AValue: TPaymentList);
     procedure SetPersonList(AValue: TPersonList);
     procedure SetPersonsLookup(AValue: TPersonsLookUp);
+    procedure SetServiceBasicList(AValue: TServiceBasicList);
     procedure SetServices(AValue: TServiceList);
   protected
   public
@@ -39,6 +41,7 @@ type
     property Loans: TLoanList read FLoans write SetLoans;
     property PersonsLookup: TPersonsLookUp read FPersonsLookup write SetPersonsLookup;
     property PaymentList: TPaymentList read FPaymentList write SetPaymentList;
+    property ServiceBasicList: TServiceBasicList read FServiceBasicList write SetServiceBasicList;
   end;
 
   //global Singleton
@@ -75,6 +78,12 @@ begin
   FPersonsLookup:=AValue;
 end;
 
+procedure TLedgerManager.SetServiceBasicList(AValue: TServiceBasicList);
+begin
+  if FServiceBasicList=AValue then Exit;
+  FServiceBasicList:=AValue;
+end;
+
 procedure TLedgerManager.SetLoans(AValue: TLoanList);
 begin
   if FLoans=AValue then Exit;
@@ -101,6 +110,9 @@ begin
 
   FServices := TServiceList.Create;
   FServices.Owner := Self;
+
+  FServiceBasicList := TServiceBasicList.Create;
+  FServiceBasicList.Owner := Self;
 
   FLoans := TLoanList.Create;
   FLoans.Owner := Self;
@@ -130,6 +142,7 @@ end;
 procedure TLedgerManager.LoadServices;
 begin
   FServices.Clear;
+  FServiceBasicList.Clear; // populate also the name/oid list
   GTIOPFManager.Read(FServices);
 end;
 

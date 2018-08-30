@@ -77,6 +77,7 @@ type
     tabPayments: TTabSheet;
     procedure actAddLoanExecute(Sender: TObject);
     procedure actAddMemberExecute(Sender: TObject);
+    procedure actAddPaymentExecute(Sender: TObject);
     procedure actAddServiceExecute(Sender: TObject);
     procedure actDeleteLoanExecute(Sender: TObject);
     procedure actDeleteMemberExecute(Sender: TObject);
@@ -84,6 +85,7 @@ type
     procedure actEditLoanExecute(Sender: TObject);
     procedure actEditLoanUpdate(Sender: TObject);
     procedure actEditMemberExecute(Sender: TObject);
+    procedure actEditPaymentExecute(Sender: TObject);
     procedure actEditServiceExecute(Sender: TObject);
     procedure actHelpAboutExecute(Sender: TObject);
     procedure actMemberCSVLoadExecute(Sender: TObject);
@@ -124,6 +126,7 @@ uses
   ,ledgermanager
   ,tiOPFManager
   ,MemberCSVLoad
+  , PaymentEditForm
   , ResourceDM
   ;
 
@@ -168,6 +171,25 @@ begin
   B.Free;
 end;
 
+procedure TfrmMain.actEditPaymentExecute(Sender: TObject);
+var
+  O : TPayment;
+  B : TPayment; //Buffer for undo
+begin
+  O := TPayment(FMedPayments.SelectedObject[sgdPayments]);
+  if not assigned(O) then exit; //<==
+
+  B := TPayment.Create;
+  B.Assign(O);
+  if EditPayment(B) then
+  begin
+    O.Assign(B);
+    O.SaveObject;
+    O.NotifyObservers;
+  end;
+  B.Free;
+end;
+
 procedure TfrmMain.actEditServiceExecute(Sender: TObject);
 var
   O : TService;
@@ -175,7 +197,6 @@ var
 begin
   O := TService(FMedServices.SelectedObject[sgdServices]);
   B := TService.Create;
-  writeln(gLedgerManager.Services.AsDebugString);
 
   B.Assign(O);
   if EditService(B) then
@@ -204,6 +225,22 @@ begin
     P.Free;
 end;
 
+procedure TfrmMain.actAddPaymentExecute(Sender: TObject);
+var
+  O : TPayment;
+begin
+  O := TPayment.Create;
+  if EditPayment(O) then
+  begin
+    GTIOPFManager.DefaultOIDGenerator.AssignNextOID(O.OID); // we generate oid only when before saving
+    gLedgerManager.PaymentList.Add(O);
+    O.SaveObject;
+    FMedPayments.SelectedObject[sgdPayments] := O;  // go to last inserted
+  end
+  else
+    O.Free;
+end;
+
 procedure TfrmMain.actAddLoanExecute(Sender: TObject);
 var
   O : TLoan;
@@ -224,7 +261,6 @@ procedure TfrmMain.actAddServiceExecute(Sender: TObject);
 var
   O : TService;
 begin
-  //P := TPerson.CreateNew;
   O := TService.Create;
   if EditService(O) then
   begin
@@ -270,7 +306,6 @@ procedure TfrmMain.actEditLoanExecute(Sender: TObject);
       O.NotifyObservers;
     end;
     B.Free;
-    //==> todo: service combobox is being replaced with regular on cancel
 end;
 
 procedure TfrmMain.actEditLoanUpdate(Sender: TObject);

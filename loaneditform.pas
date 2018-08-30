@@ -78,14 +78,10 @@ uses
   ;
 
 function EditLoan(AData: TLoan): boolean;
-//var
-//  i: integer;
 begin
   with TfrmLoanEdit.Create(nil) do
   try
     Data := Adata;
-    //i := cmbService.Items.IndexOf(Data.Service.Name);
-    //cmbService.ItemIndex:= i;
     UpdateComboBox;
     result := (ShowModal = mrOK);
   finally

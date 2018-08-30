@@ -8,6 +8,7 @@ uses
   Classes
   ,tiMediators
   ,JLabeledCurrencyEdit
+  , EditBtn
   ;
 
 type
@@ -17,6 +18,16 @@ type
   TService_Money_Mediator = class(TtiEditMediatorView)
   public
     function    View: TJLabeledCurrencyEdit; reintroduce;
+    class function ComponentClass: TClass; override;
+  protected
+    procedure SetupGUIandObject; override;
+  end;
+
+  { TEditButton_Mediator }
+
+  TEditButton_Mediator = class(TtiCustomEditMediatorView)
+  public
+    function    View: TEditButton; reintroduce;
     class function ComponentClass: TClass; override;
   protected
     procedure SetupGUIandObject; override;
@@ -47,6 +58,26 @@ begin
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoan, 'NetProceeds');
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoan, 'Amortization');
 
+  gMediatorManager.RegisterMediator(TService_Money_Mediator, TPayment, 'Amount');
+  //gMediatorManager.RegisterMediator(TEditButton_Mediator, TPayment, 'Person.Name');
+  //todo: TEditButton_Mediator is useless; delete
+end;
+
+{ TEditButton_Mediator }
+
+function TEditButton_Mediator.View: TEditButton;
+begin
+  result := TEditButton(inherited View);
+end;
+
+class function TEditButton_Mediator.ComponentClass: TClass;
+begin
+  Result:= TEditButton;
+end;
+
+procedure TEditButton_Mediator.SetupGUIandObject;
+begin
+  GUIFieldName:= 'Text';
 end;
 
 { TService_Money_Mediator }
