@@ -32,7 +32,7 @@ type
     PageControl1: TPageControl;
     tabGeneral: TTabSheet;
     procedure actSelectMemberExecute(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     FData: TPayment;
     FMediator: TtiModelMediator;
@@ -91,9 +91,9 @@ begin
   end;
 end;
 
-procedure TfrmPaymentEdit.FormCreate(Sender: TObject);
+procedure TfrmPaymentEdit.FormShow(Sender: TObject);
 begin
-
+  edtNumber.SetFocus;
 end;
 
 procedure TfrmPaymentEdit.SetData(AValue: TPayment);
@@ -124,6 +124,7 @@ end;
 
 procedure TfrmPaymentEdit.SetupUI;
 begin
+  if Visible then edtNumber.SetFocus;
   edtMember.Color:= clInfoBk;
   UpdateComboBoxes;
 end;
@@ -132,7 +133,8 @@ procedure TfrmPaymentEdit.UpdateComboBoxes;
 var
   i: Integer;
 begin
-  //todo: the combox is till messed up every time cancel
+  // the combox is till messed up every time cancel
+  // the assignprops should be field := referenced, not field.assign(reference)
   if cmbService.Text <> Data.Service.Name then
   begin
     i := cmbService.Items.IndexOf(Data.Service.Name);

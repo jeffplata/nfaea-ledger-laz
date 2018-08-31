@@ -93,6 +93,7 @@ type
     procedure edtFilterKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure sgdLoansDblClick(Sender: TObject);
+    procedure sgdPaymentsDblClick(Sender: TObject);
     procedure sgdPersonsDblClick(Sender: TObject);
     procedure sgdServicesDblClick(Sender: TObject);
     procedure spbMembersClearClick(Sender: TObject);
@@ -184,9 +185,12 @@ begin
   if EditPayment(B) then
   begin
     O.Assign(B);
+    writeln(#13#10'after service assign');
+    writeln(gLedgerManager.ServiceBasicList.AsDebugString);
     O.SaveObject;
     O.NotifyObservers;
   end;
+
   B.Free;
 end;
 
@@ -345,6 +349,8 @@ begin
 
   gLedgerManager.LoadLoans;
 
+  gLedgerManager.LoadPayments;
+
   SetupMediators;
 
   PageControl1.ActivePage := tabPersons;
@@ -363,6 +369,11 @@ end;
 procedure TfrmMain.sgdLoansDblClick(Sender: TObject);
 begin
   actEditLoan.Execute;
+end;
+
+procedure TfrmMain.sgdPaymentsDblClick(Sender: TObject);
+begin
+  actEditPayment.Execute;
 end;
 
 procedure TfrmMain.sgdPersonsDblClick(Sender: TObject);

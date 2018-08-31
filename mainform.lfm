@@ -267,7 +267,7 @@ object frmMain: TfrmMain
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
         RowCount = 0
         TabOrder = 4
-        OnDblClick = sgdLoansDblClick
+        OnDblClick = sgdPaymentsDblClick
       end
     end
   end

@@ -35,6 +35,7 @@ type
     procedure LoadServices;
     procedure LoadPersonsLookup( force: boolean = False );
     procedure LoadLoans;
+    procedure LoadPayments;
   published
     property PersonList: TPersonList read FPersonList write SetPersonList;
     property Services: TServiceList read FServices write SetServices;
@@ -159,6 +160,12 @@ procedure TLedgerManager.LoadLoans;
 begin
   FLoans.Clear;
   GTIOPFManager.Read(FLoans);
+end;
+
+procedure TLedgerManager.LoadPayments;
+begin
+  FPaymentList.Clear;
+  GTIOPFManager.Read(FPaymentList);
 end;
 
 

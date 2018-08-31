@@ -3,11 +3,12 @@ object frmPaymentEdit: TfrmPaymentEdit
   Height = 274
   Top = 224
   Width = 312
+  ActiveControl = tabGeneral
   BorderStyle = bsDialog
   Caption = 'Edit Payment'
   ClientHeight = 274
   ClientWidth = 312
-  OnCreate = FormCreate
+  OnShow = FormShow
   Position = poMainFormCenter
   LCLVersion = '1.8.2.0'
   object Button1: TButton

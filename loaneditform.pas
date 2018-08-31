@@ -206,7 +206,7 @@ begin
   data.RecomputeTotals:= True;
   data.RecomputeTotal;
 
-  UpdateComboBox;
+  //UpdateComboBox;
 
 end;
 

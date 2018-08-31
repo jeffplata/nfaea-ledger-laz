@@ -82,6 +82,24 @@ type
     Procedure SetupParams; override;
   end;
 
+  { TReadPaymentsVisitor }
+
+  TReadPaymentsVisitor = Class(TtiVisitorSelect)
+    Protected
+      Procedure Init; override;
+      Function AcceptVisitor : Boolean; override;
+      Procedure SetupParams; override;
+      Procedure MapRowToObject; override;
+    end;
+
+  { TSavePaymentVisitor }
+
+  TSavePaymentVisitor = Class(TtiVisitorUpdate)
+  Protected
+    Procedure Init; override;
+    Function AcceptVisitor : Boolean; override;
+    Procedure SetupParams; override;
+  end;
 
   procedure RegisterVisitors;
 
@@ -159,6 +177,114 @@ const
       ;
 
   SQLDeleteLoan = 'delete from LOAN where OID=:OID';
+
+  SQLReadPayments =
+      'SELECT r.*, p.NAME PERSON_NAME, s.NAME SERVICE_NAME '+
+      'FROM PAYMENT r                             '+
+      'left join PERSON p on p.OID=r.PERSON_OID   '+
+      'left join SERVICE s on s.OID=r.SERVICE_OID '
+      ;
+  SQLCreatePayment =
+      'INSERT INTO PAYMENT (OID, PERSON_OID, SERVICE_OID, DOCDATE, DOCNUMBER, AMOUNT, '+
+      '    REMARKS) '+
+      'VALUES ( '+
+      '    :OID, '+
+      '    :PERSON_OID, '+
+      '    :SERVICE_OID, '+
+      '    :DOCDATE, '+
+      '    :DOCNUMBER, '+
+      '    :AMOUNT, '+
+      '    :REMARKS' +
+      ')'
+      ;
+  SQLUpdatePayment =
+      'UPDATE PAYMENT a'+
+      'SET '+
+      '    a.OID = :OID, '+
+      '    a.PERSON_OID = :PERSON_OID, '+
+      '    a.SERVICE_OID = :SERVICE_OID, '+
+      '    a.DOCDATE = :DOCDATE, '+
+      '    a.DOCNUMBER = :DOCNUMBER, '+
+      '    a.AMOUNT = :AMOUNT, '+
+      '    a.REMARKS = :REMARKS '+
+      'WHERE'+
+      '    a.OID = :OID'
+      ;
+  SQLDeletePayment = 'delete from PAYMENT where OID=:OID';
+
+{ TSavePaymentVisitor }
+
+procedure TSavePaymentVisitor.Init;
+begin
+  Case Visited.ObjectState of
+    posCreate:
+      Query.SQLText:=SQLCreatePayment;
+    posUpdate:
+      Query.SQLText:=SQLUpdatePayment;
+    posDelete:
+      Query.SQLText:=SQLDeletePayment;
+  end;
+end;
+
+function TSavePaymentVisitor.AcceptVisitor: Boolean;
+begin
+  Result:=Visited is TPayment;
+  Result:=Result and (Visited.ObjectState in [posCreate,posdelete,posUpdate]);
+end;
+
+procedure TSavePaymentVisitor.SetupParams;
+  var
+    O : TPayment;
+  begin
+    O:=TPayment(Visited);
+    O.OID.AssignToTIQuery('OID',Query);
+    if (Visited.ObjectState<>posDelete) then
+    begin
+      Query.ParamAsString['PERSON_OID']  := O.Person.OID.AsString;
+      Query.ParamAsString['SERVICE_OID'] := O.Service.OID.AsString;
+      Query.ParamAsString['DOCNUMBER']   := O.DocNumber;
+      Query.ParamAsDateTime['DOCDATE']   := O.DocDate;
+      Query.ParamAsFloat['AMOUNT']       := O.Amount;
+      Query.ParamAsString['REMARKS']     := O.Remarks;
+    end;
+  end;
+{ TReadPaymentsVisitor }
+
+procedure TReadPaymentsVisitor.Init;
+begin
+  Query.SQLText:= SQLReadPayments;
+end;
+
+function TReadPaymentsVisitor.AcceptVisitor: Boolean;
+begin
+  Result:= Visited is TPaymentList;
+end;
+
+procedure TReadPaymentsVisitor.SetupParams;
+begin
+
+end;
+
+procedure TReadPaymentsVisitor.MapRowToObject;
+  var
+    O : TPayment;
+
+  begin
+    O:= TPayment.Create;
+    O.OID.AssignFromTIQuery('OID',Query);
+    O.Person.OID.AssignFromTIQuery('PERSON_OID', Query);
+    O.Service.OID.AssignFromTIQuery('SERVICE_OID', Query);
+    O.Person.Name:= Query.FieldAsString['Person_name'];
+    O.Service.Name:= Query.FieldAsString['Service_name'];
+
+    O.DocDate   := Query.FieldAsDateTime['DocDate'];
+    O.DocNumber := Query.FieldAsString['DocNumber'];
+    O.Amount    := Query.FieldAsFloat['Amount'];
+    O.Remarks   := Query.FieldAsString['Remarks'];
+
+    O.ObjectState:=posClean;
+    TPaymentList(Visited).Add(O);
+end;
 
 { TSaveLoanVisitor }
 
@@ -396,6 +522,7 @@ begin
   OB := TServiceBasic.Create;
   OB.OID.AssignFromTIQuery('OID',Query);
   OB.Name:= O.Name;
+  OB.ObjectState:= posClean;
   gLedgerManager.ServiceBasicList.Add(OB);
 end;
 
@@ -486,6 +613,10 @@ begin
 
     RegReadVisitor(TReadLoansVisitor);
     RegSaveVisitor(TSaveLoanVisitor);
+
+    RegReadVisitor(TReadPaymentsVisitor);
+    RegSaveVisitor(TSavePaymentVisitor);
+
   end;
 end;
 

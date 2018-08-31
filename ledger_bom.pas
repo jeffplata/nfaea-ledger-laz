@@ -359,6 +359,7 @@ type
   published
   end;
 
+
 implementation
 uses
   variants
@@ -485,11 +486,11 @@ end;
 
 procedure TPayment.AssignClassProps(ASource: TtiObject);
 begin
-  FPerson.Assign(TPayment(ASource).Person);
-  FService.Assign(TPayment(ASource).Service);
+  //FPerson.Assign(TPayment(ASource).Person);
+  FPerson := TPayment(ASource).Person;
+  //FService.Assign(TPayment(ASource).Service);
+  FService := TPayment(ASource).Service;
 end;
-
-
 
 { TPersonsLookUp }
 
@@ -713,8 +714,10 @@ end;
 
 procedure TLoan.AssignClassProps(ASource: TtiObject);
 begin
-  FPerson.Assign(TLoan(ASource).Person);
-  FService.Assign(TLoan(ASource).Service );
+  //FPerson.Assign(TLoan(ASource).Person);
+  //FService.Assign(TLoan(ASource).Service );
+  FPerson := TLoan(ASource).Person;
+  FService := TLoan(ASource).Service
 end;
 
 procedure TLoan.RecomputeTotal;
