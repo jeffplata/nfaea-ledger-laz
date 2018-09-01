@@ -125,7 +125,12 @@ const
                      'INTERESTRATE=:INTERESTRATE, REBATE_RATE=:REBATE_RATE, MINTERM=:MINTERM, MAXTERM=:MAXTERM where OID=:OID';
   SQLDeleteService = 'delete from SERVICE where OID=:OID';
 
-  SQLReadLoans = 'select * from LOAN';
+  SQLReadLoans =
+      'SELECT r.*, p.NAME PERSON_NAME, s.NAME SERVICE_NAME '+
+      'FROM LOAN r                             '+
+      'left join PERSON p on p.OID=r.PERSON_OID   '+
+      'left join SERVICE s on s.OID=r.SERVICE_OID '
+      ;
   SQLCreateLoan =
       'INSERT INTO LOAN (OID, PERSON_OID, SERVICE_OID, DOCNUMBER, DOCDATE, NOTES, PRINCIPAL,'+
       '    INTEREST, TOTAL, PREVIOUSBALANCE, REBATES, NETPROCEEDS, INTERESTRATE,'+
@@ -198,7 +203,7 @@ const
       ')'
       ;
   SQLUpdatePayment =
-      'UPDATE PAYMENT a'+
+      'UPDATE PAYMENT a '+
       'SET '+
       '    a.OID = :OID, '+
       '    a.PERSON_OID = :PERSON_OID, '+
@@ -253,6 +258,11 @@ procedure TSavePaymentVisitor.SetupParams;
 procedure TReadPaymentsVisitor.Init;
 begin
   Query.SQLText:= SQLReadPayments;
+  if TPaymentList(Visited).ListFilter.Active then
+  begin
+    Query.SQL.Add(' WHERE');
+    Query.SQL.Add(' '+TPaymentList(Visited).ListFilter.Criteria);
+  end;
 end;
 
 function TReadPaymentsVisitor.AcceptVisitor: Boolean;
@@ -340,6 +350,13 @@ procedure TSaveLoanVisitor.SetupParams;
 procedure TReadLoansVisitor.Init;
 begin
   Query.SQLText:= SQLReadLoans;
+  // where clause start
+  if TLoanList(Visited).ListFilter.Active then
+  begin
+    Query.SQL.Add(' WHERE');
+    Query.SQL.Add(' '+TLoanList(Visited).ListFilter.Criteria);
+  end;
+  //where clause end
 end;
 
 function TReadLoansVisitor.AcceptVisitor: Boolean;
@@ -358,14 +375,14 @@ procedure TReadLoansVisitor.MapRowToObject;
     O : TLoan;
 
     S:TService;
-    P:TPersonBasic;
 
   begin
     O:= TLoan.Create;
     O.OID.AssignFromTIQuery('OID',Query);
 
-    //O.Person.OID.AsString  := Query.FieldAsString['PERSON_OID'];
-    //O.Service.OID.AsString := Query.FieldAsString['SERVICE_OID'];
+    O.Person.OID.AssignFromTIQuery('PERSON_OID', Query);
+    O.Person.Name:= Query.FieldAsString['Person_name'];
+    O.Service.OID.AssignFromTIQuery('SERVICE_OID',Query);
 
     O.DocNumber            := Query.FieldAsString['DOCNUMBER'];
     O.DocDate              := Query.FieldAsDateTime['DOCDATE'];
@@ -383,22 +400,11 @@ procedure TReadLoansVisitor.MapRowToObject;
     O.PaymentStart         := Query.FieldAsDateTime['PAYMENTSTART'];
     O.PaymentEnd           := Query.FieldAsDateTime['PAYMENTEND'];
 
-    P := TPersonBasic(gLedgerManager.PersonList.Find(Query.FieldAsString['PERSON_OID']) );
     S := TService(gLedgerManager.Services.Find(Query.FieldAsString['SERVICE_OID']) );
 
-    if P <> nil then
-      O.Person.Assign(P);
     if S <> nil then
-      O.Service.Assign(S);
-
-
-    O.Person.OID.AssignFromTIQuery('PERSON_OID', Query);
-    O.Service.OID.AssignFromTIQuery('SERVICE_OID',Query);
-
-    //o.service.OID.assign(s.OID);
-
-    //O.Service.Assign( TService(gLedgerManager.Services.Find(Query.FieldAsString['SERVICE_OID']) ) );
-    //O.Person.Assign( TPerson(gLedgerManager.PersonList.Find(Query.FieldAsString['PERSON_OID']) ) );
+      //O.Service.Assign(S);
+      O.Service := S;
 
     O.ObjectState:=posClean;
     TLoanList(Visited).Add(O);
@@ -502,8 +508,6 @@ procedure TReadServicesVisitor.MapRowToObject;
 var
   O : TService;
 
-  OB: TServiceBasic;
-
 begin
   O:= TService.Create;
   O.OID.AssignFromTIQuery('OID',Query);
@@ -518,12 +522,6 @@ begin
   O.ObjectState:=posClean;
   TServiceList(Visited).Add(O);
 
-  // meanwhile, popuplate also the basic list
-  OB := TServiceBasic.Create;
-  OB.OID.AssignFromTIQuery('OID',Query);
-  OB.Name:= O.Name;
-  OB.ObjectState:= posClean;
-  gLedgerManager.ServiceBasicList.Add(OB);
 end;
 
 { TSavePersonVisitor }

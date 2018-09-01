@@ -164,7 +164,6 @@ begin
   if not Assigned(FMediator) then
   begin
     FMediator := TtiModelMediator.Create(Self);
-    //FMediator.Name:= 'PersonsLkUpMediator';
     FMediator.AddComposite(UIColumns, StringGrid1);
   end;
   FMediator.Subject := FData;

@@ -13,13 +13,13 @@ type
   private
     FActive: Boolean;
     FCriteria: string;
-    FUIValue: Variant;
-    FWhereClause: string;
+    //FUIValue: Variant;
+    //FWhereClause: string;
   public
     property Active: Boolean read FActive write FActive;
-    property UIValue: Variant read FUIValue write FUIValue;
+    //property UIValue: Variant read FUIValue write FUIValue;
     property Criteria: string read FCriteria write FCriteria;
-    property WhereClause: string read FWhereClause write FWhereClause;
+    //property WhereClause: string read FWhereClause write FWhereClause;
     procedure Init;
     constructor Create;
   end;

@@ -8,6 +8,7 @@ object frmPaymentEdit: TfrmPaymentEdit
   Caption = 'Edit Payment'
   ClientHeight = 274
   ClientWidth = 312
+  OnCloseQuery = FormCloseQuery
   OnShow = FormShow
   Position = poMainFormCenter
   LCLVersion = '1.8.2.0'
@@ -49,7 +50,7 @@ object frmPaymentEdit: TfrmPaymentEdit
       object Label1: TLabel
         Left = 9
         Height = 15
-        Top = 8
+        Top = 16
         Width = 44
         Alignment = taRightJustify
         Caption = 'Number'
@@ -58,7 +59,7 @@ object frmPaymentEdit: TfrmPaymentEdit
       object edtNumber: TEdit
         Left = 64
         Height = 23
-        Top = 8
+        Top = 16
         Width = 136
         TabOrder = 0
         Text = 'edtNumber'
@@ -66,7 +67,7 @@ object frmPaymentEdit: TfrmPaymentEdit
       object Label2: TLabel
         Left = 29
         Height = 15
-        Top = 40
+        Top = 48
         Width = 24
         Alignment = taRightJustify
         Caption = 'Date'
@@ -75,7 +76,7 @@ object frmPaymentEdit: TfrmPaymentEdit
       object Label3: TLabel
         Left = 8
         Height = 15
-        Top = 72
+        Top = 80
         Width = 45
         Alignment = taRightJustify
         Caption = 'Member'
@@ -84,7 +85,7 @@ object frmPaymentEdit: TfrmPaymentEdit
       object Label4: TLabel
         Left = 16
         Height = 15
-        Top = 104
+        Top = 112
         Width = 37
         Alignment = taRightJustify
         Caption = 'Service'
@@ -93,7 +94,7 @@ object frmPaymentEdit: TfrmPaymentEdit
       object edtDate: TDateEdit
         Left = 64
         Height = 23
-        Top = 40
+        Top = 48
         Width = 136
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -106,7 +107,7 @@ object frmPaymentEdit: TfrmPaymentEdit
       object cmbService: TComboBox
         Left = 64
         Height = 23
-        Top = 104
+        Top = 112
         Width = 136
         ItemHeight = 15
         Style = csDropDownList
@@ -115,7 +116,7 @@ object frmPaymentEdit: TfrmPaymentEdit
       object Label5: TLabel
         Left = 9
         Height = 15
-        Top = 136
+        Top = 144
         Width = 44
         Alignment = taRightJustify
         Caption = 'Amount'
@@ -124,7 +125,7 @@ object frmPaymentEdit: TfrmPaymentEdit
       object edtAmount: TJLabeledCurrencyEdit
         Left = 64
         Height = 23
-        Top = 136
+        Top = 144
         Width = 136
         DisplayFormat = '#,0.00'
         Decimals = 2
@@ -135,16 +136,17 @@ object frmPaymentEdit: TfrmPaymentEdit
         EditLabel.AnchorSideRight.Side = asrBottom
         EditLabel.AnchorSideBottom.Control = edtAmount
         EditLabel.Left = 64
-        EditLabel.Height = 1
-        EditLabel.Top = 132
+        EditLabel.Height = 15
+        EditLabel.Top = 126
         EditLabel.Width = 136
+        EditLabel.Caption = 'edtAmount'
         EditLabel.ParentColor = False
         TabOrder = 5
       end
       object edtMember: TEdit
         Left = 64
         Height = 23
-        Top = 72
+        Top = 80
         Width = 136
         Color = clInfoBk
         ReadOnly = True
@@ -154,7 +156,7 @@ object frmPaymentEdit: TfrmPaymentEdit
       object btnSelectMember: TButton
         Left = 203
         Height = 21
-        Top = 73
+        Top = 81
         Width = 75
         Action = actSelectMember
         Caption = 'Select'

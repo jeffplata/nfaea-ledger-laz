@@ -2,10 +2,10 @@ object frmMain: TfrmMain
   Left = 324
   Height = 390
   Top = 167
-  Width = 677
+  Width = 746
   Caption = 'NFAEA Ledger'
   ClientHeight = 370
-  ClientWidth = 677
+  ClientWidth = 746
   Menu = MainMenu1
   OnCreate = FormCreate
   Position = poScreenCenter
@@ -14,18 +14,18 @@ object frmMain: TfrmMain
     Left = 0
     Height = 347
     Top = 0
-    Width = 677
-    ActivePage = tabPayments
+    Width = 746
+    ActivePage = tabLoans
     Align = alClient
-    TabIndex = 3
+    TabIndex = 2
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
-      ClientHeight = 321
+      ClientHeight = 319
       ClientWidth = 669
       object sgdPersons: TStringGrid
         Left = 0
-        Height = 288
+        Height = 286
         Top = 33
         Width = 669
         Align = alBottom
@@ -40,7 +40,7 @@ object frmMain: TfrmMain
       end
       object edtFilter: TLabeledEdit
         Left = 32
-        Height = 21
+        Height = 23
         Top = 8
         Width = 144
         EditLabel.AnchorSideTop.Control = edtFilter
@@ -48,10 +48,10 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtFilter
         EditLabel.AnchorSideBottom.Control = edtFilter
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 5
-        EditLabel.Height = 13
+        EditLabel.Left = 3
+        EditLabel.Height = 15
         EditLabel.Top = 12
-        EditLabel.Width = 24
+        EditLabel.Width = 26
         EditLabel.Caption = 'Filter'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -135,12 +135,12 @@ object frmMain: TfrmMain
     object tabLoans: TTabSheet
       Caption = 'Loans'
       ClientHeight = 319
-      ClientWidth = 669
+      ClientWidth = 738
       object sgdLoans: TStringGrid
         Left = 0
         Height = 286
         Top = 33
-        Width = 669
+        Width = 738
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 0
@@ -169,6 +169,7 @@ object frmMain: TfrmMain
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
         TabOrder = 1
+        OnKeyPress = edtFilterLoansKeyPress
       end
       object spbClearLoanFilter: TSpeedButton
         Left = 180
@@ -204,7 +205,7 @@ object frmMain: TfrmMain
     object tabPayments: TTabSheet
       Caption = 'Payments'
       ClientHeight = 319
-      ClientWidth = 669
+      ClientWidth = 738
       object edtFilterPayments: TLabeledEdit
         Left = 32
         Height = 23
@@ -223,12 +224,14 @@ object frmMain: TfrmMain
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
         TabOrder = 0
+        OnKeyPress = edtFilterPaymentsKeyPress
       end
       object spbClearPaymentsFilter: TSpeedButton
         Left = 180
         Height = 22
         Top = 8
         Width = 23
+        OnClick = spbClearPaymentsFilterClick
       end
       object btnAddPayment: TButton
         Left = 224
@@ -258,7 +261,7 @@ object frmMain: TfrmMain
         Left = 0
         Height = 286
         Top = 33
-        Width = 669
+        Width = 738
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 0
@@ -275,7 +278,7 @@ object frmMain: TfrmMain
     Left = 0
     Height = 23
     Top = 347
-    Width = 677
+    Width = 746
     Panels = <>
   end
   object MainMenu1: TMainMenu
@@ -379,6 +382,7 @@ object frmMain: TfrmMain
     end
     object actDeletePayment: TAction
       Caption = 'Delete'
+      OnExecute = actDeletePaymentExecute
     end
   end
 end

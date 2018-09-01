@@ -32,6 +32,7 @@ type
     PageControl1: TPageControl;
     tabGeneral: TTabSheet;
     procedure actSelectMemberExecute(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormShow(Sender: TObject);
   private
     FData: TPayment;
@@ -91,6 +92,21 @@ begin
   end;
 end;
 
+procedure TfrmPaymentEdit.FormCloseQuery(Sender: TObject; var CanClose: boolean
+  );
+var
+  s: string;
+begin
+  if ModalResult = mrOk then
+  begin
+    if not Data.IsValid(s) then
+    begin
+      ShowMessage(S);
+      CanClose:= False;
+    end
+  end;
+end;
+
 procedure TfrmPaymentEdit.FormShow(Sender: TObject);
 begin
   edtNumber.SetFocus;
@@ -126,6 +142,7 @@ procedure TfrmPaymentEdit.SetupUI;
 begin
   if Visible then edtNumber.SetFocus;
   edtMember.Color:= clInfoBk;
+  edtAmount.EditLabel.Visible:= False;
   UpdateComboBoxes;
 end;
 

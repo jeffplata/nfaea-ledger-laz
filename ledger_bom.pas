@@ -12,9 +12,16 @@ uses
 
 type
 
-  { TObjectListFilter }
+  { TFilteredObjectList }
 
-
+  TFilteredObjectList = class(TtiObjectList)
+  private
+    FListFilter: TObjectListFilter;
+  public
+    property ListFilter: TObjectListFilter read FListFilter write FListFilter;
+    constructor Create; override;
+    destructor Destroy; override;
+  end;
 
   TPersonsFilter = class(TObjectListFilter);
 
@@ -69,6 +76,7 @@ type
     constructor Create; override;
     destructor Destroy; override;
     procedure AssignClassProps(ASource: TtiObject); override;
+    function IsValid(const pErrors: TtiObjectErrors): Boolean; override;
   published
     property Person: TPersonBasic read FPerson write SetPerson;
     property Service: TServiceBasic read FService write SetService;
@@ -80,7 +88,7 @@ type
 
   { TPaymentList }
 
-  TPaymentList = class(TtiObjectList)
+  TPaymentList = class(TFilteredObjectList)
   private
   protected
     function  GetItems(i: integer): TPayment; reintroduce;
@@ -348,13 +356,12 @@ type
 
   { TLoanList }
 
-  TLoanList = class(TtiObjectList)
-  private
+  TLoanList = class(TFilteredObjectList)
   protected
     function  GetItems(i: integer): TLoan; reintroduce;
     procedure SetItems(i: integer; const Value: TLoan); reintroduce;
   public
-    property  Items[i:integer]: TLoan read GetItems write SetItems;
+    property Items[i:integer]: TLoan read GetItems write SetItems;
     procedure Add(AObject:TLoan); reintroduce;
   published
   end;
@@ -369,7 +376,27 @@ uses
 const
   cNameMissing = 'Member name cannot be empty.';
   cLoanTypeMissing = 'Loan Type cannot be empty.';
-  cValueNotAllowed = '%s value is not valid.''';
+  cValueNotAllowed = '%s value is not valid.';
+  cAmountZeroNotValid = 'Amount cannot be zero (0).';
+  cNumberMissing = 'Number cannot be empty.';
+  cDateMissing = 'Date cannot be empty.';
+
+{ TFilteredObjectList }
+
+constructor TFilteredObjectList.Create;
+begin
+  inherited Create;
+  FListFilter := TObjectListFilter.Create;
+  //FListFilter.Criteria:= '';
+  //FListFilter.Active:= False;
+  //  already performed by parent class
+end;
+
+destructor TFilteredObjectList.Destroy;
+begin
+  FListFilter.Free;
+  inherited Destroy;
+end;
 
 { TServiceBasicList }
 
@@ -487,9 +514,35 @@ end;
 procedure TPayment.AssignClassProps(ASource: TtiObject);
 begin
   //FPerson.Assign(TPayment(ASource).Person);
-  FPerson := TPayment(ASource).Person;
   //FService.Assign(TPayment(ASource).Service);
+  FPerson := TPayment(ASource).Person;
   FService := TPayment(ASource).Service;
+end;
+
+function TPayment.IsValid(const pErrors: TtiObjectErrors): Boolean;
+begin
+  result := inherited IsValid(pErrors);
+  if not result then exit; // <==
+
+  if DocNumber = '' then
+    pErrors.AddError('_DocNumber',cNumberMissing);
+
+  if DocDate = 0 then
+    pErrors.AddError('_DocDate', cDateMissing);
+
+  if Person.Name = '' then
+    pErrors.AddError('_Name', cNameMissing);
+
+  if Person.Name <> '' then
+  begin
+    if Service = nil then
+      pErrors.AddError('_Service.Name', cLoanTypeMissing)
+  end;
+
+  if Amount < 1 then
+    pErrors.AddError('_Amount', cAmountZeroNotValid);
+
+  Result := pErrors.Count = 0;
 end;
 
 { TPersonsLookUp }
@@ -546,6 +599,7 @@ procedure TLoanList.Add(AObject: TLoan);
 begin
   inherited Add(AObject);
 end;
+
 
 { TLoan }
 
@@ -697,6 +751,12 @@ begin
   result := inherited IsValid(pErrors);
   if not result then exit; // <==
 
+  if DocNumber = '' then
+    pErrors.AddError('_number', cNumberMissing);
+
+  if DocDate = 0 then
+    pErrors.AddError('_date', cDateMissing);
+
   if Person.Name = '' then
     pErrors.AddError('Name', cNameMissing);
 
@@ -714,9 +774,9 @@ end;
 
 procedure TLoan.AssignClassProps(ASource: TtiObject);
 begin
-  //FPerson.Assign(TLoan(ASource).Person);
+  FPerson.Assign(TLoan(ASource).Person);
   //FService.Assign(TLoan(ASource).Service );
-  FPerson := TLoan(ASource).Person;
+  //FPerson := TLoan(ASource).Person;
   FService := TLoan(ASource).Service
 end;
 

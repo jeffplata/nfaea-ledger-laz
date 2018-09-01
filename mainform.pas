@@ -13,6 +13,7 @@ uses
   ,tiMediators
   ,tiOIDInteger
   , tiObject
+  , SQLWhereBuilderNV
   ;
 
 type
@@ -81,6 +82,7 @@ type
     procedure actAddServiceExecute(Sender: TObject);
     procedure actDeleteLoanExecute(Sender: TObject);
     procedure actDeleteMemberExecute(Sender: TObject);
+    procedure actDeletePaymentExecute(Sender: TObject);
     procedure actDeleteServiceExecute(Sender: TObject);
     procedure actEditLoanExecute(Sender: TObject);
     procedure actEditLoanUpdate(Sender: TObject);
@@ -91,11 +93,14 @@ type
     procedure actMemberCSVLoadExecute(Sender: TObject);
     procedure actMembersExecute(Sender: TObject);
     procedure edtFilterKeyPress(Sender: TObject; var Key: char);
+    procedure edtFilterLoansKeyPress(Sender: TObject; var Key: char);
+    procedure edtFilterPaymentsKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure sgdLoansDblClick(Sender: TObject);
     procedure sgdPaymentsDblClick(Sender: TObject);
     procedure sgdPersonsDblClick(Sender: TObject);
     procedure sgdServicesDblClick(Sender: TObject);
+    procedure spbClearPaymentsFilterClick(Sender: TObject);
     procedure spbMembersClearClick(Sender: TObject);
   private
     FPersonsMediator: TtiModelMediator;
@@ -104,6 +109,8 @@ type
     FMedPayments: TtiModelMediator;
     FPersons: TPersonList;
     FServices: TServiceList;
+    SQLWhereBuilderLoans : TSQLWhereBuilder;
+    SQLWhereBuilderPayments: TSQLWhereBuilder;
     procedure SetPersons(AValue: TPersonList);
     procedure SetServices(AValue: TServiceList);
     procedure SetupMediators;
@@ -135,6 +142,11 @@ const
   cMsgDeleteOneRecord = 'Do you want to delete the selected record?';
   cMsgDeleteRecords = '%d selected records will be deleted.'#13#10'Do you want to continue?';
   cMsgCannotDelete = 'This object cannot be deleted'#13#10' as it is referenced by other objects';
+
+  cSQLFilterTextLoans = 'p.NAME containing ?';
+  cSQLFilterTextPayments = '(p.NAME containing ?) OR (DOCNUMBER starting ?)';
+  //cSQLFilterTextMembers = 'NAME containing ?';
+
 {$R *.lfm}
 
 { TfrmMain }
@@ -185,8 +197,6 @@ begin
   if EditPayment(B) then
   begin
     O.Assign(B);
-    writeln(#13#10'after service assign');
-    writeln(gLedgerManager.ServiceBasicList.AsDebugString);
     O.SaveObject;
     O.NotifyObservers;
   end;
@@ -288,6 +298,11 @@ begin
   DeleteFromList(sgdPersons, Persons);
 end;
 
+procedure TfrmMain.actDeletePaymentExecute(Sender: TObject);
+begin
+  DeleteFromList( sgdPayments, gLedgerManager.PaymentList );
+end;
+
 procedure TfrmMain.actDeleteServiceExecute(Sender: TObject);
 begin
   DeleteFromList( sgdServices, Services );
@@ -303,12 +318,14 @@ procedure TfrmMain.actEditLoanExecute(Sender: TObject);
 
     B := TLoan.Create;
     B.Assign(O);
+
     if EditLoan(B) then
     begin
       O.Assign(B);
       O.SaveObject;
       O.NotifyObservers;
     end;
+    B := nil;
     B.Free;
 end;
 
@@ -331,6 +348,36 @@ begin
     FilterPersons( Trim(TEdit(Sender).Text) );
 
     FPersons.EndUpdate;
+  end;
+end;
+
+procedure TfrmMain.edtFilterLoansKeyPress(Sender: TObject; var Key: char);
+begin
+  if key = chr(13) then
+  begin
+    gLedgerManager.Loans.BeginUpdate;
+
+    SQLWhereBuilderLoans.UpdateWhereClauses;
+    gLedgerManager.Loans.ListFilter.Criteria:= SQLWhereBuilderLoans.WhereList.Text;
+    gLedgerManager.Loans.ListFilter.Active:= (SQLWhereBuilderLoans.WhereList.Text<>'');
+    gLedgerManager.LoadLoans;
+
+    gLedgerManager.Loans.EndUpdate;
+  end;
+end;
+
+procedure TfrmMain.edtFilterPaymentsKeyPress(Sender: TObject; var Key: char);
+begin
+  if key = chr(13) then
+  begin
+    gLedgerManager.PaymentList.BeginUpdate;
+
+    SQLWhereBuilderPayments.UpdateWhereClauses;
+    gLedgerManager.PaymentList.ListFilter.Criteria:= SQLWhereBuilderPayments.WhereList.Text;
+    gLedgerManager.PaymentList.ListFilter.Active:= (SQLWhereBuilderPayments.WhereList.Text<>'');
+    gLedgerManager.LoadPayments;
+
+    gLedgerManager.PaymentList.EndUpdate;
   end;
 end;
 
@@ -363,6 +410,13 @@ begin
 
   actEditLoan.OnUpdate:= @actEditLoanUpdate;
   actDeleteLoan.OnUpdate:= @actEditLoanUpdate;
+
+  SQLWhereBuilderLoans := TSQLWhereBuilder.Create(Self);
+  SQLWhereBuilderLoans.AddWhereClauseAnd(cSQLFilterTextLoans,[edtFilterLoans,'Text']);
+
+  SQLWhereBuilderPayments := TSQLWhereBuilder.Create(Self);
+  SQLWhereBuilderPayments.AddWhereClauseAnd(
+    cSQLFilterTextPayments,[edtFilterPayments,'Text',edtFilterPayments,'Text']);
 end;
 
 
@@ -384,6 +438,12 @@ end;
 procedure TfrmMain.sgdServicesDblClick(Sender: TObject);
 begin
   actEditService.Execute;
+end;
+
+procedure TfrmMain.spbClearPaymentsFilterClick(Sender: TObject);
+begin
+  edtFilterPayments.SetFocus;
+  edtFilterPayments.Text:= '';
 end;
 
 procedure TfrmMain.spbMembersClearClick(Sender: TObject);
@@ -432,7 +492,7 @@ begin
   begin
     FMedLoans := TtiModelMediator.Create(Self);
     FMedLoans.Name:= 'LoansMediator';
-    FMedLoans.AddComposite('Person.Name(200,"Member");Service.Name(100,"Loan Type");Principal(100,"Amount");Interest;Total;DocDate(100,"Date");ID(100," ")',sgdLoans);
+    FMedLoans.AddComposite('Person.Name(200,"Member");Service.Name(150,"Loan Type");Principal(100,"Amount");Interest;Total;DocDate(100,"Date");DocNumber;ID(100," ")',sgdLoans);
   end;
   FMedLoans.Subject:= gLedgerManager.Loans;
   FMedLoans.Active:= True;
@@ -441,7 +501,7 @@ begin
   if not assigned(FMedPayments) then
   begin
     FMedPayments := TtiModelMediator.Create(Self);
-    FMedPayments.AddComposite('Person.Name;DocDate;DocNumber;Service.Name;Amount;dummy(100," ")', sgdPayments);
+    FMedPayments.AddComposite('Person.Name(150,"Member");DocDate;DocNumber;Service.Name;Amount;dummy(100," ")', sgdPayments);
   end;
   FMedPayments.Subject:= gLedgerManager.PaymentList;
   FMedPayments.Active:= True;
@@ -475,7 +535,7 @@ var
   DeleteFailed: Boolean;
 begin
   oldtop := AStringGrid.Selection.Top;
-  if oldtop = 0 then exit; // <==
+  if oldtop = 0 then exit; // <==  no line selected
 
   DeleteFailed:= False;
   iRows := AStringGrid.Selection.bottom - AStringGrid.Selection.Top +1;

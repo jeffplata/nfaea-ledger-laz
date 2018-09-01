@@ -21,6 +21,7 @@ type
     FPersonsLookup: TPersonsLookUp;
     FServiceBasicList: TServiceBasicList;
     FServices: TServiceList;
+    function GetServiceBasicList: TServiceBasicList;
     procedure SetLoans(AValue: TLoanList);
     procedure SetPaymentList(AValue: TPaymentList);
     procedure SetPersonList(AValue: TPersonList);
@@ -42,7 +43,8 @@ type
     property Loans: TLoanList read FLoans write SetLoans;
     property PersonsLookup: TPersonsLookUp read FPersonsLookup write SetPersonsLookup;
     property PaymentList: TPaymentList read FPaymentList write SetPaymentList;
-    property ServiceBasicList: TServiceBasicList read FServiceBasicList write SetServiceBasicList;
+    //property ServiceBasicList: TServiceBasicList read FServiceBasicList write SetServiceBasicList;
+    property ServiceBasicList: TServiceBasicList read GetServiceBasicList;
   end;
 
   //global Singleton
@@ -91,6 +93,27 @@ begin
   FLoans:=AValue;
 end;
 
+function TLedgerManager.GetServiceBasicList: TServiceBasicList;
+var
+  OB: TServiceBasic;
+  i: Integer;
+begin
+  if not assigned(FServiceBasicList) then
+  begin
+    FServiceBasicList := TServiceBasicList.Create;
+    // popuplate the basic list
+    for i := 0 to FServices.Count -1 do
+    begin
+      OB := TServiceBasic.Create;
+      OB.OID.Assign(FServices.Items[i].OID);
+      OB.Name:= FServices.Items[i].Name;
+      OB.ObjectState:= posClean;
+      FServiceBasicList.Add(OB);
+    end;
+  end;
+  Result := FServiceBasicList;
+end;
+
 procedure TLedgerManager.SetPaymentList(AValue: TPaymentList);
 begin
   if FPaymentList=AValue then Exit;
@@ -112,8 +135,9 @@ begin
   FServices := TServiceList.Create;
   FServices.Owner := Self;
 
-  FServiceBasicList := TServiceBasicList.Create;
-  FServiceBasicList.Owner := Self;
+  //FServiceBasicList := TServiceBasicList.Create;
+  //FServiceBasicList.Owner := Self;
+  //  create list only when needed, starting with payments edit
 
   FLoans := TLoanList.Create;
   FLoans.Owner := Self;
@@ -131,6 +155,8 @@ begin
   FServices.Free;
   FLoans.Free;
   FPersonsLookup.Free;
+  if assigned(FServiceBasicList) then
+    FServiceBasicList.Free;
   inherited Destroy;
 end;
 
@@ -143,8 +169,11 @@ end;
 procedure TLedgerManager.LoadServices;
 begin
   FServices.Clear;
-  FServiceBasicList.Clear; // populate also the name/oid list
   GTIOPFManager.Read(FServices);
+  if Assigned(FServiceBasicList) then begin
+    FServiceBasicList := nil; // this will be recreated
+    FServiceBasicList.Free;
+  end;
 end;
 
 procedure TLedgerManager.LoadPersonsLookup(force: boolean);

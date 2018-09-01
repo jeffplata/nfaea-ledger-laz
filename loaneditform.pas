@@ -72,7 +72,6 @@ implementation
 
 uses
   ledgermanager
-  //,PersonsLookupForm
   ,LookupForm
   ,LCLType
   ;
@@ -82,6 +81,7 @@ begin
   with TfrmLoanEdit.Create(nil) do
   try
     Data := Adata;
+    Data.RecomputeTotals:= True;
     UpdateComboBox;
     result := (ShowModal = mrOK);
   finally
@@ -185,7 +185,6 @@ begin
   data.InterestRate := 0;
   data.RebateRate   := 0;
 
-  data.RecomputeTotals:= True;
   data.RecomputeTotal;
 end;
 
@@ -205,8 +204,6 @@ begin
 
   data.RecomputeTotals:= True;
   data.RecomputeTotal;
-
-  //UpdateComboBox;
 
 end;
 

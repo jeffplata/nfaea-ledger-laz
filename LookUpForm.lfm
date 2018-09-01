@@ -29,7 +29,7 @@ object frmLookUp: TfrmLookUp
   end
   object LabeledEdit1: TLabeledEdit
     Left = 48
-    Height = 21
+    Height = 23
     Top = 8
     Width = 312
     Anchors = [akTop, akLeft, akRight]
@@ -38,10 +38,10 @@ object frmLookUp: TfrmLookUp
     EditLabel.AnchorSideRight.Control = LabeledEdit1
     EditLabel.AnchorSideBottom.Control = LabeledEdit1
     EditLabel.AnchorSideBottom.Side = asrBottom
-    EditLabel.Left = 12
-    EditLabel.Height = 13
+    EditLabel.Left = 10
+    EditLabel.Height = 15
     EditLabel.Top = 12
-    EditLabel.Width = 33
+    EditLabel.Width = 35
     EditLabel.Caption = 'Search'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
