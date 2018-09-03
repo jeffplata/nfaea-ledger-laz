@@ -52,6 +52,7 @@ begin
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoan, 'Interest');
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoan, 'InterestRate');
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoan, 'Total');
+  gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoan, 'Adjustments');
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoan, 'PreviousBalance');
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoan, 'Rebates');
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoan, 'RebateRate');

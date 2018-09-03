@@ -143,7 +143,7 @@ begin
   if Visible then edtNumber.SetFocus;
   edtMember.Color:= clInfoBk;
   edtAmount.EditLabel.Visible:= False;
-  UpdateComboBoxes;
+  //UpdateComboBoxes;
 end;
 
 procedure TfrmPaymentEdit.UpdateComboBoxes;

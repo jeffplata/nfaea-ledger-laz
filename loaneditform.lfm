@@ -1,12 +1,14 @@
 object frmLoanEdit: TfrmLoanEdit
-  Left = 416
+  Left = 409
   Height = 497
-  Top = 189
+  Top = 131
   Width = 567
   Caption = 'Edit Loan'
   ClientHeight = 497
   ClientWidth = 567
+  KeyPreview = True
   OnCloseQuery = FormCloseQuery
+  OnKeyDown = FormKeyDown
   LCLVersion = '1.8.2.0'
   object edtPerson: TLabeledEdit
     Left = 104
@@ -235,7 +237,7 @@ object frmLoanEdit: TfrmLoanEdit
   object edtNetProceeds: TJLabeledCurrencyEdit
     Left = 104
     Height = 23
-    Top = 296
+    Top = 326
     Width = 80
     DisplayFormat = '#,0.00'
     Decimals = 2
@@ -249,7 +251,7 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideBottom.Side = asrBottom
     EditLabel.Left = 17
     EditLabel.Height = 15
-    EditLabel.Top = 300
+    EditLabel.Top = 330
     EditLabel.Width = 82
     EditLabel.Caption = 'NET PROCEEDS'
     EditLabel.ParentColor = False
@@ -258,7 +260,7 @@ object frmLoanEdit: TfrmLoanEdit
     LabelSpacing = 5
     ParentFont = False
     ReadOnly = True
-    TabOrder = 13
+    TabOrder = 14
   end
   object Button1: TButton
     Left = 394
@@ -268,7 +270,7 @@ object frmLoanEdit: TfrmLoanEdit
     Anchors = [akRight, akBottom]
     Caption = 'Ok'
     ModalResult = 1
-    TabOrder = 18
+    TabOrder = 19
   end
   object Button2: TButton
     Left = 474
@@ -279,7 +281,7 @@ object frmLoanEdit: TfrmLoanEdit
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 19
+    TabOrder = 20
   end
   object GroupBox1: TGroupBox
     Left = 278
@@ -290,7 +292,7 @@ object frmLoanEdit: TfrmLoanEdit
     ClientHeight = 194
     ClientWidth = 267
     ParentFont = False
-    TabOrder = 17
+    TabOrder = 18
     object LabeledEdit3: TLabeledEdit
       Left = 56
       Height = 23
@@ -525,7 +527,7 @@ object frmLoanEdit: TfrmLoanEdit
   object edtAmortization: TJLabeledCurrencyEdit
     Left = 104
     Height = 23
-    Top = 343
+    Top = 375
     Width = 80
     DisplayFormat = '#,0.00'
     Decimals = 2
@@ -538,31 +540,31 @@ object frmLoanEdit: TfrmLoanEdit
     EditLabel.AnchorSideBottom.Side = asrBottom
     EditLabel.Left = 14
     EditLabel.Height = 15
-    EditLabel.Top = 347
+    EditLabel.Top = 379
     EditLabel.Width = 85
     EditLabel.Caption = 'Monthly Amort.'
     EditLabel.ParentColor = False
     LabelPosition = lpLeft
     LabelSpacing = 5
-    TabOrder = 14
+    TabOrder = 15
   end
   object dtpPaymentStarts: TDateEdit
     Left = 104
     Height = 23
-    Top = 368
+    Top = 400
     Width = 108
     CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
     DateOrder = doNone
     ButtonWidth = 23
     NumGlyphs = 1
     MaxLength = 0
-    TabOrder = 15
+    TabOrder = 16
     Text = 'dtpPaymentStarts'
   end
   object dtpPaymentEnds: TDateEdit
     Left = 104
     Height = 23
-    Top = 393
+    Top = 425
     Width = 108
     CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
     DateOrder = doNone
@@ -570,13 +572,13 @@ object frmLoanEdit: TfrmLoanEdit
     Color = clDefault
     NumGlyphs = 1
     MaxLength = 0
-    TabOrder = 16
+    TabOrder = 17
     Text = 'dtpPaymentEnds'
   end
   object Label2: TLabel
     Left = 19
     Height = 15
-    Top = 372
+    Top = 404
     Width = 79
     Alignment = taRightJustify
     Caption = 'Payment Starts'
@@ -585,7 +587,7 @@ object frmLoanEdit: TfrmLoanEdit
   object Label3: TLabel
     Left = 23
     Height = 15
-    Top = 396
+    Top = 428
     Width = 75
     Alignment = taRightJustify
     Caption = 'Payment Ends'
@@ -632,6 +634,30 @@ object frmLoanEdit: TfrmLoanEdit
     LabelPosition = lpLeft
     TabOrder = 0
     Text = 'edtDocNumber'
+  end
+  object edtAdjustments: TJLabeledCurrencyEdit
+    Left = 104
+    Height = 23
+    Top = 296
+    Width = 80
+    DisplayFormat = '#,0.00'
+    Decimals = 2
+    Value = 0
+    NegativeColor = clDefault
+    EditLabel.AnchorSideTop.Control = edtAdjustments
+    EditLabel.AnchorSideTop.Side = asrCenter
+    EditLabel.AnchorSideRight.Control = edtAdjustments
+    EditLabel.AnchorSideBottom.Control = edtAdjustments
+    EditLabel.AnchorSideBottom.Side = asrBottom
+    EditLabel.Left = 32
+    EditLabel.Height = 15
+    EditLabel.Top = 300
+    EditLabel.Width = 67
+    EditLabel.Caption = 'Adjustments'
+    EditLabel.ParentColor = False
+    LabelPosition = lpLeft
+    LabelSpacing = 5
+    TabOrder = 13
   end
   object ActionList1: TActionList
     left = 336

@@ -283,6 +283,7 @@ type
 
   TLoan = class(TManualObject)
   private
+    FAdjustments: Currency;
     FAmortization: Currency;
     FDocDate: TDate;
     FDocNumber: string;
@@ -303,6 +304,7 @@ type
     FTotal: Currency;
     function GetPersonID: string;
     function GetServiceID: string;
+    procedure SetAdjustments(AValue: Currency);
     procedure SetAmortization(AValue: Currency);
     procedure SetDocDate(AValue: TDate);
     procedure SetDocNumber(AValue: string);
@@ -332,6 +334,8 @@ type
     procedure AssignClassProps(ASource: TtiObject); override;
     procedure RecomputeTotal;
     procedure RecomputeNetProceeds;
+    procedure Init;
+    procedure UpdateBasicData;
   published
     property PersonID: string read GetPersonID;
     property ServiceID: string read GetServiceID;
@@ -345,6 +349,7 @@ type
     property Total: Currency read FTotal write SetTotal;
     Property PreviousBalance: Currency read FPreviousBalance write SetPreviousBalance;
     Property Rebates: Currency read FRebates write SetRebates;
+    property Adjustments: Currency read FAdjustments write SetAdjustments;
     Property NetProceeds: Currency read FNetProceeds write SetNetProceeds;
     Property InterestRate: Currency read FInterestRate write SetInterestRate;
     property RebateRate: currency read FRebateRate write SetRebateRate;
@@ -369,7 +374,7 @@ type
 
 implementation
 uses
-  variants
+  variants, dateutils
   , Model_View
   ;
 
@@ -644,6 +649,13 @@ begin
   result := Service.OID.AsString;
 end;
 
+procedure TLoan.SetAdjustments(AValue: Currency);
+begin
+  if FAdjustments=AValue then Exit;
+  FAdjustments:=AValue;
+  RecomputeNetProceeds;
+end;
+
 procedure TLoan.SetDocDate(AValue: TDate);
 begin
   if FDocDate=AValue then Exit;
@@ -785,17 +797,55 @@ begin
   if not RecomputeTotals then Exit;  // <===
   Interest:= Principal * InterestRate * 0.01 * (Terms/12);
   Total:= Principal + Interest;
+  PaymentStart:= StartOfTheMonth( IncMonth(DocDate, 1) );
+  if Terms > 0 then
+    PaymentEnd:= StartOfTheMonth( IncMonth(PaymentStart, Terms-1) );
   RecomputeNetProceeds;
 end;
 
 procedure TLoan.RecomputeNetProceeds;
 begin
-  NetProceeds:= Principal - PreviousBalance + Rebates;
+  NetProceeds:= Principal - PreviousBalance + Rebates + Adjustments;
   if Terms > 0 then
     Amortization:= Total / Terms
   else
     Amortization:= 0;
   NotifyObservers;
+end;
+
+procedure TLoan.Init;
+begin
+  // Call this when selecting new Member in the application form
+
+  Service         := nil;   // clear loan type
+  Principal       := 0;     // clear principal
+  Terms           := 0;     // clear terms
+  InterestRate    := 0;
+  RebateRate      := 0;
+  PreviousBalance := 0;
+  Rebates         := 0;
+  Adjustments     := 0;
+
+  RecomputeTotal;
+end;
+
+procedure TLoan.UpdateBasicData;
+begin
+  // call this after selecting a Loan Type in the UI,
+  //  preferrably after a ComboBox OnCloseUp
+
+  if (Principal > Service.MaxAmount) or (Principal = 0) then
+    Principal:= service.maxamount;
+
+  InterestRate:= Service.InterestRate;
+
+  if (Terms > service.MaxTerm) or (terms = 0) then
+    terms := service.MaxTerm;
+
+  RebateRate:= service.RebateRate;
+
+  RecomputeTotals:= True;
+  RecomputeTotal;
 end;
 
 { TManualObject }

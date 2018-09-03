@@ -133,7 +133,7 @@ const
       ;
   SQLCreateLoan =
       'INSERT INTO LOAN (OID, PERSON_OID, SERVICE_OID, DOCNUMBER, DOCDATE, NOTES, PRINCIPAL,'+
-      '    INTEREST, TOTAL, PREVIOUSBALANCE, REBATES, NETPROCEEDS, INTERESTRATE,'+
+      '    INTEREST, TOTAL, PREVIOUSBALANCE, REBATES, ADJUSTMENTS, NETPROCEEDS, INTERESTRATE,'+
       '    REBATERATE, TERMS, AMORTIZATION, PAYMENTSTART, PAYMENTEND)'+
       'VALUES ('+
       '    :OID, '+
@@ -147,6 +147,7 @@ const
       '    :TOTAL, '+
       '    :PREVIOUSBALANCE, '+
       '    :REBATES, '+
+      '    :ADJUSTMENTS, '+
       '    :NETPROCEEDS, '+
       '    :INTERESTRATE, '+
       '    :REBATERATE, '+
@@ -170,6 +171,7 @@ const
       '    a.TOTAL = :TOTAL, '+
       '    a.PREVIOUSBALANCE = :PREVIOUSBALANCE, '+
       '    a.REBATES = :REBATES, '+
+      '    a.ADJUSTMENTS = :ADJUSTMENTS, '+
       '    a.NETPROCEEDS = :NETPROCEEDS, '+
       '    a.INTERESTRATE = :INTERESTRATE, '+
       '    a.REBATERATE = :REBATERATE, '+
@@ -278,6 +280,7 @@ end;
 procedure TReadPaymentsVisitor.MapRowToObject;
   var
     O : TPayment;
+    S: TServiceBasic;
 
   begin
     O:= TPayment.Create;
@@ -285,7 +288,7 @@ procedure TReadPaymentsVisitor.MapRowToObject;
     O.Person.OID.AssignFromTIQuery('PERSON_OID', Query);
     O.Service.OID.AssignFromTIQuery('SERVICE_OID', Query);
     O.Person.Name:= Query.FieldAsString['Person_name'];
-    O.Service.Name:= Query.FieldAsString['Service_name'];
+    //O.Service.Name:= Query.FieldAsString['Service_name'];
 
     O.DocDate   := Query.FieldAsDateTime['DocDate'];
     O.DocNumber := Query.FieldAsString['DocNumber'];
@@ -294,6 +297,14 @@ procedure TReadPaymentsVisitor.MapRowToObject;
 
     O.ObjectState:=posClean;
     TPaymentList(Visited).Add(O);
+
+    // properties to be used in ComboBoxes should be assigned this way
+    S := TServiceBasic(gLedgerManager.ServiceBasicList.Find(Query.FieldAsString['SERVICE_OID']) );
+
+    if S <> nil then
+      O.Service := S;
+
+
 end;
 
 { TSaveLoanVisitor }
@@ -334,6 +345,7 @@ procedure TSaveLoanVisitor.SetupParams;
       Query.ParamAsFloat['TOTAL']           := O.Total;
       Query.ParamAsFloat['PREVIOUSBALANCE'] := O.PreviousBalance;
       Query.ParamAsFloat['REBATES']         := O.Rebates;
+      Query.ParamAsFloat['ADJUSTMENTS']     := O.Adjustments;
       Query.ParamAsFloat['NETPROCEEDS']     := O.NetProceeds;
       Query.ParamAsFloat['INTERESTRATE']    := O.InterestRate;
       Query.ParamAsFloat['REBATERATE']      := O.RebateRate;
@@ -356,6 +368,7 @@ begin
     Query.SQL.Add(' WHERE');
     Query.SQL.Add(' '+TLoanList(Visited).ListFilter.Criteria);
   end;
+  Query.SQL.Add('order by r.DOCNUMBER, r.OID');
   //where clause end
 end;
 
@@ -392,6 +405,7 @@ procedure TReadLoansVisitor.MapRowToObject;
     O.Total                := Query.FieldAsFloat['TOTAL'];
     O.PreviousBalance      := Query.FieldAsFloat['PREVIOUSBALANCE'];
     O.Rebates              := Query.FieldAsFloat['REBATES'];
+    O.Adjustments          := Query.FieldAsFloat['ADJUSTMENTS'];
     O.NetProceeds          := Query.FieldAsFloat['NETPROCEEDS'];
     O.InterestRate         := Query.FieldAsFloat['INTERESTRATE'];
     O.RebateRate           := Query.FieldAsFloat['REBATERATE'];

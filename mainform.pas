@@ -492,7 +492,7 @@ begin
   begin
     FMedLoans := TtiModelMediator.Create(Self);
     FMedLoans.Name:= 'LoansMediator';
-    FMedLoans.AddComposite('Person.Name(200,"Member");Service.Name(150,"Loan Type");Principal(100,"Amount");Interest;Total;DocDate(100,"Date");DocNumber;ID(100," ")',sgdLoans);
+    FMedLoans.AddComposite('Person.Name(200,"Member");Service.Name(150,"Loan Type");Principal(100,"Amount");Interest;Total;Amortization;DocDate(100,"Date");DocNumber;ID(100," ")',sgdLoans);
   end;
   FMedLoans.Subject:= gLedgerManager.Loans;
   FMedLoans.Active:= True;
