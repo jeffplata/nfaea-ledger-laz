@@ -1,4 +1,4 @@
-unit MemberCSVLoad;
+unit PaymentCSVLoad;
 
 {$mode objfpc}{$H+}
 
@@ -10,9 +10,9 @@ uses
 
 type
 
-  { TfrmMemberCSVLoad }
+  { TfrmPaymentCSVLoad }
 
-  TfrmMemberCSVLoad = class(TForm)
+  TfrmPaymentCSVLoad = class(TForm)
     btnSave: TButton;
     btnCancel: TButton;
     DataSource1: TDataSource;
@@ -24,10 +24,10 @@ type
 
   end;
 
-procedure ShowMemberCSVLoad( AFileName: string );
+procedure ShowPaymentCSVLoad( AFileName: string );
 
 //var
-//  frmMemberCSVLoad: TfrmMemberCSVLoad;
+//  frmPaymentCSVLoad: TfrmPaymentCSVLoad;
 
 implementation
 
@@ -36,7 +36,7 @@ uses
   ,tiOPFManager
   ;
 
-procedure ShowMemberCSVLoad(AFileName: string);
+procedure ShowPaymentCSVLoad(AFileName: string);
 var
   s_ : TStringList;
   sMissing: string;
@@ -45,7 +45,14 @@ begin
   s_ := TStringList.Create;
   s_.AddStrings(['NAME','DATEJOINED']);
 
-  with TfrmMemberCSVLoad.Create(Application) do
+  //todo: Services model update: Type field: Loan/Contribution/Others
+  //todo: Services model update: CSVUploadName
+  //todo: Check Payment CSV columns: warn if not valid column from Services; use CSVUploadName
+  //todo: Member Active field
+  //todo: Service Active field
+
+
+  with TfrmPaymentCSVLoad.Create(Application) do
   try
     SdfDataSet1.FileName:= AFileName;
     SdfDataSet1.FirstLineAsSchema:= True;
@@ -77,9 +84,9 @@ end;
 
 {$R *.lfm}
 
-{ TfrmMemberCSVLoad }
+{ TfrmPaymentCSVLoad }
 
-procedure TfrmMemberCSVLoad.SaveToDB;
+procedure TfrmPaymentCSVLoad.SaveToDB;
 var
   P: TPerson;
   Per: TPerson;

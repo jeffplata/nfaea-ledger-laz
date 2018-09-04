@@ -160,6 +160,7 @@ procedure TfrmMain.actMemberCSVLoadExecute(Sender: TObject);
 begin
   with TOpenDialog.Create(Self) do
   try
+    Filter:= 'CSV|*.CSV';
     if Execute then
       ShowMemberCSVLoad(FileName);
   finally
