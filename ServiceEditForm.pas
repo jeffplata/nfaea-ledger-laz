@@ -16,6 +16,7 @@ type
   TfrmServiceEdit = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    ckbActive: TCheckBox;
     edtDateJoined: TDateEdit;
     edtInterest: TEdit;
     edtMaxAmount: TJLabeledCurrencyEdit;
@@ -23,8 +24,10 @@ type
     edtMinAmount: TJLabeledCurrencyEdit;
     edtMinTerms: TEdit;
     edtName: TEdit;
+    edtCSVUploadName: TEdit;
     edtRebate: TEdit;
     Label1: TLabel;
+    Label2: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
@@ -86,6 +89,7 @@ begin
     FMediator.AddProperty('RebateRate', edtRebate);
     FMediator.AddProperty('MinTerm', edtMinTerms);
     FMediator.AddProperty('MaxTerm', edtMaxTerms);
+    FMediator.AddProperty('Active', ckbActive);
 
   end;
   FMediator.Subject := FData;

@@ -119,10 +119,10 @@ const
   SQLLookUpPersons = 'select OID, NAME from PERSON';
 
   SQLReadServices = 'select * from SERVICE';
-  SQLCreateService = 'insert into SERVICE (OID, NAME, MAXAMOUNT, MINAMOUNT, INTERESTRATE, REBATE_RATE, MINTERM, MAXTERM) '+
-                     'values (:OID, :NAME, :MAXAMOUNT, :MINAMOUNT, :INTERESTRATE, :REBATE_RATE, :MINTERM, :MAXTERM)';
+  SQLCreateService = 'insert into SERVICE (OID, NAME, MAXAMOUNT, MINAMOUNT, INTERESTRATE, REBATE_RATE, MINTERM, MAXTERM, ACTIVE) '+
+                     'values (:OID, :NAME, :MAXAMOUNT, :MINAMOUNT, :INTERESTRATE, :REBATE_RATE, :MINTERM, :MAXTERM, :ACTIVE)';
   SQLUpdateService = 'update SERVICE set NAME=:NAME, MAXAMOUNT=:MAXAMOUNT, MINAMOUNT=:MINAMOUNT, '+
-                     'INTERESTRATE=:INTERESTRATE, REBATE_RATE=:REBATE_RATE, MINTERM=:MINTERM, MAXTERM=:MAXTERM where OID=:OID';
+                     'INTERESTRATE=:INTERESTRATE, REBATE_RATE=:REBATE_RATE, MINTERM=:MINTERM, MAXTERM=:MAXTERM, ACTIVE=:ACTIVE where OID=:OID';
   SQLDeleteService = 'delete from SERVICE where OID=:OID';
 
   SQLReadLoans =
@@ -498,6 +498,10 @@ begin
     Query.ParamAsFloat['REBATE_RATE']  := O.RebateRate;
     Query.ParamAsInteger['MINTERM']    := O.MinTerm;
     Query.ParamAsInteger['MAXTERM']    := O.MaxTerm;
+    if O.Active then
+      Query.ParamAsInteger['ACTIVE']     := 1
+    else
+      Query.ParamAsInteger['ACTIVE']     := 0;
   end;
 end;
 
@@ -533,6 +537,7 @@ begin
   o.RebateRate:= Query.FieldAsFloat['REBATE_RATE'];
   O.MinTerm:= Query.FieldAsInteger['MINTERM'];
   O.MaxTerm:= Query.FieldAsInteger['MAXTERM'];
+  o.Active:= Query.FieldAsBoolean['ACTIVE'];
   O.ObjectState:=posClean;
   TServiceList(Visited).Add(O);
 

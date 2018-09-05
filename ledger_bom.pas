@@ -194,6 +194,8 @@ type
 
   TService = class(TManualObject)
   private
+    FActive: Boolean;
+    FCSVUploadName: string;
     FInterestRate: Currency;
     FMaxAmount: Currency;
     FMaxTerm: integer;
@@ -201,7 +203,10 @@ type
     FMinTerm: integer;
     FName: string;
     FRebateRate: Currency;
+    FServiceType: string;
     function GetCaption: string;
+    procedure SetActive(AValue: Boolean);
+    procedure SetCSVUploadName(AValue: string);
     procedure SetInterestRate(AValue: Currency);
     procedure SetMaxAmount(AValue: Currency);
     procedure SetMaxTerm(AValue: integer);
@@ -209,6 +214,7 @@ type
     procedure SetMinTerm(AValue: integer);
     procedure SetName(AValue: string);
     procedure SetRebateRate(AValue: Currency);
+    procedure SetServiceType(AValue: string);
   protected
     function  GetOwner: TServiceList; reintroduce;
     procedure SetOwner(const Value: TServiceList); reintroduce;
@@ -223,6 +229,9 @@ type
     property RebateRate: Currency read FRebateRate write SetRebateRate;
     property MinTerm: integer read FMinTerm write SetMinTerm;
     property MaxTerm: integer read FMaxTerm write SetMaxTerm;
+    property ServiceType: string read FServiceType write SetServiceType;
+    property CSVUploadName: string read FCSVUploadName write SetCSVUploadName;
+    property Active: Boolean read FActive write SetActive;
   end;
 
   { TServiceList }
@@ -965,6 +974,18 @@ begin
   Result := Name;
 end;
 
+procedure TService.SetActive(AValue: Boolean);
+begin
+  if FActive=AValue then Exit;
+  FActive:=AValue;
+end;
+
+procedure TService.SetCSVUploadName(AValue: string);
+begin
+  if FCSVUploadName=AValue then Exit;
+  FCSVUploadName:=AValue;
+end;
+
 procedure TService.SetInterestRate(AValue: Currency);
 begin
   if FInterestRate=AValue then Exit;
@@ -1005,6 +1026,12 @@ procedure TService.SetRebateRate(AValue: Currency);
 begin
   if FRebateRate=AValue then Exit;
   FRebateRate:=AValue;
+end;
+
+procedure TService.SetServiceType(AValue: string);
+begin
+  if FServiceType=AValue then Exit;
+  FServiceType:=AValue;
 end;
 
 function TService.GetOwner: TServiceList;
