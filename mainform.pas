@@ -34,7 +34,8 @@ type
     actAddPayment: TAction;
     actEditPayment: TAction;
     actDeletePayment: TAction;
-    actMemberCSVLoad: TAction;
+    actCSVLoadPayment: TAction;
+    actCSVLoadMember: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
     actFileEXit: TFileExit;
@@ -55,6 +56,8 @@ type
     edtFilterPayments: TLabeledEdit;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
+    MenuItem10: TMenuItem;
+    MenuItem11: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
@@ -80,6 +83,7 @@ type
     procedure actAddMemberExecute(Sender: TObject);
     procedure actAddPaymentExecute(Sender: TObject);
     procedure actAddServiceExecute(Sender: TObject);
+    procedure actCSVLoadPaymentExecute(Sender: TObject);
     procedure actDeleteLoanExecute(Sender: TObject);
     procedure actDeleteMemberExecute(Sender: TObject);
     procedure actDeletePaymentExecute(Sender: TObject);
@@ -90,7 +94,7 @@ type
     procedure actEditPaymentExecute(Sender: TObject);
     procedure actEditServiceExecute(Sender: TObject);
     procedure actHelpAboutExecute(Sender: TObject);
-    procedure actMemberCSVLoadExecute(Sender: TObject);
+    procedure actCSVLoadMemberExecute(Sender: TObject);
     procedure actMembersExecute(Sender: TObject);
     procedure edtFilterKeyPress(Sender: TObject; var Key: char);
     procedure edtFilterLoansKeyPress(Sender: TObject; var Key: char);
@@ -136,6 +140,7 @@ uses
   ,MemberCSVLoad
   , PaymentEditForm
   , ResourceDM
+  , PaymentCSVLoad
   ;
 
 const
@@ -156,7 +161,7 @@ begin
   ShowMessage('NFAEA Loans Management System');
 end;
 
-procedure TfrmMain.actMemberCSVLoadExecute(Sender: TObject);
+procedure TfrmMain.actCSVLoadMemberExecute(Sender: TObject);
 begin
   with TOpenDialog.Create(Self) do
   try
@@ -286,6 +291,18 @@ begin
   end
   else
     O.Free;
+end;
+
+procedure TfrmMain.actCSVLoadPaymentExecute(Sender: TObject);
+begin
+  with TOpenDialog.Create(Self) do
+  try
+    Filter:= 'CSV|*.CSV';
+    if Execute then
+      ShowPaymentCSVLoad(FileName);
+  finally
+    Free;
+  end;
 end;
 
 procedure TfrmMain.actDeleteLoanExecute(Sender: TObject);
@@ -483,7 +500,7 @@ begin
   begin
     FMedServices := TtiModelMediator.Create(Self);
     FMedServices.Name:= 'ServicesMediator';
-    FMedServices.AddComposite('Name(200,"Name");MaxAmount(100,"Max Amount");InterestRate(100,"Interest");MaxTerm(100,"Terms");ID(100," ")',sgdServices);
+    FMedServices.AddComposite('Name(150,"Name");ServiceTypeGUI(100,"Type");MaxAmount(100,"Max Amount");InterestRate(100,"Interest");MaxTerm(100,"Terms");ID(100," ")',sgdServices);
   end;
   FMedServices.Subject:= FServices;
   FMedServices.Active:= True;

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, SdfData, db, FileUtil, Forms, Controls, Graphics, Dialogs,
-  DBGrids, StdCtrls;
+  DBGrids, StdCtrls, ExtCtrls;
 
 type
 
@@ -34,6 +34,7 @@ implementation
 uses
   ledger_bom
   ,tiOPFManager
+  ,ledgermanager
   ;
 
 procedure ShowPaymentCSVLoad(AFileName: string);
@@ -43,14 +44,10 @@ var
   i: Integer;
 begin
   s_ := TStringList.Create;
-  s_.AddStrings(['NAME','DATEJOINED']);
+  for i := 0 to gLedgerManager.Services.Count -1 do
+    s_.Add(UpperCase(gLedgerManager.Services.Items[i].CSVUploadName ) );
 
-  //todo: Services model update: Type field: Loan/Contribution/Others
-  //todo: Services model update: CSVUploadName
   //todo: Check Payment CSV columns: warn if not valid column from Services; use CSVUploadName
-  //todo: Member Active field
-  //todo: Service Active field
-
 
   with TfrmPaymentCSVLoad.Create(Application) do
   try
@@ -62,19 +59,21 @@ begin
     for i := 0 to DBGrid1.Columns.Count-1 do
       DBGrid1.Columns[i].Width := 100;
 
-    //verify columns are ok
-    //NAME, DATEJOINED
-    For i := 0 to s_.Count-1 do
-      if SdfDataSet1.Schema.IndexOf(s_[i]) = -1 then
-        sMissing:= sMissing + s_[i] + #13#10;
+    //verify that CSV columns exist in Services.CSVUploadNames
+    For i := 0 to SdfDataSet1.Schema.Count-1 do
+      if s_.IndexOf(SdfDataSet1.Schema[i]) = -1 then
+        sMissing:= sMissing + SdfDataSet1.Schema[i] + #13#10;
 
     if sMissing<> '' then
-      ShowMessage('The list cannot be saved because the following columns are missing:'+
-        #13#10+sMissing);
+      ShowMessage('Verification required.'#13#10+
+        'The following columns which are not defined in the Services table '+
+        'will not be saved.' +
+        #13#10#13#10+sMissing);
     btnSave.Enabled:= (sMissing = '');
 
     if ShowModal=mrOk then
-      SaveToDB;
+      //SaveToDB;
+      // not yet ready
   finally
     Free;
   end;
@@ -88,20 +87,20 @@ end;
 
 procedure TfrmPaymentCSVLoad.SaveToDB;
 var
-  P: TPerson;
-  Per: TPerson;
-  L: TPersonList;
+  P: TPayment;
+  Per: TPayment;
+  L: TPaymentList;
   i: Integer;
 begin
   // iterate
   DBGrid1.BeginUpdate;
-  L := TPersonList.Create;
+  L := TPaymentList.Create;
   try
     SdfDataSet1.First;
     while not SdfDataSet1.EOF do
     begin
-      P := TPerson.CreateNew;
-      P.Name:=       SdfDataSet1.FieldByName('NAME').AsString;
+      P := TPayment.CreateNew;
+      P.Name:= SdfDataSet1.FieldByName('NAME').AsString;
       if SdfDataSet1.FieldByName('DATEJOINED').AsString = '' then
         P.DateJoined:= 0
       else
@@ -113,7 +112,7 @@ begin
 
     for i := 0 to L.Count-1 do
     begin
-      Per := TPerson(L.Items[i]);
+      Per := TPayment(L.Items[i]);
       GTIOPFManager.DefaultOIDGenerator.AssignNextOID(Per.OID);
       Per.SaveObject;
     end;

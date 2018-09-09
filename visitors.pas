@@ -112,17 +112,18 @@ uses
 
 
 const
-  SQLReadPersons = 'select OID, NAME, DATEJOINED from PERSON';
-  SQLCreatePerson = 'insert into PERSON(OID,NAME,DATEJOINED) values (:OID,:NAME,:DATEJOINED)';
-  SQLUpdatePerson = 'update PERSON set NAME=:NAME, DATEJOINED=:DATEJOINED where OID=:OID';
+  SQLReadPersons = 'select OID, NAME, DATEJOINED, ACTIVE from PERSON';
+  SQLCreatePerson = 'insert into PERSON(OID,NAME,DATEJOINED,ACTIVE) values (:OID,:NAME,:DATEJOINED,:ACTIVE)';
+  SQLUpdatePerson = 'update PERSON set NAME=:NAME, DATEJOINED=:DATEJOINED, ACTIVE=:ACTIVE where OID=:OID';
   SQLDeletePerson = 'delete from PERSON where OID=:OID';
   SQLLookUpPersons = 'select OID, NAME from PERSON';
 
   SQLReadServices = 'select * from SERVICE';
-  SQLCreateService = 'insert into SERVICE (OID, NAME, MAXAMOUNT, MINAMOUNT, INTERESTRATE, REBATE_RATE, MINTERM, MAXTERM, ACTIVE) '+
-                     'values (:OID, :NAME, :MAXAMOUNT, :MINAMOUNT, :INTERESTRATE, :REBATE_RATE, :MINTERM, :MAXTERM, :ACTIVE)';
+  SQLCreateService = 'insert into SERVICE (OID, NAME, MAXAMOUNT, MINAMOUNT, INTERESTRATE, REBATE_RATE, MINTERM, MAXTERM, ACTIVE, SERVICETYPE, CSVUPLOADNAME) '+
+                     'values (:OID, :NAME, :MAXAMOUNT, :MINAMOUNT, :INTERESTRATE, :REBATE_RATE, :MINTERM, :MAXTERM, :ACTIVE, :SERVICETYPE, :CSVUPLOADNAME)';
   SQLUpdateService = 'update SERVICE set NAME=:NAME, MAXAMOUNT=:MAXAMOUNT, MINAMOUNT=:MINAMOUNT, '+
-                     'INTERESTRATE=:INTERESTRATE, REBATE_RATE=:REBATE_RATE, MINTERM=:MINTERM, MAXTERM=:MAXTERM, ACTIVE=:ACTIVE where OID=:OID';
+                     'INTERESTRATE=:INTERESTRATE, REBATE_RATE=:REBATE_RATE, MINTERM=:MINTERM, MAXTERM=:MAXTERM, ACTIVE=:ACTIVE, SERVICETYPE=:SERVICETYPE, CSVUPLOADNAME=:CSVUPLOADNAME '+
+                     'where OID=:OID';
   SQLDeleteService = 'delete from SERVICE where OID=:OID';
 
   SQLReadLoans =
@@ -491,13 +492,15 @@ begin
   O.OID.AssignToTIQuery('OID',Query);
   if (Visited.ObjectState<>posDelete) then
   begin
-    Query.ParamAsString['NAME']        := O.Name;
-    Query.ParamAsFloat['MAXAMOUNT']    := O.MaxAmount;
-    Query.ParamAsFloat['MINAMOUNT']    := O.MinAmount;
-    Query.ParamAsFloat['INTERESTRATE'] := O.InterestRate;
-    Query.ParamAsFloat['REBATE_RATE']  := O.RebateRate;
-    Query.ParamAsInteger['MINTERM']    := O.MinTerm;
-    Query.ParamAsInteger['MAXTERM']    := O.MaxTerm;
+    Query.ParamAsString['NAME']          := O.Name;
+    Query.ParamAsFloat['MAXAMOUNT']      := O.MaxAmount;
+    Query.ParamAsFloat['MINAMOUNT']      := O.MinAmount;
+    Query.ParamAsFloat['INTERESTRATE']   := O.InterestRate;
+    Query.ParamAsFloat['REBATE_RATE']    := O.RebateRate;
+    Query.ParamAsInteger['MINTERM']      := O.MinTerm;
+    Query.ParamAsInteger['MAXTERM']      := O.MaxTerm;
+    Query.ParamAsString['SERVICETYPE']   := O.ServiceType;
+    Query.ParamAsString['CSVUPLOADNAME'] := O.CSVUploadName;
     if O.Active then
       Query.ParamAsInteger['ACTIVE']     := 1
     else
@@ -530,14 +533,16 @@ begin
   O:= TService.Create;
   O.OID.AssignFromTIQuery('OID',Query);
 
-  O.Name:= Query.FieldAsString['NAME'];
-  O.MaxAmount:= Query.FieldAsFloat['MAXAMOUNT'];
-  O.MinAmount:= Query.FieldAsFloat['MINAMOUNT'];
-  O.InterestRate:= Query.FieldAsFloat['INTERESTRATE'];
-  o.RebateRate:= Query.FieldAsFloat['REBATE_RATE'];
-  O.MinTerm:= Query.FieldAsInteger['MINTERM'];
-  O.MaxTerm:= Query.FieldAsInteger['MAXTERM'];
-  o.Active:= Query.FieldAsBoolean['ACTIVE'];
+  O.Name          := Query.FieldAsString['NAME'];
+  O.MaxAmount     := Query.FieldAsFloat['MAXAMOUNT'];
+  O.MinAmount     := Query.FieldAsFloat['MINAMOUNT'];
+  O.InterestRate  := Query.FieldAsFloat['INTERESTRATE'];
+  o.RebateRate    := Query.FieldAsFloat['REBATE_RATE'];
+  O.MinTerm       := Query.FieldAsInteger['MINTERM'];
+  O.MaxTerm       := Query.FieldAsInteger['MAXTERM'];
+  O.Active        := Query.FieldAsBoolean['ACTIVE'];
+  O.ServiceType   := Query.FieldAsString['SERVICETYPE'];
+  O.CSVUploadName := Query.FieldAsString['CSVUPLOADNAME'];
   O.ObjectState:=posClean;
   TServiceList(Visited).Add(O);
 
@@ -572,8 +577,12 @@ begin
   O.OID.AssignToTIQuery('OID',Query);
   if (Visited.ObjectState<>posDelete) then
   begin
-    Query.ParamAsString['NAME'] := O.Name;
+    Query.ParamAsString['NAME']         := O.Name;
     Query.ParamAsDateTime['DATEJOINED'] := O.DateJoined;
+    if O.Active then
+      Query.ParamAsInteger['ACTIVE']    := 1
+    else
+      Query.ParamAsInteger['ACTIVE']    := 0;
   end;
 end;
 
@@ -610,8 +619,9 @@ procedure TReadPersonsVisitor.MapRowToObject;
     O:= TPerson.Create;
     O.OID.AssignFromTIQuery('OID',Query);
 
-    O.Name:= Query.FieldAsString['NAME'];
-    O.DateJoined:= Query.FieldAsDateTime['DATEJOINED'];
+    O.Name       := Query.FieldAsString['NAME'];
+    O.DateJoined := Query.FieldAsDateTime['DATEJOINED'];
+    O.Active     := Query.FieldAsBoolean['ACTIVE'];
     O.ObjectState:=posClean;
     TPersonList(Visited).Add(O);
 end;

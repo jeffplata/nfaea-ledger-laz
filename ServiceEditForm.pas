@@ -17,6 +17,7 @@ type
     Button1: TButton;
     Button2: TButton;
     ckbActive: TCheckBox;
+    cmbServiceTypesGUI: TComboBox;
     edtDateJoined: TDateEdit;
     edtInterest: TEdit;
     edtMaxAmount: TJLabeledCurrencyEdit;
@@ -28,17 +29,20 @@ type
     edtRebate: TEdit;
     Label1: TLabel;
     Label2: TLabel;
+    Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
     PageControl1: TPageControl;
     tabGeneral: TTabSheet;
+    procedure FormShow(Sender: TObject);
   private
     FData: TService;
     FMediator: TtiModelMediator;
     procedure SetData(AValue: TService);
     procedure SetupMediators;
+    procedure Init;
   public
     property Data: TService read FData write SetData;
   end;
@@ -56,6 +60,7 @@ begin
   with TfrmServiceEdit.Create(nil) do
   try
     Data := Adata;
+    Init;
     result := (ShowModal = mrOK);
   finally
     Free;
@@ -67,6 +72,10 @@ end;
 
 { TfrmServiceEdit }
 
+procedure TfrmServiceEdit.FormShow(Sender: TObject);
+begin
+  edtName.SetFocus;
+end;
 
 procedure TfrmServiceEdit.SetData(AValue: TService);
 begin
@@ -89,6 +98,8 @@ begin
     FMediator.AddProperty('RebateRate', edtRebate);
     FMediator.AddProperty('MinTerm', edtMinTerms);
     FMediator.AddProperty('MaxTerm', edtMaxTerms);
+    FMediator.AddProperty('ServiceTypeGUI',cmbServiceTypesGUI);
+    FMediator.AddProperty('CSVUploadName', edtCSVUploadName);
     FMediator.AddProperty('Active', ckbActive);
 
   end;
@@ -96,6 +107,16 @@ begin
   FMediator.Active:= True;
 
 
+end;
+
+procedure TfrmServiceEdit.Init;
+var
+  i: Integer;
+begin
+  cmbServiceTypesGUI.Clear;
+  for i:= 0 to cSMAX do
+    cmbServiceTypesGUI.Items.Add(cServiceTypesGUI[i]);
+  cmbServiceTypesGUI.ItemIndex:= cmbServiceTypesGUI.items.IndexOf(data.ServiceTypeGUI);
 end;
 
 end.

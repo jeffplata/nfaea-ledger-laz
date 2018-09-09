@@ -15,6 +15,7 @@ type
   TfrmPersonEdit = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    ckbActive: TCheckBox;
     edtDateJoined: TDateEdit;
     edtName: TEdit;
     Label1: TLabel;
@@ -61,6 +62,7 @@ begin
     FMediator := TtiModelMediator.Create(Self);
     FMediator.AddProperty('Name', edtName);
     FMediator.AddProperty('DateJoined', edtDateJoined);
+    FMediator.AddProperty('Active', ckbActive);
   end;
   FMediator.Subject := FData;
   FMediator.Active:= True;

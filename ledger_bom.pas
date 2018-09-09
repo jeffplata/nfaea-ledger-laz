@@ -12,6 +12,7 @@ uses
 
 type
 
+
   { TFilteredObjectList }
 
   TFilteredObjectList = class(TtiObjectList)
@@ -103,10 +104,13 @@ type
 
   TPersonBasic = class(TManualObject)
   private
+    FActive: boolean;
     FName: string;
+    procedure SetActive(AValue: boolean);
     procedure SetName(AValue: string);
   published
     property Name: string read FName write SetName;
+    property Active: boolean read FActive write SetActive;
   end;
 
   { TPersonsLookUp }
@@ -205,6 +209,7 @@ type
     FRebateRate: Currency;
     FServiceType: string;
     function GetCaption: string;
+    function GetServiceTypeGUI: string;
     procedure SetActive(AValue: Boolean);
     procedure SetCSVUploadName(AValue: string);
     procedure SetInterestRate(AValue: Currency);
@@ -215,11 +220,13 @@ type
     procedure SetName(AValue: string);
     procedure SetRebateRate(AValue: Currency);
     procedure SetServiceType(AValue: string);
+    procedure SetServiceTypeGUI(AValue: string);
   protected
     function  GetOwner: TServiceList; reintroduce;
     procedure SetOwner(const Value: TServiceList); reintroduce;
   public
     property  Owner: TServiceList read GetOwner write SetOwner;
+    property ServiceType: string read FServiceType write SetServiceType;
   published
     property Caption: string read GetCaption;
     property Name: string read FName write SetName;
@@ -229,7 +236,7 @@ type
     property RebateRate: Currency read FRebateRate write SetRebateRate;
     property MinTerm: integer read FMinTerm write SetMinTerm;
     property MaxTerm: integer read FMaxTerm write SetMaxTerm;
-    property ServiceType: string read FServiceType write SetServiceType;
+    property ServiceTypeGUI: string read GetServiceTypeGUI write SetServiceTypeGUI;
     property CSVUploadName: string read FCSVUploadName write SetCSVUploadName;
     property Active: Boolean read FActive write SetActive;
   end;
@@ -380,6 +387,10 @@ type
   published
   end;
 
+const
+  cSMAX = 2; // 3 service types
+  cServiceTypesDB : array [0..cSMAX] of string = ('LOAN','CONT','OTH');
+  cServiceTypesGUI : array [0..cSMAX] of string = ('Loan','Contribution','Others');
 
 implementation
 uses
@@ -595,6 +606,12 @@ procedure TPersonBasic.SetName(AValue: string);
 begin
   if FName=AValue then Exit;
   FName:=AValue;
+end;
+
+procedure TPersonBasic.SetActive(AValue: boolean);
+begin
+  if FActive=AValue then Exit;
+  FActive:=AValue;
 end;
 
 { TLoanList }
@@ -974,6 +991,23 @@ begin
   Result := Name;
 end;
 
+function TService.GetServiceTypeGUI: string;
+var
+  i: Integer;
+begin
+  //Result := '<?>' ;
+  //if FServiceType <> '' then
+  begin
+    for i := 0 to cSMAX do
+      if cServiceTypesDB[i] = FServiceType then
+      begin
+        Result := cServiceTypesGUI[i];
+        exit;   //<==
+      end;
+  end;
+end;
+
+
 procedure TService.SetActive(AValue: Boolean);
 begin
   if FActive=AValue then Exit;
@@ -1032,6 +1066,19 @@ procedure TService.SetServiceType(AValue: string);
 begin
   if FServiceType=AValue then Exit;
   FServiceType:=AValue;
+end;
+
+procedure TService.SetServiceTypeGUI(AValue: string);
+var
+  i: Integer;
+begin
+  ServiceType:= '';
+  for i := 0 to cSMAX do
+    if cServiceTypesGUI[i] = AValue then
+    begin
+      ServiceType := cServiceTypesDB[i];
+      exit;  // <==
+    end;
 end;
 
 function TService.GetOwner: TServiceList;

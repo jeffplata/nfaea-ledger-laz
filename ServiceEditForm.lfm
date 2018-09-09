@@ -7,6 +7,7 @@ object frmServiceEdit: TfrmServiceEdit
   Caption = 'Edit Service'
   ClientHeight = 378
   ClientWidth = 325
+  OnShow = FormShow
   Position = poMainFormCenter
   LCLVersion = '1.8.2.0'
   object Button1: TButton
@@ -17,7 +18,7 @@ object frmServiceEdit: TfrmServiceEdit
     Anchors = [akRight, akBottom]
     Caption = 'Ok'
     ModalResult = 1
-    TabOrder = 0
+    TabOrder = 1
   end
   object Button2: TButton
     Left = 237
@@ -28,7 +29,7 @@ object frmServiceEdit: TfrmServiceEdit
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 1
+    TabOrder = 2
   end
   object PageControl1: TPageControl
     Left = 0
@@ -39,14 +40,14 @@ object frmServiceEdit: TfrmServiceEdit
     Align = alTop
     Anchors = [akTop, akLeft, akRight, akBottom]
     TabIndex = 0
-    TabOrder = 2
+    TabOrder = 0
     object tabGeneral: TTabSheet
       Caption = 'General'
-      ClientHeight = 303
+      ClientHeight = 305
       ClientWidth = 317
       object edtName: TEdit
         Left = 16
-        Height = 23
+        Height = 21
         Top = 32
         Width = 282
         TabOrder = 0
@@ -54,23 +55,23 @@ object frmServiceEdit: TfrmServiceEdit
       end
       object Label1: TLabel
         Left = 16
-        Height = 15
+        Height = 13
         Top = 16
-        Width = 32
+        Width = 27
         Caption = 'Name'
         ParentColor = False
       end
       object Label4: TLabel
         Left = 16
-        Height = 15
+        Height = 13
         Top = 208
-        Width = 142
+        Width = 122
         Caption = 'Maximum Terms (Months)'
         ParentColor = False
       end
       object edtMaxTerms: TEdit
         Left = 16
-        Height = 23
+        Height = 21
         Top = 224
         Width = 136
         NumbersOnly = True
@@ -79,15 +80,15 @@ object frmServiceEdit: TfrmServiceEdit
       end
       object Label5: TLabel
         Left = 160
-        Height = 15
+        Height = 13
         Top = 208
-        Width = 141
+        Width = 118
         Caption = 'Minimum Terms (Months)'
         ParentColor = False
       end
       object edtMinTerms: TEdit
         Left = 160
-        Height = 23
+        Height = 21
         Top = 224
         Width = 136
         NumbersOnly = True
@@ -96,15 +97,15 @@ object frmServiceEdit: TfrmServiceEdit
       end
       object Label6: TLabel
         Left = 16
-        Height = 15
+        Height = 13
         Top = 160
-        Width = 127
+        Width = 123
         Caption = 'Annual Interest Rate (%)'
         ParentColor = False
       end
       object Label7: TLabel
         Left = 160
-        Height = 15
+        Height = 13
         Top = 160
         Width = 88
         Caption = 'Rebates Rate (%)'
@@ -112,7 +113,7 @@ object frmServiceEdit: TfrmServiceEdit
       end
       object edtInterest: TEdit
         Left = 16
-        Height = 23
+        Height = 21
         Top = 176
         Width = 136
         TabOrder = 4
@@ -120,7 +121,7 @@ object frmServiceEdit: TfrmServiceEdit
       end
       object edtRebate: TEdit
         Left = 160
-        Height = 23
+        Height = 21
         Top = 176
         Width = 136
         TabOrder = 5
@@ -128,7 +129,7 @@ object frmServiceEdit: TfrmServiceEdit
       end
       object edtMaxAmount: TJLabeledCurrencyEdit
         Left = 16
-        Height = 23
+        Height = 21
         Top = 128
         Width = 136
         DisplayFormat = '#,0.00'
@@ -141,8 +142,8 @@ object frmServiceEdit: TfrmServiceEdit
         EditLabel.AnchorSideRight.Side = asrBottom
         EditLabel.AnchorSideBottom.Control = edtMaxAmount
         EditLabel.Left = 16
-        EditLabel.Height = 15
-        EditLabel.Top = 110
+        EditLabel.Height = 13
+        EditLabel.Top = 112
         EditLabel.Width = 136
         EditLabel.Caption = 'Max Loanable Amount'
         EditLabel.ParentColor = False
@@ -150,7 +151,7 @@ object frmServiceEdit: TfrmServiceEdit
       end
       object edtMinAmount: TJLabeledCurrencyEdit
         Left = 160
-        Height = 23
+        Height = 21
         Top = 128
         Width = 136
         DisplayFormat = '#,0.00'
@@ -162,8 +163,8 @@ object frmServiceEdit: TfrmServiceEdit
         EditLabel.AnchorSideRight.Side = asrBottom
         EditLabel.AnchorSideBottom.Control = edtMinAmount
         EditLabel.Left = 160
-        EditLabel.Height = 15
-        EditLabel.Top = 110
+        EditLabel.Height = 13
+        EditLabel.Top = 112
         EditLabel.Width = 136
         EditLabel.Caption = 'Min Loanable Amount'
         EditLabel.ParentColor = False
@@ -171,26 +172,44 @@ object frmServiceEdit: TfrmServiceEdit
       end
       object edtCSVUploadName: TEdit
         Left = 16
-        Height = 23
+        Height = 21
         Top = 80
         Width = 282
         TabOrder = 1
       end
       object Label2: TLabel
         Left = 16
-        Height = 15
+        Height = 13
         Top = 64
-        Width = 97
+        Width = 85
         Caption = 'CSV Upload Name'
         ParentColor = False
       end
       object ckbActive: TCheckBox
         Left = 16
-        Height = 19
+        Height = 17
         Top = 256
-        Width = 58
+        Width = 53
         Caption = 'Active?'
         TabOrder = 8
+      end
+      object cmbServiceTypesGUI: TComboBox
+        Left = 160
+        Height = 21
+        Top = 256
+        Width = 136
+        ItemHeight = 13
+        Style = csDropDownList
+        TabOrder = 9
+      end
+      object Label3: TLabel
+        Left = 127
+        Height = 13
+        Top = 256
+        Width = 24
+        Alignment = taRightJustify
+        Caption = 'Type'
+        ParentColor = False
       end
     end
   end

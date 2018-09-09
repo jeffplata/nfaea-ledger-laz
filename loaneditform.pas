@@ -85,7 +85,6 @@ begin
   try
     Data := Adata;
     Data.RecomputeTotals:= True;
-    //UpdateComboBox;
     SetupUI;
     result := (ShowModal = mrOK);
   finally
@@ -198,16 +197,6 @@ end;
 procedure TfrmLoanEdit.InitData;
 begin
   data.Init;
-  //Data.Service         := nil;   // clear loan type
-  //Data.Principal       := 0;     // clear principal
-  //Data.Terms           := 0;     // clear terms
-  //data.InterestRate    := 0;
-  //data.RebateRate      := 0;
-  //data.PreviousBalance := 0;
-  //data.Rebates         := 0;
-  //data.Adjustments     := 0;
-//
-//  data.RecomputeTotal;
 end;
 
 procedure TfrmLoanEdit.SetupUI;
@@ -224,19 +213,6 @@ begin
   if cmbService.ItemIndex < 0 then exit; //<==
 
   data.UpdateBasicData;
-
-  //if (data.Principal > data.Service.MaxAmount) or (data.Principal = 0) then
-  //  data.Principal:= data.service.maxamount;
-  //
-  //data.InterestRate:= data.Service.InterestRate;
-  //
-  //if (data.Terms > data.service.MaxTerm) or (data.terms = 0) then
-  //  data.terms := data.service.MaxTerm;
-  //
-  //data.RebateRate:= data.service.RebateRate;
-  //
-  //data.RecomputeTotals:= True;
-  //data.RecomputeTotal;
 
 end;
 
