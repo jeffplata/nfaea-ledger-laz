@@ -22,7 +22,7 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     skip_ : TStringList;
-    procedure SaveToDB;
+    procedure SaveToDB( const ANumber: string; const ADate: TDateTime );
   public
 
   end;
@@ -103,12 +103,16 @@ begin
   FreeAndNil(skip_);
 end;
 
-procedure TfrmPaymentCSVLoad.SaveToDB;
+procedure TfrmPaymentCSVLoad.SaveToDB(const ANumber: string;
+  const ADate: TDateTime);
 var
   P: TPayment;
   Per: TPayment;
   L: TPaymentList;
   i: Integer;
+  fldn: string;
+  P_OID, S_OID: string;
+  EmpNo: string;
 begin
   // iterate
   DBGrid1.BeginUpdate;
@@ -119,16 +123,26 @@ begin
     begin
       for i := 0 to SdfDataSet1.FieldCount -1 do
       begin
-        if skip_.IndexOf( SdfDataSet1.Schema[i] ) > -1 then Continue; //<==
-        //todo: continue here
+        fldn := SdfDataSet1.Schema[i];
+        if skip_.IndexOf( fldn ) > -1 then Continue; //<==
+        if SdfDataSet1.FieldByName( fldn ).AsFloat = 0 then Continue; //<==
+
+        EmpNo := SdfDataSet1.FieldByName('EMPNO').AsString;
+        S_OID := gLedgerManager.Services.FindByProps(['CSVUploadName'],[fldn]).OID.AsString;
+        gLedgerManager.PersonsLookup.ListFilter.Criteria:= 'EMPNO = '+QuotedStr(EmpNo);
+        gLedgerManager.PersonsLookup.ListFilter.Active:= True;
+        GTIOPFManager.Read(gLedgerManager.PersonsLookup);
+        gLedgerManager.PersonsLookup.ListFilter.Active:= False;
+        if gLedgerManager.PersonsLookup.Count = 0 then
+          // this empno cannot be found. what now ;
+          //todo: continue from here
+        P := TPayment.Create;  // dont forget the OID on save
+        P.DocDate:= ADate;
+        P.DocNumber:= ANumber;
+        P.Amount:= SdfDataSet1.FieldByName( fldn ).AsFloat;
+        P.Service.OID.AsString:= '';
+        L.Add( P );
       end;
-      //P := TPayment.CreateNew;
-      //P.Name:= SdfDataSet1.FieldByName('NAME').AsString;
-      //if SdfDataSet1.FieldByName('DATEJOINED').AsString = '' then
-      //  P.DateJoined:= 0
-      //else
-      //  P.DateJoined:= SdfDataSet1.FieldByName('DATEJOINED').AsDateTime;
-      //L.Add(P);
 
       SdfDataSet1.Next;
     end;
