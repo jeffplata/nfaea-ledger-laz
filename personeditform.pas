@@ -18,8 +18,10 @@ type
     ckbActive: TCheckBox;
     edtDateJoined: TDateEdit;
     edtName: TEdit;
+    edtNumber: TEdit;
     Label1: TLabel;
     Label2: TLabel;
+    Label3: TLabel;
   private
     FData: TPerson;
     FMediator: TtiModelMediator;
@@ -61,6 +63,7 @@ begin
   begin
     FMediator := TtiModelMediator.Create(Self);
     FMediator.AddProperty('Name', edtName);
+    FMediator.AddProperty('Number', edtNumber);
     FMediator.AddProperty('DateJoined', edtDateJoined);
     FMediator.AddProperty('Active', ckbActive);
   end;

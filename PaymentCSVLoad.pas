@@ -18,7 +18,10 @@ type
     DataSource1: TDataSource;
     DBGrid1: TDBGrid;
     SdfDataSet1: TSdfDataSet;
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
+    skip_ : TStringList;
     procedure SaveToDB;
   public
 
@@ -42,7 +45,11 @@ var
   s_ : TStringList;
   sMissing: string;
   i: Integer;
+  //skip_ : TStringList;
 begin
+  //skip_ := TStringList.Create;
+  skip_.AddStrings(['EMPNO','NAME','TOTAL']);
+
   s_ := TStringList.Create;
   for i := 0 to gLedgerManager.Services.Count -1 do
     s_.Add(UpperCase(gLedgerManager.Services.Items[i].CSVUploadName ) );
@@ -61,14 +68,14 @@ begin
 
     //verify that CSV columns exist in Services.CSVUploadNames
     For i := 0 to SdfDataSet1.Schema.Count-1 do
-      if s_.IndexOf(SdfDataSet1.Schema[i]) = -1 then
+      if ( skip_.IndexOf(SdfDataSet1.Schema[i]) = -1 ) and ( s_.IndexOf(SdfDataSet1.Schema[i]) = -1 ) then
         sMissing:= sMissing + SdfDataSet1.Schema[i] + #13#10;
 
     if sMissing<> '' then
       ShowMessage('Verification required.'#13#10+
-        'The following columns which are not defined in the Services table '+
-        'will not be saved.' +
-        #13#10#13#10+sMissing);
+        'The following columns which are not defined '#13#10+
+        'in the Services table will not be saved:'#13#10#13#10 +
+        sMissing);
     btnSave.Enabled:= (sMissing = '');
 
     if ShowModal=mrOk then
@@ -79,11 +86,22 @@ begin
   end;
 
   s_.Free;
+  //FreeAndNil(skip_);
 end;
 
 {$R *.lfm}
 
 { TfrmPaymentCSVLoad }
+
+procedure TfrmPaymentCSVLoad.FormCreate(Sender: TObject);
+begin
+  skip_ := TStringList.Create;
+end;
+
+procedure TfrmPaymentCSVLoad.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(skip_);
+end;
 
 procedure TfrmPaymentCSVLoad.SaveToDB;
 var
@@ -99,13 +117,18 @@ begin
     SdfDataSet1.First;
     while not SdfDataSet1.EOF do
     begin
-      P := TPayment.CreateNew;
-      P.Name:= SdfDataSet1.FieldByName('NAME').AsString;
-      if SdfDataSet1.FieldByName('DATEJOINED').AsString = '' then
-        P.DateJoined:= 0
-      else
-        P.DateJoined:= SdfDataSet1.FieldByName('DATEJOINED').AsDateTime;
-      L.Add(P);
+      for i := 0 to SdfDataSet1.FieldCount -1 do
+      begin
+        if skip_.IndexOf( SdfDataSet1.Schema[i] ) > -1 then Continue; //<==
+        //todo: continue here
+      end;
+      //P := TPayment.CreateNew;
+      //P.Name:= SdfDataSet1.FieldByName('NAME').AsString;
+      //if SdfDataSet1.FieldByName('DATEJOINED').AsString = '' then
+      //  P.DateJoined:= 0
+      //else
+      //  P.DateJoined:= SdfDataSet1.FieldByName('DATEJOINED').AsDateTime;
+      //L.Add(P);
 
       SdfDataSet1.Next;
     end;
@@ -121,6 +144,7 @@ begin
     DBGrid1.EndUpdate;
   end;
 end;
+
 
 end.
 

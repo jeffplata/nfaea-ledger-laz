@@ -18,6 +18,8 @@ uses
 
 type
 
+  TManualObjectClass = class of TManualObject;
+
   { TfrmMain }
 
   TfrmMain = class(TForm)
@@ -123,7 +125,7 @@ type
   public
     property Persons: TPersonList read FPersons write SetPersons;
     property Services: TServiceList read FServices write SetServices;
-    procedure DeleteFromList(AStringGrid: TStringGrid; AList: TtiObjectList );
+    procedure DeleteFromList(AStringGrid: TStringGrid; AList: TtiObjectList; AClass: TManualObjectClass );
   end;
 
 var
@@ -307,23 +309,23 @@ end;
 
 procedure TfrmMain.actDeleteLoanExecute(Sender: TObject);
 begin
-  DeleteFromList( sgdLoans, gLedgerManager.Loans );
+  DeleteFromList( sgdLoans, gLedgerManager.Loans, TLoan );
 end;
 
 
 procedure TfrmMain.actDeleteMemberExecute(Sender: TObject);
 begin
-  DeleteFromList(sgdPersons, Persons);
+  DeleteFromList(sgdPersons, Persons, TPerson);
 end;
 
 procedure TfrmMain.actDeletePaymentExecute(Sender: TObject);
 begin
-  DeleteFromList( sgdPayments, gLedgerManager.PaymentList );
+  DeleteFromList( sgdPayments, gLedgerManager.PaymentList, TPayment );
 end;
 
 procedure TfrmMain.actDeleteServiceExecute(Sender: TObject);
 begin
-  DeleteFromList( sgdServices, Services );
+  DeleteFromList( sgdServices, Services, TService );
 end;
 
 procedure TfrmMain.actEditLoanExecute(Sender: TObject);
@@ -490,7 +492,7 @@ begin
   begin
     FPersonsMediator := TtiModelMediator.Create(Self);
     FPersonsMediator.Name:= 'PersonsMediator';
-    FPersonsMediator.AddComposite('Name(200,"Name");DateJoinedAsString(100,"Date Joined");ID(100," ")',sgdPersons);
+    FPersonsMediator.AddComposite('Name(200,"Name");Number;DateJoinedAsString(100,"Date Joined");ID(100," ")',sgdPersons);
   end;
   FPersonsMediator.Subject:= FPersons;
   FPersonsMediator.Active:= True;
@@ -543,7 +545,8 @@ begin
   gLedgerManager.LoadPersons;
 end;
 
-procedure TfrmMain.DeleteFromList( AStringGrid: TStringGrid; AList: TtiObjectList  );
+procedure TfrmMain.DeleteFromList(AStringGrid: TStringGrid;
+  AList: TtiObjectList; AClass: TManualObjectClass);
 var
   O: TManualObject;
   i: Integer;
@@ -551,6 +554,7 @@ var
   iRows: integer;
   oldtop : integer;
   DeleteFailed: Boolean;
+  lCaption: string;
 begin
   oldtop := AStringGrid.Selection.Top;
   if oldtop = 0 then exit; // <==  no line selected
@@ -572,7 +576,8 @@ begin
           O.DeleteObject(AList, s);
           if (Pos('FOREIGN KEY',s)>0) then
             begin
-              MessageDlg('Information',cMsgCannotDelete ,mtInformation,[mbOK],0);
+              lCaption:= (O as AClass).Caption;
+              MessageDlg('Information',cMsgCannotDelete+#13#10#13#10+lCaption ,mtInformation,[mbOK],0);
               DeleteFailed := True;
             end;
         end;

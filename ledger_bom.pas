@@ -106,10 +106,15 @@ type
   private
     FActive: boolean;
     FName: string;
+    FNumber: string;
     procedure SetActive(AValue: boolean);
     procedure SetName(AValue: string);
+    procedure SetNumber(AValue: string);
+    function GetCaption: string; override;
   published
+    property Caption: string read GetCaption;
     property Name: string read FName write SetName;
+    property Number: string read FNumber write SetNumber;
     property Active: boolean read FActive write SetActive;
   end;
 
@@ -136,11 +141,9 @@ type
   TPerson = class(TPersonBasic)
   private
     FDateJoined: TDate;
-    //FName: string;
     function GetDateJoinedAsString: string;
     function GetID: string;
     procedure SetDateJoined(AValue: TDate);
-    //procedure SetName(AValue: string);
   protected
     function  GetOwner: TPersonList; reintroduce;
     procedure SetOwner(const Value: TPersonList); reintroduce;
@@ -148,7 +151,6 @@ type
     property  Owner: TPersonList read GetOwner write SetOwner;
   published
     property ID: string read GetID;
-    //property Name: string read FName write SetName;
     property DateJoined: TDate read FDateJoined write SetDateJoined;
     property DateJoinedAsString: string read GetDateJoinedAsString;
   end;
@@ -175,7 +177,7 @@ type
   private
     FName: string;
     procedure SetName(AValue: string);
-    function GetCaption: string;
+    function GetCaption: string; override;
   published
     property Caption: string read GetCaption;
     property Name: string read FName write SetName;
@@ -606,6 +608,17 @@ procedure TPersonBasic.SetName(AValue: string);
 begin
   if FName=AValue then Exit;
   FName:=AValue;
+end;
+
+procedure TPersonBasic.SetNumber(AValue: string);
+begin
+  if FNumber=AValue then Exit;
+  FNumber:=AValue;
+end;
+
+function TPersonBasic.GetCaption: string;
+begin
+  result := Name;
 end;
 
 procedure TPersonBasic.SetActive(AValue: boolean);
@@ -1149,6 +1162,7 @@ procedure TPerson.SetOwner(const Value: TPersonList);
 begin
   inherited SetOwner(Value);
 end;
+
 
 end.
 

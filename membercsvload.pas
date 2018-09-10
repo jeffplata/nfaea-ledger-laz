@@ -43,7 +43,7 @@ var
   i: Integer;
 begin
   s_ := TStringList.Create;
-  s_.AddStrings(['NAME','DATEJOINED']);
+  s_.AddStrings(['EMPNO','NAME','DATEJOINED']);
 
   with TfrmMemberCSVLoad.Create(Application) do
   try
@@ -95,6 +95,8 @@ begin
     begin
       P := TPerson.CreateNew;
       P.Name:=       SdfDataSet1.FieldByName('NAME').AsString;
+      P.Number:=     SdfDataSet1.FieldByName('EMPNO').AsString;
+      P.Active:=     True;
       if SdfDataSet1.FieldByName('DATEJOINED').AsString = '' then
         P.DateJoined:= 0
       else

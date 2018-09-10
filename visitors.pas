@@ -112,9 +112,9 @@ uses
 
 
 const
-  SQLReadPersons = 'select OID, NAME, DATEJOINED, ACTIVE from PERSON';
-  SQLCreatePerson = 'insert into PERSON(OID,NAME,DATEJOINED,ACTIVE) values (:OID,:NAME,:DATEJOINED,:ACTIVE)';
-  SQLUpdatePerson = 'update PERSON set NAME=:NAME, DATEJOINED=:DATEJOINED, ACTIVE=:ACTIVE where OID=:OID';
+  SQLReadPersons = 'select OID, NAME, EMPNO, DATEJOINED, ACTIVE from PERSON';
+  SQLCreatePerson = 'insert into PERSON(OID,NAME,EMPNO,DATEJOINED,ACTIVE) values (:OID,:NAME,:EMPNO,:DATEJOINED,:ACTIVE)';
+  SQLUpdatePerson = 'update PERSON set NAME=:NAME, EMPNO=:EMPNO, DATEJOINED=:DATEJOINED, ACTIVE=:ACTIVE where OID=:OID';
   SQLDeletePerson = 'delete from PERSON where OID=:OID';
   SQLLookUpPersons = 'select OID, NAME from PERSON';
 
@@ -578,6 +578,7 @@ begin
   if (Visited.ObjectState<>posDelete) then
   begin
     Query.ParamAsString['NAME']         := O.Name;
+    Query.ParamAsString['EMPNO']        := O.Number;
     Query.ParamAsDateTime['DATEJOINED'] := O.DateJoined;
     if O.Active then
       Query.ParamAsInteger['ACTIVE']    := 1
@@ -620,6 +621,7 @@ procedure TReadPersonsVisitor.MapRowToObject;
     O.OID.AssignFromTIQuery('OID',Query);
 
     O.Name       := Query.FieldAsString['NAME'];
+    O.Number     := Query.FieldAsString['EMPNO'];
     O.DateJoined := Query.FieldAsDateTime['DATEJOINED'];
     O.Active     := Query.FieldAsBoolean['ACTIVE'];
     O.ObjectState:=posClean;

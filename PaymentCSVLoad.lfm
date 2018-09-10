@@ -6,6 +6,8 @@ object frmPaymentCSVLoad: TfrmPaymentCSVLoad
   Caption = 'Load Payments from CSV'
   ClientHeight = 390
   ClientWidth = 609
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poMainFormCenter
   LCLVersion = '1.8.2.0'
   object DBGrid1: TDBGrid
