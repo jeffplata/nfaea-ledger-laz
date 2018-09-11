@@ -94,7 +94,7 @@ begin
     while not SdfDataSet1.EOF do
     begin
       //P := TPerson.CreateNew;
-      P := TPerson.Creat;  // OID will be manually assigned upon SaveObject
+      P := TPerson.Create;  // OID will be manually assigned upon SaveObject
       P.Name:=       SdfDataSet1.FieldByName('NAME').AsString;
       P.Number:=     SdfDataSet1.FieldByName('EMPNO').AsString;
       P.Active:=     True;
