@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Menus, EditBtn, ActnList, JLabeledCurrencyEdit,
+  ExtCtrls, Menus, EditBtn, ActnList, Grids, JLabeledCurrencyEdit,
   ledger_bom, tiModelMediator;
 
 type
@@ -14,12 +14,18 @@ type
   { TfrmLoanEdit }
 
   TfrmLoanEdit = class(TForm)
+    actAddAdjustment: TAction;
+    actDeleteAdjustment: TAction;
+    actEditAdjustment: TAction;
     actSelectPerson: TAction;
     ActionList1: TActionList;
     btnSearchMember: TButton;
     btnSearchMember1: TButton;
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
     cmbService: TComboBox;
     dtpPaymentStarts: TDateEdit;
     dtpPaymentEnds: TDateEdit;
@@ -49,7 +55,10 @@ type
     Label3: TLabel;
     Label4: TLabel;
     edtDocNumber: TLabeledEdit;
+    Label5: TLabel;
     LabeledEdit3: TLabeledEdit;
+    sgdAdjustments: TStringGrid;
+    procedure actAddAdjustmentExecute(Sender: TObject);
     procedure actSelectPersonExecute(Sender: TObject);
     procedure cmbServiceCloseUp(Sender: TObject);
     procedure cmbServiceKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
@@ -59,6 +68,7 @@ type
   private
     FData: TLoan;
     FMediator: TtiModelMediator;
+    FMedAdjustments: TtiModelMediator;
     procedure SetData(AValue: TLoan);
     procedure SetupMediators;
     procedure InitData;
@@ -75,7 +85,7 @@ implementation
 
 uses
   ledgermanager
-  ,LookupForm
+  ,LookupForm, LoanAdjEditForm
   ,LCLType
   ;
 
@@ -114,6 +124,20 @@ begin
     temp := nil;
     temp.Free;
   end;
+end;
+
+procedure TfrmLoanEdit.actAddAdjustmentExecute(Sender: TObject);
+var
+  O : TLoanAdjustment;
+begin
+  O := TLoanAdjustment.Create;
+  if EditLoanAdjustment(O) then
+  begin
+    Data.AdjustmentList.Add(O);
+    //FPersonsMediator.SelectedObject[sgdPersons] := O;  // go to last inserted
+  end
+  else
+    O.Free;
 end;
 
 
@@ -192,6 +216,14 @@ begin
   end;
   FMediator.Subject := FData;
   FMediator.Active:= True;
+
+  if not Assigned(FMedAdjustments) then
+  begin
+    FMedAdjustments := TtiModelMediator.Create(Self);
+    FMedAdjustments.AddComposite('Service.Name(120,"Service");Amount;Dummy(100," ")', sgdAdjustments);
+  end;
+  FMedAdjustments.Subject := FData.AdjustmentList;
+  FMedAdjustments.Active:= True;
 end;
 
 procedure TfrmLoanEdit.InitData;

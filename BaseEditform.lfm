@@ -1,0 +1,49 @@
+object frmObjectEdit: TfrmObjectEdit
+  Left = 432
+  Height = 233
+  Top = 224
+  Width = 320
+  BorderStyle = bsDialog
+  Caption = 'Edit Record'
+  ClientHeight = 233
+  ClientWidth = 320
+  Position = poMainFormCenter
+  LCLVersion = '1.8.2.0'
+  object edtName: TEdit
+    Left = 24
+    Height = 23
+    Top = 32
+    Width = 272
+    TabOrder = 0
+    Text = 'edtName'
+  end
+  object Label1: TLabel
+    Left = 24
+    Height = 15
+    Top = 16
+    Width = 32
+    Caption = 'Name'
+    ParentColor = False
+  end
+  object Button1: TButton
+    Left = 152
+    Height = 25
+    Top = 197
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Ok'
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 232
+    Height = 25
+    Top = 197
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+end

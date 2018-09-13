@@ -345,8 +345,9 @@ procedure TfrmMain.actEditLoanExecute(Sender: TObject);
       O.SaveObject;
       O.NotifyObservers;
     end;
-    B := nil;
-    B.Free;
+    //B := nil;
+    //B.Free;
+    FreeAndNil(B);
 end;
 
 procedure TfrmMain.actEditLoanUpdate(Sender: TObject);
@@ -512,7 +513,7 @@ begin
   begin
     FMedLoans := TtiModelMediator.Create(Self);
     FMedLoans.Name:= 'LoansMediator';
-    FMedLoans.AddComposite('Person.Name(200,"Member");Service.Name(150,"Loan Type");Principal(100,"Amount");Interest;Total;Amortization;DocDate(100,"Date");DocNumber;ID(100," ")',sgdLoans);
+    FMedLoans.AddComposite('Person.Name(120,"Member");Service.Name(120,"Loan Type");Principal(100,"Amount");Interest;Total;Adjustments;Amortization;DocDate(100,"Date");DocNumber;ID(100," ")',sgdLoans);
   end;
   FMedLoans.Subject:= gLedgerManager.Loans;
   FMedLoans.Active:= True;

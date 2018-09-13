@@ -50,8 +50,44 @@ type
   TLoan = class;
   TLoanList = class;
 
+  TLoanAdjustment = class;
+  TLoanAdjustmentList = class;
+
   TPayment = class;
   TPaymentList = class;
+
+  { TLoanAdjustment }
+
+  TLoanAdjustment = class(TManualObject)
+  private
+    FAmount: Currency;
+    FService: TService;
+    procedure SetAmount(AValue: Currency);
+    procedure SetService(AValue: TService);
+  protected
+    function  GetOwner: TLoanAdjustmentList; reintroduce;
+    procedure SetOwner(const Value: TLoanAdjustmentList); reintroduce;
+  public
+    property  Owner: TLoanAdjustmentList read GetOwner write SetOwner;
+    constructor Create; override;
+    destructor Destroy; override;
+  published
+    property Service: TService read FService write SetService;
+    property Amount: Currency read FAmount write SetAmount;
+  end;
+
+  { TLoanAdjustmentList }
+
+  TLoanAdjustmentList = class(TFilteredObjectList)
+  private
+  protected
+    function  GetItems(i: integer): TLoanAdjustment; reintroduce;
+    procedure SetItems(i: integer; const Value: TLoanAdjustment); reintroduce;
+  public
+    property  Items[i:integer]: TLoanAdjustment read GetItems write SetItems;
+    procedure Add(AObject:TLoanAdjustment); reintroduce;
+  published
+  end;
 
   { TPayment }
 
@@ -301,6 +337,7 @@ type
 
   TLoan = class(TManualObject)
   private
+    FAdjustmentList: TLoanAdjustmentList;
     FAdjustments: Currency;
     FAmortization: Currency;
     FDocDate: TDate;
@@ -322,6 +359,7 @@ type
     FTotal: Currency;
     function GetPersonID: string;
     function GetServiceID: string;
+    procedure SetAdjustmentList(AValue: TLoanAdjustmentList);
     procedure SetAdjustments(AValue: Currency);
     procedure SetAmortization(AValue: Currency);
     procedure SetDocDate(AValue: TDate);
@@ -375,6 +413,7 @@ type
     Property Amortization: Currency read FAmortization write SetAmortization;
     Property PaymentStart: Tdate read FPaymentStart write SetPaymentStart;
     Property PaymentEnd: Tdate read FPaymentEnd write SetPaymentEnd;
+    property AdjustmentList: TLoanAdjustmentList read FAdjustmentList write SetAdjustmentList;
   end;
 
   { TLoanList }
@@ -407,6 +446,60 @@ const
   cAmountZeroNotValid = 'Amount cannot be zero (0).';
   cNumberMissing = 'Number cannot be empty.';
   cDateMissing = 'Date cannot be empty.';
+
+{ TLoanAdjustmentList }
+
+function TLoanAdjustmentList.GetItems(i: integer): TLoanAdjustment;
+begin
+  result := TLoanAdjustment(inherited GetItems(i));
+end;
+
+procedure TLoanAdjustmentList.SetItems(i: integer; const Value: TLoanAdjustment
+  );
+begin
+  inherited SetItems(i, Value);
+end;
+
+procedure TLoanAdjustmentList.Add(AObject: TLoanAdjustment);
+begin
+  inherited Add(AObject);
+end;
+
+{ TLoanAdjustment }
+
+procedure TLoanAdjustment.SetService(AValue: TService);
+begin
+  if FService=AValue then Exit;
+  FService:=AValue;
+end;
+
+procedure TLoanAdjustment.SetAmount(AValue: Currency);
+begin
+  if FAmount=AValue then Exit;
+  FAmount:=AValue;
+end;
+
+function TLoanAdjustment.GetOwner: TLoanAdjustmentList;
+begin
+  result := TLoanAdjustmentList(inherited GetOwner);
+end;
+
+procedure TLoanAdjustment.SetOwner(const Value: TLoanAdjustmentList);
+begin
+  inherited SetOwner(Value);
+end;
+
+constructor TLoanAdjustment.Create;
+begin
+  inherited Create;
+  FService := TService.Create;
+end;
+
+destructor TLoanAdjustment.Destroy;
+begin
+  FreeAndNil(FService);
+  inherited Destroy;
+end;
 
 { TFilteredObjectList }
 
@@ -688,6 +781,12 @@ begin
   result := Service.OID.AsString;
 end;
 
+procedure TLoan.SetAdjustmentList(AValue: TLoanAdjustmentList);
+begin
+  if FAdjustmentList=AValue then Exit;
+  FAdjustmentList:=AValue;
+end;
+
 procedure TLoan.SetAdjustments(AValue: Currency);
 begin
   if FAdjustments=AValue then Exit;
@@ -786,6 +885,7 @@ begin
   FPerson := TPersonBasic.Create;
   FService := TService.Create;
   FRecomputeTotals:= False;
+  FAdjustmentList := TLoanAdjustmentList.Create;
 end;
 
 destructor TLoan.Destroy;
@@ -794,6 +894,7 @@ begin
   FPerson.Free;
   FService := nil;
   FService.Free;
+  FreeAndNil(FAdjustmentList);
   inherited Destroy;
 end;
 

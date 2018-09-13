@@ -1,0 +1,81 @@
+object frmLoanAdjEdit: TfrmLoanAdjEdit
+  Left = 432
+  Height = 171
+  Top = 224
+  Width = 320
+  BorderStyle = bsDialog
+  Caption = 'Edit Loan Adjustment'
+  ClientHeight = 171
+  ClientWidth = 320
+  Position = poMainFormCenter
+  LCLVersion = '1.8.2.0'
+  object Label1: TLabel
+    Left = 34
+    Height = 15
+    Top = 16
+    Width = 37
+    Alignment = taRightJustify
+    Caption = 'Service'
+    ParentColor = False
+  end
+  object Button1: TButton
+    Left = 152
+    Height = 25
+    Top = 135
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Ok'
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 232
+    Height = 25
+    Top = 135
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object ComboBox1: TComboBox
+    Left = 80
+    Height = 23
+    Top = 16
+    Width = 224
+    ItemHeight = 15
+    TabOrder = 2
+    Text = 'ComboBox1'
+  end
+  object Label2: TLabel
+    Left = 27
+    Height = 15
+    Top = 56
+    Width = 44
+    Alignment = taRightJustify
+    Caption = 'Amount'
+    ParentColor = False
+  end
+  object JLabeledCurrencyEdit1: TJLabeledCurrencyEdit
+    Left = 80
+    Height = 23
+    Top = 56
+    Width = 80
+    DisplayFormat = '#,0.00'
+    Decimals = 2
+    Value = 0
+    NegativeColor = clDefault
+    EditLabel.AnchorSideLeft.Control = JLabeledCurrencyEdit1
+    EditLabel.AnchorSideRight.Control = JLabeledCurrencyEdit1
+    EditLabel.AnchorSideRight.Side = asrBottom
+    EditLabel.AnchorSideBottom.Control = JLabeledCurrencyEdit1
+    EditLabel.Left = 80
+    EditLabel.Height = 15
+    EditLabel.Top = 38
+    EditLabel.Width = 80
+    EditLabel.Caption = 'JLabeledCurrencyEdit1'
+    EditLabel.ParentColor = False
+    TabOrder = 3
+  end
+end
