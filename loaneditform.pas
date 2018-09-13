@@ -134,6 +134,7 @@ begin
   if EditLoanAdjustment(O) then
   begin
     Data.AdjustmentList.Add(O);
+    //todo: adjustment list is not saved
     //FPersonsMediator.SelectedObject[sgdPersons] := O;  // go to last inserted
   end
   else

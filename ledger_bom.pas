@@ -71,6 +71,7 @@ type
     property  Owner: TLoanAdjustmentList read GetOwner write SetOwner;
     constructor Create; override;
     destructor Destroy; override;
+    procedure AssignClassProps(ASource: TtiObject); override;
   published
     property Service: TService read FService write SetService;
     property Amount: Currency read FAmount write SetAmount;
@@ -497,8 +498,14 @@ end;
 
 destructor TLoanAdjustment.Destroy;
 begin
-  FreeAndNil(FService);
+  FService := nil;
+  FService.Free;
   inherited Destroy;
+end;
+
+procedure TLoanAdjustment.AssignClassProps(ASource: TtiObject);
+begin
+  FService := TLoanAdjustment(ASource).Service;
 end;
 
 { TFilteredObjectList }

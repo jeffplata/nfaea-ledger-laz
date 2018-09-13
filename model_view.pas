@@ -51,6 +51,7 @@ begin
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoan, 'Amortization');
 
   gMediatorManager.RegisterMediator(TService_Money_Mediator, TPayment, 'Amount');
+  gMediatorManager.RegisterMediator(TService_Money_Mediator, TLoanAdjustment, 'Amount');
 end;
 
 

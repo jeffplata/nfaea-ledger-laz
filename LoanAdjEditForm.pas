@@ -19,12 +19,12 @@ type
     edtAmount: TJLabeledCurrencyEdit;
     Label1: TLabel;
     Label2: TLabel;
+    procedure FormShow(Sender: TObject);
   private
     FData: TLoanAdjustment;
     FMediator: TtiModelMediator;
     procedure SetData(AValue: TLoanAdjustment);
     procedure SetupMediators;
-    procedure SetupUI;
   public
     property Data: TLoanAdjustment read FData write SetData;
   end;
@@ -40,7 +40,6 @@ begin
   with TfrmLoanAdjEdit.Create(nil) do
   try
     Data := Adata;
-    SetupUI;
     result := (ShowModal = mrOK);
   finally
     Free;
@@ -51,6 +50,14 @@ end;
 
 { TfrmLoanAdjEdit }
 
+procedure TfrmLoanAdjEdit.FormShow(Sender: TObject);
+begin
+  if Visible then
+  begin
+    cmbService.SetFocus;
+    edtAmount.EditLabel.Visible:= false;
+  end;
+end;
 
 procedure TfrmLoanAdjEdit.SetData(AValue: TLoanAdjustment);
 begin
@@ -64,6 +71,7 @@ begin
   if not Assigned(FMediator) then
   begin
     FMediator := TtiModelMediator.Create(Self);
+    FMediator.Name:= 'frmLoanAdjEditLoanAdj';
     FMediator.AddProperty('Service', cmbService).ValueList := gLedgerManager.Services;
     FMediator.AddProperty('Amount', edtAmount);
   end;
@@ -71,11 +79,6 @@ begin
   FMediator.Active:= True;
 end;
 
-procedure TfrmLoanAdjEdit.SetupUI;
-begin
-  if Visible then cmbService.SetFocus;
-  edtAmount.EditLabel.Visible:= false;
-end;
 
 end.
 
