@@ -30,6 +30,7 @@ type
 
   TManualObject = class(TtiObject)
     public
+      procedure Mark;
       procedure SaveObject;
       procedure DeleteObject(FromList: TtiObjectList; var s: string ); //copied somewhere
   end;
@@ -61,8 +62,10 @@ type
   TLoanAdjustment = class(TManualObject)
   private
     FAmount: Currency;
+    FLoanID: string;
     FService: TService;
     procedure SetAmount(AValue: Currency);
+    procedure SetLoanID(AValue: string);
     procedure SetService(AValue: TService);
   protected
     function  GetOwner: TLoanAdjustmentList; reintroduce;
@@ -73,6 +76,7 @@ type
     destructor Destroy; override;
     procedure AssignClassProps(ASource: TtiObject); override;
   published
+    property LoanID: string read FLoanID write SetLoanID;
     property Service: TService read FService write SetService;
     property Amount: Currency read FAmount write SetAmount;
   end;
@@ -360,7 +364,6 @@ type
     FTotal: Currency;
     function GetPersonID: string;
     function GetServiceID: string;
-    procedure SetAdjustmentList(AValue: TLoanAdjustmentList);
     procedure SetAdjustments(AValue: Currency);
     procedure SetAmortization(AValue: Currency);
     procedure SetDocDate(AValue: TDate);
@@ -414,7 +417,7 @@ type
     Property Amortization: Currency read FAmortization write SetAmortization;
     Property PaymentStart: Tdate read FPaymentStart write SetPaymentStart;
     Property PaymentEnd: Tdate read FPaymentEnd write SetPaymentEnd;
-    property AdjustmentList: TLoanAdjustmentList read FAdjustmentList write SetAdjustmentList;
+    property AdjustmentList: TLoanAdjustmentList read FAdjustmentList; // write SetAdjustmentList;
   end;
 
   { TLoanList }
@@ -472,12 +475,21 @@ procedure TLoanAdjustment.SetService(AValue: TService);
 begin
   if FService=AValue then Exit;
   FService:=AValue;
+  Mark;
 end;
 
 procedure TLoanAdjustment.SetAmount(AValue: Currency);
 begin
   if FAmount=AValue then Exit;
   FAmount:=AValue;
+  Mark;
+end;
+
+procedure TLoanAdjustment.SetLoanID(AValue: string);
+begin
+  if FLoanID=AValue then Exit;
+  FLoanID:=AValue;
+  Mark;
 end;
 
 function TLoanAdjustment.GetOwner: TLoanAdjustmentList;
@@ -788,12 +800,6 @@ begin
   result := Service.OID.AsString;
 end;
 
-procedure TLoan.SetAdjustmentList(AValue: TLoanAdjustmentList);
-begin
-  if FAdjustmentList=AValue then Exit;
-  FAdjustmentList:=AValue;
-end;
-
 procedure TLoan.SetAdjustments(AValue: Currency);
 begin
   if FAdjustments=AValue then Exit;
@@ -893,6 +899,7 @@ begin
   FService := TService.Create;
   FRecomputeTotals:= False;
   FAdjustmentList := TLoanAdjustmentList.Create;
+  FAdjustmentList.Owner := Self;
 end;
 
 destructor TLoan.Destroy;
@@ -936,7 +943,8 @@ begin
   FPerson.Assign(TLoan(ASource).Person);
   //FService.Assign(TLoan(ASource).Service );
   //FPerson := TLoan(ASource).Person;
-  FService := TLoan(ASource).Service
+  FService := TLoan(ASource).Service;
+  FAdjustmentList.Assign(TLoan(ASource).AdjustmentList);
 end;
 
 procedure TLoan.RecomputeTotal;
@@ -997,11 +1005,18 @@ end;
 
 { TManualObject }
 
+procedure TManualObject.Mark;
+begin
+  Dirty:= True;
+end;
+
 procedure TManualObject.SaveObject;
 begin
   Dirty:= True;
   //NotifyObservers;
   Save;
+  Dirty:= False;
+  //todo: resolve dirty
 end;
 
 procedure TManualObject.DeleteObject(FromList: TtiObjectList; var s: string);

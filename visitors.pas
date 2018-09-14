@@ -14,6 +14,25 @@ uses
 
 type
 
+  { TReadLoanAdjustmentsVisitor }
+
+  TReadLoanAdjustmentsVisitor = Class(TtiVisitorSelect)
+  Protected
+    Procedure Init; override;
+    Function AcceptVisitor : Boolean; override;
+    Procedure SetupParams; override;
+    Procedure MapRowToObject; override;
+  end;
+
+  { TSaveLoanAdjustmentVisitor }
+
+  TSaveLoanAdjustmentVisitor = Class(TtiVisitorUpdate)
+  Protected
+    Procedure Init; override;
+    Function AcceptVisitor : Boolean; override;
+    Procedure SetupParams; override;
+  end;
+
   { TReadPersonsLkUpVisitor }
 
   TReadPersonsLkUpVisitor = Class(TtiVisitorSelect)
@@ -219,6 +238,102 @@ const
       '    a.OID = :OID'
       ;
   SQLDeletePayment = 'delete from PAYMENT where OID=:OID';
+
+  SQLReadLoanAdjustments = 'select * from LOANADJUSTMENT where LOAN_OID=:LOAN_OID';
+
+  SQLCreateLoanAdjustment =
+      'INSERT INTO LOANADJUSTMENT (OID, LOAN_OID, SERVICE_OID, AMOUNT) ' +
+      'VALUES ( ' +
+      '    :OID, '+
+      '    :LOAN_OID, '+
+      '    :SERVICE_OID, '+
+      '    :AMOUNT '+
+      ')'
+      ;
+
+  SQLUpdateLoanAdjustment =
+      ' UPDATE LOANADJUSTMENT a'+
+      ' SET'+
+      '    a.OID = :OID,'+
+      '    a.LOAN_OID = :LOAN_OID,'+
+      '    a.SERVICE_OID = :SERVICE_OID,'+
+      '    a.AMOUNT = :AMOUNT'+
+      ' WHERE'+
+      '    a.OID = :OID'
+      ;
+
+  SQLDeleteLoanAdjustment = 'delete from LOANADJUSTMENT where OID=:OID';
+
+{ TSaveLoanAdjustmentVisitor }
+
+procedure TSaveLoanAdjustmentVisitor.Init;
+begin
+  Case Visited.ObjectState of
+    posCreate:
+      Query.SQLText:=SQLCreateLoanAdjustment;
+    posUpdate:
+      Query.SQLText:=SQLUpdateLoanAdjustment;
+    posDelete:
+      Query.SQLText:=SQLDeleteLoanAdjustment;
+  end;
+end;
+
+function TSaveLoanAdjustmentVisitor.AcceptVisitor: Boolean;
+begin
+  Result:=Visited is TLoanAdjustment;
+  Result:=Result and (Visited.ObjectState in [posCreate,posdelete,posUpdate]);
+end;
+
+procedure TSaveLoanAdjustmentVisitor.SetupParams;
+var
+  O : TLoanAdjustment;
+begin
+  O:=TLoanAdjustment(Visited);
+  O.OID.AssignToTIQuery('OID',Query);
+  if (Visited.ObjectState<>posDelete) then
+  begin
+    Query.ParamAsString['LOAN_OID']    := O.LoanID;
+    Query.ParamAsString['SERVICE_OID'] := O.Service.OID.AsString;
+    Query.ParamAsFloat['AMOUNT']       := O.Amount;
+  end;
+end;
+
+{ TReadLoanAdjustmentsVisitor }
+
+procedure TReadLoanAdjustmentsVisitor.Init;
+begin
+  Query.SQLText:= SQLReadLoanAdjustments;
+end;
+
+function TReadLoanAdjustmentsVisitor.AcceptVisitor: Boolean;
+begin
+  Result:= Visited is TLoanAdjustmentList;
+end;
+
+procedure TReadLoanAdjustmentsVisitor.SetupParams;
+begin
+  Query.ParamAsString['LOAN_OID'] := TLoan(Visited.Owner).OID.AsString; //loanadjustments.owner = TLoan
+end;
+
+procedure TReadLoanAdjustmentsVisitor.MapRowToObject;
+var
+  O : TLoanAdjustment;
+
+begin
+  O:= TLoanAdjustment.Create;
+  O.OID.AssignFromTIQuery('OID',Query);
+
+  //O.Service.OID.AssignFromTIQuery('SERVICE_OID',Query);
+  O.LoanID  := Query.FieldAsString['LOAN_OID'];
+  O.Amount  := Query.FieldAsFloat['AMOUNT'];
+  O.Service := TService(gLedgerManager.Services.Find(Query.FieldAsString['SERVICE_OID']) );
+
+  //if S <> nil then
+  //  O.Service := S;
+  //
+  O.ObjectState:=posClean;
+  TLoanAdjustmentList(Visited).Add(O);
+end;
 
 { TSavePaymentVisitor }
 
@@ -645,6 +760,9 @@ begin
 
     RegReadVisitor(TReadPaymentsVisitor);
     RegSaveVisitor(TSavePaymentVisitor);
+
+    RegReadVisitor(TReadLoanAdjustmentsVisitor);
+    RegSaveVisitor(TSaveLoanAdjustmentVisitor);
 
   end;
 end;

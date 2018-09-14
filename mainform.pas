@@ -72,7 +72,7 @@ type
     sgdLoans: TStringGrid;
     sgdPayments: TStringGrid;
     spbClearPaymentsFilter: TSpeedButton;
-    spbMembersClear: TSpeedButton;
+    spbClearMembers: TSpeedButton;
     spbClearLoanFilter: TSpeedButton;
     StatusBar1: TStatusBar;
     sgdPersons: TStringGrid;
@@ -106,8 +106,9 @@ type
     procedure sgdPaymentsDblClick(Sender: TObject);
     procedure sgdPersonsDblClick(Sender: TObject);
     procedure sgdServicesDblClick(Sender: TObject);
+    procedure spbClearLoanFilterClick(Sender: TObject);
     procedure spbClearPaymentsFilterClick(Sender: TObject);
-    procedure spbMembersClearClick(Sender: TObject);
+    procedure spbClearMembersClick(Sender: TObject);
   private
     FPersonsMediator: TtiModelMediator;
     FMedServices: TtiModelMediator;
@@ -117,6 +118,7 @@ type
     FServices: TServiceList;
     SQLWhereBuilderLoans : TSQLWhereBuilder;
     SQLWhereBuilderPayments: TSQLWhereBuilder;
+    procedure SaveAdjustmentList(var O: TLoan);
     procedure SetPersons(AValue: TPersonList);
     procedure SetServices(AValue: TServiceList);
     procedure SetupMediators;
@@ -274,6 +276,8 @@ begin
     gLedgerManager.Loans.Add(O);
     O.SaveObject;
     FMedLoans.SelectedObject[sgdLoans] := O;  // go to last inserted
+    //save the AdjustmentsList, if any
+    SaveAdjustmentList(O);
   end
   else
     O.Free;
@@ -344,9 +348,8 @@ procedure TfrmMain.actEditLoanExecute(Sender: TObject);
       O.Assign(B);
       O.SaveObject;
       O.NotifyObservers;
+      SaveAdjustmentList(O);
     end;
-    //B := nil;
-    //B.Free;
     FreeAndNil(B);
 end;
 
@@ -425,7 +428,7 @@ begin
   sgdServices.Columns[4].Width:= 100;
   sgdPersons.Columns[2].Width:= 100;
 
-  dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbMembersClear.Glyph);
+  dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearMembers.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLoanFilter.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPaymentsFilter.Glyph);
 
@@ -461,13 +464,19 @@ begin
   actEditService.Execute;
 end;
 
+procedure TfrmMain.spbClearLoanFilterClick(Sender: TObject);
+begin
+  edtFilterLoans.SetFocus;
+  edtFilterLoans.Text:= '';
+end;
+
 procedure TfrmMain.spbClearPaymentsFilterClick(Sender: TObject);
 begin
   edtFilterPayments.SetFocus;
   edtFilterPayments.Text:= '';
 end;
 
-procedure TfrmMain.spbMembersClearClick(Sender: TObject);
+procedure TfrmMain.spbClearMembersClick(Sender: TObject);
 begin
   edtFilter.SetFocus;
   edtFilter.Text:= '';
@@ -478,6 +487,21 @@ procedure TfrmMain.SetPersons(AValue: TPersonList);
 begin
   if FPersons=AValue then Exit;
   FPersons:=AValue;
+end;
+
+procedure TfrmMain.SaveAdjustmentList(var O: TLoan);
+var
+  i: Integer;
+begin
+  for i := 0 to O.AdjustmentList.Count-1 do
+  begin
+    if O.AdjustmentList.Items[i].ObjectState = posCreate then
+      GTIOPFManager.DefaultOIDGenerator.AssignNextOID(O.AdjustmentList.Items[i
+        ].OID);
+    //if O.AdjustmentList.Items[i].LoanID <> O.OID.AsString then
+    O.AdjustmentList.Items[i].LoanID:= O.OID.AsString;
+    O.AdjustmentList.Items[i].SaveObject;
+  end;
 end;
 
 procedure TfrmMain.SetServices(AValue: TServiceList);

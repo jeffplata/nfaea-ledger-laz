@@ -59,6 +59,7 @@ type
     LabeledEdit3: TLabeledEdit;
     sgdAdjustments: TStringGrid;
     procedure actAddAdjustmentExecute(Sender: TObject);
+    procedure actEditAdjustmentExecute(Sender: TObject);
     procedure actSelectPersonExecute(Sender: TObject);
     procedure cmbServiceCloseUp(Sender: TObject);
     procedure cmbServiceKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
@@ -133,12 +134,32 @@ begin
   O := TLoanAdjustment.Create;
   if EditLoanAdjustment(O) then
   begin
+    O.LoanID:= FData.OID.AsString;
     Data.AdjustmentList.Add(O);
-    //todo: adjustment list is not saved
-    //FPersonsMediator.SelectedObject[sgdPersons] := O;  // go to last inserted
+    FMedAdjustments.SelectedObject[sgdAdjustments] := O; // go to last inserted
   end
   else
     O.Free;
+end;
+
+procedure TfrmLoanEdit.actEditAdjustmentExecute(Sender: TObject);
+var
+  O : TLoanAdjustment;
+  B : TLoanAdjustment; //Buffer for undo
+begin
+  O := TLoanAdjustment(FMedAdjustments.SelectedObject[sgdAdjustments]);
+  if not assigned(O) then exit; //<==
+
+  B := TLoanAdjustment.Create;
+  B.Assign(O);
+  if EditLoanAdjustment(B) and B.Dirty then
+  begin
+    O.Assign(B);
+    O.SaveObject;
+    O.NotifyObservers;
+  end;
+
+  FreeAndNil(B);
 end;
 
 
@@ -221,7 +242,8 @@ begin
   if not Assigned(FMedAdjustments) then
   begin
     FMedAdjustments := TtiModelMediator.Create(Self);
-    FMedAdjustments.AddComposite('Service.Name(120,"Service");Amount;Dummy(100," ")', sgdAdjustments);
+    //FMedAdjustments.AddComposite('Service.Name(120,"Service");Amount;Dummy(100," ")', sgdAdjustments);
+    FMedAdjustments.AddComposite('Service.Name;Amount', sgdAdjustments);
   end;
   FMedAdjustments.Subject := FData.AdjustmentList;
   FMedAdjustments.Active:= True;

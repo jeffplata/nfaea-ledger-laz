@@ -22,12 +22,12 @@ object frmMain: TfrmMain
     object tabPersons: TTabSheet
       Caption = 'Members'
       ClientHeight = 319
-      ClientWidth = 669
+      ClientWidth = 738
       object sgdPersons: TStringGrid
         Left = 0
         Height = 286
         Top = 33
-        Width = 669
+        Width = 738
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 0
@@ -58,12 +58,12 @@ object frmMain: TfrmMain
         TabOrder = 1
         OnKeyPress = edtFilterKeyPress
       end
-      object spbMembersClear: TSpeedButton
+      object spbClearMembers: TSpeedButton
         Left = 180
         Height = 22
         Top = 8
         Width = 23
-        OnClick = spbMembersClearClick
+        OnClick = spbClearMembersClick
       end
       object Button1: TButton
         Left = 224
@@ -93,12 +93,12 @@ object frmMain: TfrmMain
     object tabServices: TTabSheet
       Caption = 'Services'
       ClientHeight = 319
-      ClientWidth = 669
+      ClientWidth = 738
       object sgdServices: TStringGrid
         Left = 0
         Height = 286
         Top = 33
-        Width = 669
+        Width = 738
         Align = alBottom
         ColCount = 0
         FixedCols = 0
@@ -176,6 +176,7 @@ object frmMain: TfrmMain
         Height = 22
         Top = 8
         Width = 23
+        OnClick = spbClearLoanFilterClick
       end
       object btnAddLoan: TButton
         Left = 224
