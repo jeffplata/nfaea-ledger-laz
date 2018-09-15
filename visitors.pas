@@ -323,14 +323,10 @@ begin
   O:= TLoanAdjustment.Create;
   O.OID.AssignFromTIQuery('OID',Query);
 
-  //O.Service.OID.AssignFromTIQuery('SERVICE_OID',Query);
   O.LoanID  := Query.FieldAsString['LOAN_OID'];
   O.Amount  := Query.FieldAsFloat['AMOUNT'];
   O.Service := TService(gLedgerManager.Services.Find(Query.FieldAsString['SERVICE_OID']) );
 
-  //if S <> nil then
-  //  O.Service := S;
-  //
   O.ObjectState:=posClean;
   TLoanAdjustmentList(Visited).Add(O);
 end;

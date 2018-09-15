@@ -12,6 +12,7 @@ uses
 
 type
 
+  TManualObjectClass = class of TManualObject;
 
   { TFilteredObjectList }
 
@@ -32,7 +33,7 @@ type
     public
       procedure Mark;
       procedure SaveObject;
-      procedure DeleteObject(FromList: TtiObjectList; var s: string ); //copied somewhere
+      procedure DeleteObject(FromList: TtiObjectList; var s: string; const isPropagageToDB:boolean = True ); //copied somewhere
   end;
 
   TPersonBasic = class;
@@ -1019,12 +1020,14 @@ begin
   //todo: resolve dirty
 end;
 
-procedure TManualObject.DeleteObject(FromList: TtiObjectList; var s: string);
+procedure TManualObject.DeleteObject(FromList: TtiObjectList; var s: string;
+  const isPropagageToDB: boolean = True);
 begin
   s := '';
   Deleted:=True;
   try
-    Save;  // Most likely, errors will sprout from here
+    if isPropagageToDB then
+      Save;  // Most likely, errors will sprout from here
     if Owner <> nil then
       If Assigned(FromList) then
          FromList.FreeDeleted;

@@ -9,7 +9,7 @@ uses
   Interfaces, // this includes the LCL widgetset
   Forms, mainform, ledger_bom, ledgermanager, visitors, PersonEditForm,
   datetimectrls, sdflaz, lazcontrols, MemberCSVLoad, Model_View,
-  ResourceDM, SQLWhereBuilderNV, ObjectListFilter;
+  ResourceDM, SQLWhereBuilderNV, ObjectListFilter, DeleteFromListU;
 
 {$R *.res}
 

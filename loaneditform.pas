@@ -59,6 +59,7 @@ type
     LabeledEdit3: TLabeledEdit;
     sgdAdjustments: TStringGrid;
     procedure actAddAdjustmentExecute(Sender: TObject);
+    procedure actDeleteAdjustmentExecute(Sender: TObject);
     procedure actEditAdjustmentExecute(Sender: TObject);
     procedure actSelectPersonExecute(Sender: TObject);
     procedure cmbServiceCloseUp(Sender: TObject);
@@ -66,6 +67,7 @@ type
       );
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure sgdAdjustmentsDblClick(Sender: TObject);
   private
     FData: TLoan;
     FMediator: TtiModelMediator;
@@ -76,6 +78,7 @@ type
     procedure SetupUI;
     procedure UpdateLoanData;
     procedure UpdateComboBox;
+    function AdjustmentsTotal: Double;
   public
     property Data: TLoan read FData write SetData;
   end;
@@ -86,7 +89,7 @@ implementation
 
 uses
   ledgermanager
-  ,LookupForm, LoanAdjEditForm
+  ,LookupForm, LoanAdjEditForm, DeleteFromListU
   ,LCLType
   ;
 
@@ -137,9 +140,19 @@ begin
     O.LoanID:= FData.OID.AsString;
     Data.AdjustmentList.Add(O);
     FMedAdjustments.SelectedObject[sgdAdjustments] := O; // go to last inserted
+    FData.Adjustments:= AdjustmentsTotal;
   end
   else
     O.Free;
+end;
+
+procedure TfrmLoanEdit.actDeleteAdjustmentExecute(Sender: TObject);
+begin
+  if FMedAdjustments.SelectedObject[sgdAdjustments] <> nil then
+  begin
+    DeleteFromList(sgdAdjustments, FData.AdjustmentList, TLoanAdjustment, False );
+    FData.Adjustments:= AdjustmentsTotal;
+  end;
 end;
 
 procedure TfrmLoanEdit.actEditAdjustmentExecute(Sender: TObject);
@@ -152,13 +165,14 @@ begin
 
   B := TLoanAdjustment.Create;
   B.Assign(O);
+  B.Dirty:= False;
   if EditLoanAdjustment(B) and B.Dirty then
   begin
     O.Assign(B);
-    O.SaveObject;
+    //O.SaveObject; // Save only when TLoan is saved (master-detail)
     O.NotifyObservers;
+    FData.Adjustments:= AdjustmentsTotal;
   end;
-
   FreeAndNil(B);
 end;
 
@@ -204,6 +218,11 @@ begin
   end;
 end;
 
+procedure TfrmLoanEdit.sgdAdjustmentsDblClick(Sender: TObject);
+begin
+  actEditAdjustment.Execute;
+end;
+
 procedure TfrmLoanEdit.SetData(AValue: TLoan);
 begin
   if FData=AValue then Exit;
@@ -242,8 +261,8 @@ begin
   if not Assigned(FMedAdjustments) then
   begin
     FMedAdjustments := TtiModelMediator.Create(Self);
-    //FMedAdjustments.AddComposite('Service.Name(120,"Service");Amount;Dummy(100," ")', sgdAdjustments);
-    FMedAdjustments.AddComposite('Service.Name;Amount', sgdAdjustments);
+    FMedAdjustments.AddComposite('Service.Name(150,"Service");Amount;Dummy(100," ")', sgdAdjustments);
+    //FMedAdjustments.AddComposite('Service.Name;Amount', sgdAdjustments);
   end;
   FMedAdjustments.Subject := FData.AdjustmentList;
   FMedAdjustments.Active:= True;
@@ -261,6 +280,7 @@ begin
   edtNetProceeds.Color:= clInfoBk;
   edtInterestRate.Color:= clInfoBk;
   edtRebateRate.Color:= clInfoBk;
+  edtAdjustments.Color:= clInfoBk;
 end;
 
 procedure TfrmLoanEdit.UpdateLoanData;
@@ -280,6 +300,16 @@ begin
     i := cmbService.Items.IndexOf(Data.Service.Name);
     cmbService.ItemIndex:= i;
   end;
+end;
+
+function TfrmLoanEdit.AdjustmentsTotal: Double;
+var
+  i: Integer;
+begin
+  Result := 0;
+  for i := 0 to FData.AdjustmentList.Count-1 do
+    if not FData.AdjustmentList.Items[i].Deleted then
+      Result := Result + FData.AdjustmentList.Items[i].Amount;
 end;
 
 end.

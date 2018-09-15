@@ -127,8 +127,8 @@ type
   public
     property Persons: TPersonList read FPersons write SetPersons;
     property Services: TServiceList read FServices write SetServices;
-    procedure DeleteFromList(AStringGrid: TStringGrid; AList: TtiObjectList; AClass: TManualObjectClass );
   end;
+
 
 var
   frmMain: TfrmMain;
@@ -145,15 +145,18 @@ uses
   , PaymentEditForm
   , ResourceDM
   , PaymentCSVLoad
+  , ObjectUtils
   ;
 
 const
-  cMsgDeleteOneRecord = 'Do you want to delete the selected record?';
-  cMsgDeleteRecords = '%d selected records will be deleted.'#13#10'Do you want to continue?';
-  cMsgCannotDelete = 'This object cannot be deleted'#13#10' as it is referenced by other objects';
+  //cMsgDeleteOneRecord = 'Do you want to delete the selected record?';
+  //cMsgDeleteRecords = '%d selected records will be deleted.'#13#10'Do you want to continue?';
+  //cMsgCannotDelete = 'This object cannot be deleted'#13#10' as it is referenced by other objects';
 
   cSQLFilterTextLoans = 'p.NAME containing ?';
   cSQLFilterTextPayments = '(p.NAME containing ?) OR (DOCNUMBER starting ?)';
+
+
   //cSQLFilterTextMembers = 'NAME containing ?';
 
 {$R *.lfm}
@@ -185,7 +188,8 @@ begin
   P := TPerson(FPersonsMediator.SelectedObject[sgdPersons]);
   B := TPerson.Create;
   B.Assign(P);
-  if EditPerson(B) then
+  B.Dirty := False;
+  if EditPerson(B) and ObjectChanged(B.AsDebugString, P.AsDebugString) then
   begin
     P.Assign(B);
     P.SaveObject;
@@ -204,13 +208,13 @@ begin
 
   B := TPayment.Create;
   B.Assign(O);
-  if EditPayment(B) then
+  B.Dirty := False;
+  if EditPayment(B) and ObjectChanged(B.AsDebugString, O.AsDebugString) then
   begin
     O.Assign(B);
     O.SaveObject;
     O.NotifyObservers;
   end;
-
   B.Free;
 end;
 
@@ -223,7 +227,8 @@ begin
   B := TService.Create;
 
   B.Assign(O);
-  if EditService(B) then
+  B.Dirty:= False;
+  if EditService(B) and ObjectChanged(B.AsDebugString,O.AsDebugString) then
   begin
     O.Assign(B);
     O.SaveObject;
@@ -336,14 +341,18 @@ procedure TfrmMain.actEditLoanExecute(Sender: TObject);
   var
     O : TLoan;
     B : TLoan; //Buffer for undo
+    i: Integer;
   begin
     O := TLoan(FMedLoans.SelectedObject[sgdLoans]);
     if not assigned(O) then exit; //<==
 
     B := TLoan.Create;
     B.Assign(O);
-
-    if EditLoan(B) then
+    B.Dirty := False;
+    //this is required for the embedded list of adjustments
+    for i := 0 to B.AdjustmentList.Count -1 do
+      B.AdjustmentList.Items[i].Dirty:= False;
+    if EditLoan(B) and ObjectChanged(B.AsDebugString,O.AsDebugString) then
     begin
       O.Assign(B);
       O.SaveObject;
@@ -498,7 +507,6 @@ begin
     if O.AdjustmentList.Items[i].ObjectState = posCreate then
       GTIOPFManager.DefaultOIDGenerator.AssignNextOID(O.AdjustmentList.Items[i
         ].OID);
-    //if O.AdjustmentList.Items[i].LoanID <> O.OID.AsString then
     O.AdjustmentList.Items[i].LoanID:= O.OID.AsString;
     O.AdjustmentList.Items[i].SaveObject;
   end;
@@ -570,54 +578,54 @@ begin
   gLedgerManager.LoadPersons;
 end;
 
-procedure TfrmMain.DeleteFromList(AStringGrid: TStringGrid;
-  AList: TtiObjectList; AClass: TManualObjectClass);
-var
-  O: TManualObject;
-  i: Integer;
-  s: String;
-  iRows: integer;
-  oldtop : integer;
-  DeleteFailed: Boolean;
-  lCaption: string;
-begin
-  oldtop := AStringGrid.Selection.Top;
-  if oldtop = 0 then exit; // <==  no line selected
-
-  DeleteFailed:= False;
-  iRows := AStringGrid.Selection.bottom - AStringGrid.Selection.Top +1;
-  if iRows = 1 then
-    s := cMsgDeleteOneRecord
-  else
-    s := Format(cMsgDeleteRecords,[iRows]);
-
-  if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
-  begin
-    AList.BeginUpdate;
-    try
-      for i := AStringGrid.Selection.Bottom downto AStringGrid.Selection.Top do
-        begin
-          O := TManualObject(AList[i-1]);
-          O.DeleteObject(AList, s);
-          if (Pos('FOREIGN KEY',s)>0) then
-            begin
-              lCaption:= (O as AClass).Caption;
-              MessageDlg('Information',cMsgCannotDelete+#13#10#13#10+lCaption ,mtInformation,[mbOK],0);
-              DeleteFailed := True;
-            end;
-        end;
-    finally
-      AList.EndUpdate;
-    end;
-    if not DeleteFailed then
-    begin
-      // position to the correct record, the first after the last deleted
-      AStringGrid.Row:= oldtop;
-      // set TopRow so that the current selected record is not hidden from view
-      AStringGrid.TopRow:= AStringGrid.Row;
-    end;
-  end;
-end;
+//procedure TfrmMain.DeleteFromList(AStringGrid: TStringGrid;
+//  AList: TtiObjectList; AClass: TManualObjectClass);
+//var
+//  O: TManualObject;
+//  i: Integer;
+//  s: String;
+//  iRows: integer;
+//  oldtop : integer;
+//  DeleteFailed: Boolean;
+//  lCaption: string;
+//begin
+//  oldtop := AStringGrid.Selection.Top;
+//  if oldtop = 0 then exit; // <==  no line selected
+//
+//  DeleteFailed:= False;
+//  iRows := AStringGrid.Selection.bottom - AStringGrid.Selection.Top +1;
+//  if iRows = 1 then
+//    s := cMsgDeleteOneRecord
+//  else
+//    s := Format(cMsgDeleteRecords,[iRows]);
+//
+//  if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
+//  begin
+//    AList.BeginUpdate;
+//    try
+//      for i := AStringGrid.Selection.Bottom downto AStringGrid.Selection.Top do
+//        begin
+//          O := TManualObject(AList[i-1]);
+//          O.DeleteObject(AList, s);
+//          if (Pos('FOREIGN KEY',s)>0) then
+//            begin
+//              lCaption:= (O as AClass).Caption;
+//              MessageDlg('Information',cMsgCannotDelete+#13#10#13#10+lCaption ,mtInformation,[mbOK],0);
+//              DeleteFailed := True;
+//            end;
+//        end;
+//    finally
+//      AList.EndUpdate;
+//    end;
+//    if not DeleteFailed then
+//    begin
+//      // position to the correct record, the first after the last deleted
+//      AStringGrid.Row:= oldtop;
+//      // set TopRow so that the current selected record is not hidden from view
+//      AStringGrid.TopRow:= AStringGrid.Row;
+//    end;
+//  end;
+//end;
 
 
 end.
