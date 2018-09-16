@@ -15,9 +15,9 @@ object frmMain: TfrmMain
     Height = 347
     Top = 0
     Width = 746
-    ActivePage = tabLoans
+    ActivePage = tabPayments
     Align = alClient
-    TabIndex = 2
+    TabIndex = 3
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
@@ -205,11 +205,11 @@ object frmMain: TfrmMain
     end
     object tabPayments: TTabSheet
       Caption = 'Payments'
-      ClientHeight = 319
+      ClientHeight = 321
       ClientWidth = 738
       object edtFilterPayments: TLabeledEdit
-        Left = 32
-        Height = 23
+        Left = 64
+        Height = 21
         Top = 8
         Width = 144
         EditLabel.AnchorSideTop.Control = edtFilterPayments
@@ -217,25 +217,25 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtFilterPayments
         EditLabel.AnchorSideBottom.Control = edtFilterPayments
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 3
-        EditLabel.Height = 15
+        EditLabel.Left = 23
+        EditLabel.Height = 13
         EditLabel.Top = 12
-        EditLabel.Width = 26
-        EditLabel.Caption = 'Filter'
+        EditLabel.Width = 38
+        EditLabel.Caption = 'Member'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
         TabOrder = 0
         OnKeyPress = edtFilterPaymentsKeyPress
       end
       object spbClearPaymentsFilter: TSpeedButton
-        Left = 180
+        Left = 208
         Height = 22
         Top = 8
         Width = 23
         OnClick = spbClearPaymentsFilterClick
       end
       object btnAddPayment: TButton
-        Left = 224
+        Left = 352
         Height = 22
         Top = 8
         Width = 75
@@ -243,7 +243,7 @@ object frmMain: TfrmMain
         TabOrder = 1
       end
       object btnEditPayment: TButton
-        Left = 304
+        Left = 432
         Height = 22
         Top = 8
         Width = 75
@@ -251,7 +251,7 @@ object frmMain: TfrmMain
         TabOrder = 2
       end
       object btnDeletePayment: TButton
-        Left = 384
+        Left = 512
         Height = 22
         Top = 8
         Width = 75
@@ -260,8 +260,8 @@ object frmMain: TfrmMain
       end
       object sgdPayments: TStringGrid
         Left = 0
-        Height = 286
-        Top = 33
+        Height = 241
+        Top = 80
         Width = 738
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -272,6 +272,66 @@ object frmMain: TfrmMain
         RowCount = 0
         TabOrder = 4
         OnDblClick = sgdPaymentsDblClick
+      end
+      object edtFilterPaymentsORNumber: TLabeledEdit
+        Left = 64
+        Height = 21
+        Top = 32
+        Width = 144
+        EditLabel.AnchorSideTop.Control = edtFilterPaymentsORNumber
+        EditLabel.AnchorSideTop.Side = asrCenter
+        EditLabel.AnchorSideRight.Control = edtFilterPaymentsORNumber
+        EditLabel.AnchorSideBottom.Control = edtFilterPaymentsORNumber
+        EditLabel.AnchorSideBottom.Side = asrBottom
+        EditLabel.Left = 6
+        EditLabel.Height = 13
+        EditLabel.Top = 36
+        EditLabel.Width = 55
+        EditLabel.Caption = 'OR Number'
+        EditLabel.ParentColor = False
+        LabelPosition = lpLeft
+        TabOrder = 5
+        OnKeyPress = edtFilterPaymentsKeyPress
+      end
+      object spbClearPaymentsORNoFilter: TSpeedButton
+        Left = 208
+        Height = 22
+        Top = 32
+        Width = 23
+        OnClick = spbClearPaymentsORNoFilterClick
+      end
+      object cmbPaymentsFilterService: TComboBox
+        Left = 64
+        Height = 21
+        Top = 56
+        Width = 144
+        ItemHeight = 13
+        Style = csDropDownList
+        TabOrder = 6
+      end
+      object Label1: TLabel
+        Left = 22
+        Height = 13
+        Top = 60
+        Width = 35
+        Alignment = taRightJustify
+        Caption = 'Service'
+        ParentColor = False
+      end
+      object spbClearPaymentsFilterService: TSpeedButton
+        Left = 208
+        Height = 22
+        Top = 56
+        Width = 23
+        OnClick = spbClearPaymentsFilterServiceClick
+      end
+      object btnAddPayment1: TButton
+        Left = 240
+        Height = 22
+        Top = 8
+        Width = 75
+        Action = actAddPayment
+        TabOrder = 7
       end
     end
   end

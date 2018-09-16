@@ -42,6 +42,7 @@ type
     ActionList1: TActionList;
     actFileEXit: TFileExit;
     btnAddPayment: TButton;
+    btnAddPayment1: TButton;
     btnDeletePayment: TButton;
     btnEditPayment: TButton;
     Button1: TButton;
@@ -53,9 +54,12 @@ type
     btnAddLoan: TButton;
     btnEditLoan: TButton;
     btnDeleteLoan: TButton;
+    cmbPaymentsFilterService: TComboBox;
     edtFilter: TLabeledEdit;
     edtFilterLoans: TLabeledEdit;
     edtFilterPayments: TLabeledEdit;
+    edtFilterPaymentsORNumber: TLabeledEdit;
+    Label1: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
@@ -74,6 +78,8 @@ type
     spbClearPaymentsFilter: TSpeedButton;
     spbClearMembers: TSpeedButton;
     spbClearLoanFilter: TSpeedButton;
+    spbClearPaymentsORNoFilter: TSpeedButton;
+    spbClearPaymentsFilterService: TSpeedButton;
     StatusBar1: TStatusBar;
     sgdPersons: TStringGrid;
     sgdServices: TStringGrid;
@@ -109,6 +115,9 @@ type
     procedure spbClearLoanFilterClick(Sender: TObject);
     procedure spbClearPaymentsFilterClick(Sender: TObject);
     procedure spbClearMembersClick(Sender: TObject);
+    procedure spbClearPaymentsFilterServiceClick(Sender: TObject);
+    procedure spbClearPaymentsORNoFilter1Click(Sender: TObject);
+    procedure spbClearPaymentsORNoFilterClick(Sender: TObject);
   private
     FPersonsMediator: TtiModelMediator;
     FMedServices: TtiModelMediator;
@@ -154,8 +163,11 @@ const
   //cMsgCannotDelete = 'This object cannot be deleted'#13#10' as it is referenced by other objects';
 
   cSQLFilterTextLoans = 'p.NAME containing ?';
-  cSQLFilterTextPayments = '(p.NAME containing ?) OR (DOCNUMBER starting ?)';
-
+  //cSQLFilterTextPayments = '(p.NAME containing coalesce(?,p.NAME)) AND (DOCNUMBER starting coalesce(?,DOCNUMBER)) AND (s.NAME = coalesce(?,s.NAME))';
+  cSQLFilterPaymentsMember = 'p.NAME containing ?';
+  cSQLFilterPaymentsORNumber = 'r.DOCNUMBER starting ?';
+  cSQLFilterPaymentsService = 's.NAME = ?';
+  //todo: finalize Payment filter by Service (fix the combobox)
 
   //cSQLFilterTextMembers = 'NAME containing ?';
 
@@ -215,7 +227,7 @@ begin
     O.SaveObject;
     O.NotifyObservers;
   end;
-  B.Free;
+  FreeAndNil(B);
 end;
 
 procedure TfrmMain.actEditServiceExecute(Sender: TObject);
@@ -415,6 +427,8 @@ begin
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
+var
+  i: Integer;
 begin
   RegisterFallBackMediators;
   RegisterFallBackListmediators;
@@ -437,9 +451,14 @@ begin
   sgdServices.Columns[4].Width:= 100;
   sgdPersons.Columns[2].Width:= 100;
 
+  for i := 0 to gLedgerManager.Services.Count -1 do
+    cmbPaymentsFilterService.items.Add(gLedgerManager.Services.Items[i].Name);
+
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearMembers.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLoanFilter.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPaymentsFilter.Glyph);
+  dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPaymentsORNoFilter.Glyph);
+  dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPaymentsFilterService.Glyph);
 
   actEditLoan.OnUpdate:= @actEditLoanUpdate;
   actDeleteLoan.OnUpdate:= @actEditLoanUpdate;
@@ -447,9 +466,16 @@ begin
   SQLWhereBuilderLoans := TSQLWhereBuilder.Create(Self);
   SQLWhereBuilderLoans.AddWhereClauseAnd(cSQLFilterTextLoans,[edtFilterLoans,'Text']);
 
+  //Payments filter
   SQLWhereBuilderPayments := TSQLWhereBuilder.Create(Self);
-  SQLWhereBuilderPayments.AddWhereClauseAnd(
-    cSQLFilterTextPayments,[edtFilterPayments,'Text',edtFilterPayments,'Text']);
+  //SQLWhereBuilderPayments.AddWhereClauseAnd( cSQLFilterTextPayments,
+  //  [edtFilterPayments,'Text',edtFilterPaymentsORNumber,'Text',cmbPaymentsFilterService,'Text']);
+  SQLWhereBuilderPayments.AddWhereClauseAnd( cSQLFilterPaymentsMember,
+    [edtFilterPayments, 'Text']);
+  SQLWhereBuilderPayments.AddWhereClauseAnd( cSQLFilterPaymentsORNumber,
+    [edtFilterPaymentsORNumber, 'Text']);
+  SQLWhereBuilderPayments.AddWhereClauseAnd( cSQLFilterPaymentsService,
+    [cmbPaymentsFilterService, 'Text']);
 end;
 
 
@@ -489,6 +515,23 @@ procedure TfrmMain.spbClearMembersClick(Sender: TObject);
 begin
   edtFilter.SetFocus;
   edtFilter.Text:= '';
+end;
+
+procedure TfrmMain.spbClearPaymentsFilterServiceClick(Sender: TObject);
+begin
+  cmbPaymentsFilterService.SetFocus;
+  cmbPaymentsFilterService.ItemIndex := -1;
+end;
+
+procedure TfrmMain.spbClearPaymentsORNoFilter1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TfrmMain.spbClearPaymentsORNoFilterClick(Sender: TObject);
+begin
+  edtFilterPaymentsORNumber.SetFocus;
+  edtFilterPaymentsORNumber.Text:= '';
 end;
 
 
@@ -577,55 +620,6 @@ begin
   Persons.PersonsFilter.Criteria:= 'NAME containing '+QuotedStr(AText);
   gLedgerManager.LoadPersons;
 end;
-
-//procedure TfrmMain.DeleteFromList(AStringGrid: TStringGrid;
-//  AList: TtiObjectList; AClass: TManualObjectClass);
-//var
-//  O: TManualObject;
-//  i: Integer;
-//  s: String;
-//  iRows: integer;
-//  oldtop : integer;
-//  DeleteFailed: Boolean;
-//  lCaption: string;
-//begin
-//  oldtop := AStringGrid.Selection.Top;
-//  if oldtop = 0 then exit; // <==  no line selected
-//
-//  DeleteFailed:= False;
-//  iRows := AStringGrid.Selection.bottom - AStringGrid.Selection.Top +1;
-//  if iRows = 1 then
-//    s := cMsgDeleteOneRecord
-//  else
-//    s := Format(cMsgDeleteRecords,[iRows]);
-//
-//  if MessageDlg('Delete?',s ,mtConfirmation,[mbYes, mbNo],0) = mrYes then
-//  begin
-//    AList.BeginUpdate;
-//    try
-//      for i := AStringGrid.Selection.Bottom downto AStringGrid.Selection.Top do
-//        begin
-//          O := TManualObject(AList[i-1]);
-//          O.DeleteObject(AList, s);
-//          if (Pos('FOREIGN KEY',s)>0) then
-//            begin
-//              lCaption:= (O as AClass).Caption;
-//              MessageDlg('Information',cMsgCannotDelete+#13#10#13#10+lCaption ,mtInformation,[mbOK],0);
-//              DeleteFailed := True;
-//            end;
-//        end;
-//    finally
-//      AList.EndUpdate;
-//    end;
-//    if not DeleteFailed then
-//    begin
-//      // position to the correct record, the first after the last deleted
-//      AStringGrid.Row:= oldtop;
-//      // set TopRow so that the current selected record is not hidden from view
-//      AStringGrid.TopRow:= AStringGrid.Row;
-//    end;
-//  end;
-//end;
 
 
 end.

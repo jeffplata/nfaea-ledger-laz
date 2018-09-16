@@ -49,7 +49,7 @@
         <PackageName Value="LCL"/>
       </Item8>
     </RequiredPackages>
-    <Units Count="19">
+    <Units Count="18">
       <Unit0>
         <Filename Value="nfaealedger.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -155,14 +155,9 @@
         <ResourceBaseClass Value="Form"/>
       </Unit16>
       <Unit17>
-        <Filename Value="deletefromlistu.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="DeleteFromListU"/>
-      </Unit17>
-      <Unit18>
         <Filename Value="ObjectUtils.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit18>
+      </Unit17>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

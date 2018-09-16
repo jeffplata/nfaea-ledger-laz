@@ -653,9 +653,9 @@ end;
 
 procedure TPayment.AssignClassProps(ASource: TtiObject);
 begin
-  //FPerson.Assign(TPayment(ASource).Person);
+  FPerson.Assign(TPayment(ASource).Person);
   //FService.Assign(TPayment(ASource).Service);
-  FPerson := TPayment(ASource).Person;
+  //FPerson := TPayment(ASource).Person;
   FService := TPayment(ASource).Service;
 end;
 

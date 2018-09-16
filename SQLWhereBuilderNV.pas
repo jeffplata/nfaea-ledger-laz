@@ -92,19 +92,19 @@ type
     property Items[Index: Integer]: TswConditionItem read GetItems write SetItems; default;
   end;
 
+  { TSQLWhereBuilder }
+
   TSQLWhereBuilder = class(TComponent)
   private
     FConditions : TswConditions;
-    //FDataSet: TDataset;
-    //FDatasource: TDataSource;
+    FEmptyIsNull: Boolean;
     FWhereList : TStrings;
     FWhereClauses: TWhereClauses;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    //property DataSet: TDataset read FDataSet write FDataSet;
-    //property Datasource: TDataSource read FDatasource write FDatasource;
     property WhereList : TStrings read FWhereList write FWhereList;
+    property EmptyIsNull: Boolean read FEmptyIsNull write FEmptyIsNull;
     function AddCondition(Field: string; OperatorToken: TswOptype; UIComponent:
         TComponent; PropertyName: string; const UIType: TuiType = UIText):
         TswConditionItem;
@@ -177,6 +177,7 @@ end;
 constructor TSQLWhereBuilder.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FEmptyIsNull:= False;
   FConditions := TswConditions.Create(Self);
   FWhereList := TStringList.Create;
 
