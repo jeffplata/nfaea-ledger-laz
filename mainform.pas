@@ -13,7 +13,7 @@ uses
   ,tiMediators
   ,tiOIDInteger
   , tiObject
-  , SQLWhereBuilderNV
+  , SQLWhereBuilderNV, DisplayHelpers
   ;
 
 type
@@ -38,11 +38,12 @@ type
     actDeletePayment: TAction;
     actCSVLoadPayment: TAction;
     actCSVLoadMember: TAction;
+    actFilterPayments: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
     actFileEXit: TFileExit;
     btnAddPayment: TButton;
-    btnAddPayment1: TButton;
+    btnApplyPaymentFilter: TButton;
     btnDeletePayment: TButton;
     btnEditPayment: TButton;
     Button1: TButton;
@@ -101,6 +102,7 @@ type
     procedure actEditMemberExecute(Sender: TObject);
     procedure actEditPaymentExecute(Sender: TObject);
     procedure actEditServiceExecute(Sender: TObject);
+    procedure actFilterPaymentsExecute(Sender: TObject);
     procedure actHelpAboutExecute(Sender: TObject);
     procedure actCSVLoadMemberExecute(Sender: TObject);
     procedure actMembersExecute(Sender: TObject);
@@ -119,6 +121,8 @@ type
     procedure spbClearPaymentsORNoFilter1Click(Sender: TObject);
     procedure spbClearPaymentsORNoFilterClick(Sender: TObject);
   private
+    FLoanDisplayList: TLoanDisplayList;
+    FPaymentDisplayList: TPaymentDisplayList;
     FPersonsMediator: TtiModelMediator;
     FMedServices: TtiModelMediator;
     FMedLoans: TtiModelMediator;
@@ -127,6 +131,7 @@ type
     FServices: TServiceList;
     SQLWhereBuilderLoans : TSQLWhereBuilder;
     SQLWhereBuilderPayments: TSQLWhereBuilder;
+    procedure FilterPayments;
     procedure SaveAdjustmentList(var O: TLoan);
     procedure SetPersons(AValue: TPersonList);
     procedure SetServices(AValue: TServiceList);
@@ -136,6 +141,8 @@ type
   public
     property Persons: TPersonList read FPersons write SetPersons;
     property Services: TServiceList read FServices write SetServices;
+    property PaymentDisplayList: TPaymentDisplayList read FPaymentDisplayList write FPaymentDisplayList;
+    property LoanDisplayList: TLoanDisplayList read FLoanDisplayList write FLoanDisplayList;
   end;
 
 
@@ -149,7 +156,7 @@ uses
   ,ServiceEditForm
   ,LoanEditForm
   ,ledgermanager
-  ,tiOPFManager
+  ,tiOPFManager, tiBaseMediator
   ,MemberCSVLoad
   , PaymentEditForm
   , ResourceDM
@@ -158,12 +165,7 @@ uses
   ;
 
 const
-  //cMsgDeleteOneRecord = 'Do you want to delete the selected record?';
-  //cMsgDeleteRecords = '%d selected records will be deleted.'#13#10'Do you want to continue?';
-  //cMsgCannotDelete = 'This object cannot be deleted'#13#10' as it is referenced by other objects';
-
   cSQLFilterTextLoans = 'p.NAME containing ?';
-  //cSQLFilterTextPayments = '(p.NAME containing coalesce(?,p.NAME)) AND (DOCNUMBER starting coalesce(?,DOCNUMBER)) AND (s.NAME = coalesce(?,s.NAME))';
   cSQLFilterPaymentsMember = 'p.NAME containing ?';
   cSQLFilterPaymentsORNumber = 'r.DOCNUMBER starting ?';
   cSQLFilterPaymentsService = 's.NAME = ?';
@@ -212,10 +214,16 @@ end;
 
 procedure TfrmMain.actEditPaymentExecute(Sender: TObject);
 var
+  D : TPaymentDisplay;
+  M : TtiMediatorView;
   O : TPayment;
   B : TPayment; //Buffer for undo
 begin
-  O := TPayment(FMedPayments.SelectedObject[sgdPayments]);
+  M := FMedPayments.FindByComponent(sgdPayments).Mediator;
+  D := TPaymentDisplay(TtiStringGridMediatorView(M).SelectedObject);
+  O := D.Payment;
+
+  //O := TPayment(FMedPayments.SelectedObject[sgdPayments]);
   if not assigned(O) then exit; //<==
 
   B := TPayment.Create;
@@ -226,6 +234,7 @@ begin
     O.Assign(B);
     O.SaveObject;
     O.NotifyObservers;
+    O.Owner.NotifyObservers;
   end;
   FreeAndNil(B);
 end;
@@ -247,6 +256,11 @@ begin
     O.NotifyObservers;
   end;
   B.Free;
+end;
+
+procedure TfrmMain.actFilterPaymentsExecute(Sender: TObject);
+begin
+  FilterPayments;
 end;
 
 procedure TfrmMain.actAddMemberExecute(Sender: TObject);
@@ -348,14 +362,20 @@ procedure TfrmMain.actDeleteServiceExecute(Sender: TObject);
 begin
   DeleteFromList( sgdServices, Services, TService );
 end;
-
+     //todo: fix loan adjustments list with xxxAsString
 procedure TfrmMain.actEditLoanExecute(Sender: TObject);
   var
+    D : TLoanDisplay;
+    M : TtiMediatorView;
     O : TLoan;
     B : TLoan; //Buffer for undo
     i: Integer;
   begin
-    O := TLoan(FMedLoans.SelectedObject[sgdLoans]);
+    M := FMedLoans.FindByComponent(sgdLoans).Mediator;
+    D := TLoanDisplay(TtiStringGridMediatorView(M).SelectedObject);
+    O := D.Loan;
+
+    //O := TLoan(FMedLoans.SelectedObject[sgdLoans]);
     if not assigned(O) then exit; //<==
 
     B := TLoan.Create;
@@ -369,6 +389,7 @@ procedure TfrmMain.actEditLoanExecute(Sender: TObject);
       O.Assign(B);
       O.SaveObject;
       O.NotifyObservers;
+      O.Owner.NotifyObservers;
       SaveAdjustmentList(O);
     end;
     FreeAndNil(B);
@@ -415,14 +436,7 @@ procedure TfrmMain.edtFilterPaymentsKeyPress(Sender: TObject; var Key: char);
 begin
   if key = chr(13) then
   begin
-    gLedgerManager.PaymentList.BeginUpdate;
-
-    SQLWhereBuilderPayments.UpdateWhereClauses;
-    gLedgerManager.PaymentList.ListFilter.Criteria:= SQLWhereBuilderPayments.WhereList.Text;
-    gLedgerManager.PaymentList.ListFilter.Active:= (SQLWhereBuilderPayments.WhereList.Text<>'');
-    gLedgerManager.LoadPayments;
-
-    gLedgerManager.PaymentList.EndUpdate;
+    FilterPayments;
   end;
 end;
 
@@ -441,8 +455,11 @@ begin
   gLedgerManager.LoadServices;
   FServices := gLedgerManager.Services;
 
+  FLoanDisplayList := TLoanDisplayList.CreateCustom(gLedgerManager.Loans);
   gLedgerManager.LoadLoans;
 
+
+  FPaymentDisplayList := TPaymentDisplayList.CreateCustom(gLedgerManager.PaymentList);
   gLedgerManager.LoadPayments;
 
   SetupMediators;
@@ -555,6 +572,20 @@ begin
   end;
 end;
 
+procedure TfrmMain.FilterPayments;
+begin
+  gLedgerManager.PaymentList.BeginUpdate;
+
+  SQLWhereBuilderPayments.UpdateWhereClauses;
+  gLedgerManager.PaymentList.ListFilter.Criteria:=
+    SQLWhereBuilderPayments.WhereList.Text;
+  gLedgerManager.PaymentList.ListFilter.Active:= (
+    SQLWhereBuilderPayments.WhereList.Text<>'');
+  gLedgerManager.LoadPayments;
+
+  gLedgerManager.PaymentList.EndUpdate;
+end;
+
 procedure TfrmMain.SetServices(AValue: TServiceList);
 begin
   if FServices=AValue then Exit;
@@ -588,18 +619,20 @@ begin
   begin
     FMedLoans := TtiModelMediator.Create(Self);
     FMedLoans.Name:= 'LoansMediator';
-    FMedLoans.AddComposite('Person.Name(120,"Member");Service.Name(120,"Loan Type");Principal(100,"Amount");Interest;Total;Adjustments;Amortization;DocDate(100,"Date");DocNumber;ID(100," ")',sgdLoans);
+    FMedLoans.AddComposite('Person(120,"Member");Service(120,"Loan Type");Principal(100,"Amount",>);Interest(100,"Interest",>);Total(100,"Total",>);Adjustments(100,"Adjustments",>);Amortization(100,"Amortization",>);DocDate;DocNumber;ID(100," ")',sgdLoans);
   end;
-  FMedLoans.Subject:= gLedgerManager.Loans;
+  //FMedLoans.Subject:= gLedgerManager.Loans;
+  FMedLoans.Subject := LoanDisplayList;
   FMedLoans.Active:= True;
 
   //payments mediator
   if not assigned(FMedPayments) then
   begin
     FMedPayments := TtiModelMediator.Create(Self);
-    FMedPayments.AddComposite('Person.Name(150,"Member");DocDate;DocNumber;Service.Name;Amount;dummy(100," ")', sgdPayments);
+    FMedPayments.AddComposite('Person(150,"Member");DocDate;DocNumber;Service;Amount(100,"Amount",>);dummy(100," ")', sgdPayments);
   end;
-  FMedPayments.Subject:= gLedgerManager.PaymentList;
+  //FMedPayments.Subject:= gLedgerManager.PaymentList;
+  FMedPayments.Subject := PaymentDisplayList;
   FMedPayments.Active:= True;
 
 end;

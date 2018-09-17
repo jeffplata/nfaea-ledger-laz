@@ -15,9 +15,9 @@ object frmMain: TfrmMain
     Height = 347
     Top = 0
     Width = 746
-    ActivePage = tabPayments
+    ActivePage = tabLoans
     Align = alClient
-    TabIndex = 3
+    TabIndex = 2
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
@@ -310,7 +310,7 @@ object frmMain: TfrmMain
         TabOrder = 6
       end
       object Label1: TLabel
-        Left = 22
+        Left = 24
         Height = 13
         Top = 60
         Width = 35
@@ -325,12 +325,12 @@ object frmMain: TfrmMain
         Width = 23
         OnClick = spbClearPaymentsFilterServiceClick
       end
-      object btnAddPayment1: TButton
+      object btnApplyPaymentFilter: TButton
         Left = 240
         Height = 22
         Top = 8
         Width = 75
-        Action = actAddPayment
+        Action = actFilterPayments
         TabOrder = 7
       end
     end
@@ -454,6 +454,10 @@ object frmMain: TfrmMain
     object actCSVLoadPayment: TAction
       Caption = 'Load from CSV'
       OnExecute = actCSVLoadPaymentExecute
+    end
+    object actFilterPayments: TAction
+      Caption = 'Apply Filter'
+      OnExecute = actFilterPaymentsExecute
     end
   end
 end
