@@ -65,6 +65,7 @@ type
     FAmount: Currency;
     FLoanID: string;
     FService: TService;
+    function GetAmountAsString: string;
     procedure SetAmount(AValue: Currency);
     procedure SetLoanID(AValue: string);
     procedure SetService(AValue: TService);
@@ -80,6 +81,7 @@ type
     property LoanID: string read FLoanID write SetLoanID;
     property Service: TService read FService write SetService;
     property Amount: Currency read FAmount write SetAmount;
+    property AmountAsString: string read GetAmountAsString;
   end;
 
   { TLoanAdjustmentList }
@@ -484,6 +486,11 @@ begin
   if FAmount=AValue then Exit;
   FAmount:=AValue;
   Mark;
+end;
+
+function TLoanAdjustment.GetAmountAsString: string;
+begin
+  Result := FormatFloat('#,0.00', Amount);
 end;
 
 procedure TLoanAdjustment.SetLoanID(AValue: string);
@@ -1014,10 +1021,8 @@ end;
 procedure TManualObject.SaveObject;
 begin
   Dirty:= True;
-  //NotifyObservers;
   Save;
   Dirty:= False;
-  //todo: resolve dirty
 end;
 
 procedure TManualObject.DeleteObject(FromList: TtiObjectList; var s: string;

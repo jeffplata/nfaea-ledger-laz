@@ -89,7 +89,7 @@ implementation
 
 uses
   ledgermanager
-  ,LookupForm, LoanAdjEditForm, DeleteFromListU
+  ,LookupForm, LoanAdjEditForm, ObjectUtils
   ,LCLType
   ;
 
@@ -261,7 +261,7 @@ begin
   if not Assigned(FMedAdjustments) then
   begin
     FMedAdjustments := TtiModelMediator.Create(Self);
-    FMedAdjustments.AddComposite('Service.Name(150,"Service");Amount;Dummy(100," ")', sgdAdjustments);
+    FMedAdjustments.AddComposite('Service.Name(150,"Service");AmountAsString(100,"Amount",>);Dummy(100," ")', sgdAdjustments);
     //FMedAdjustments.AddComposite('Service.Name;Amount', sgdAdjustments);
   end;
   FMedAdjustments.Subject := FData.AdjustmentList;

@@ -39,6 +39,9 @@ type
     actCSVLoadPayment: TAction;
     actCSVLoadMember: TAction;
     actFilterPayments: TAction;
+    ActClearPayee: TAction;
+    actClearORNo: TAction;
+    actClearService: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
     actFileEXit: TFileExit;
@@ -92,6 +95,9 @@ type
     procedure actAddMemberExecute(Sender: TObject);
     procedure actAddPaymentExecute(Sender: TObject);
     procedure actAddServiceExecute(Sender: TObject);
+    procedure actClearORNoExecute(Sender: TObject);
+    procedure ActClearPayeeExecute(Sender: TObject);
+    procedure actClearServiceExecute(Sender: TObject);
     procedure actCSVLoadPaymentExecute(Sender: TObject);
     procedure actDeleteLoanExecute(Sender: TObject);
     procedure actDeleteMemberExecute(Sender: TObject);
@@ -105,6 +111,7 @@ type
     procedure actFilterPaymentsExecute(Sender: TObject);
     procedure actHelpAboutExecute(Sender: TObject);
     procedure actCSVLoadMemberExecute(Sender: TObject);
+    procedure ActionList1Update(AAction: TBasicAction; var Handled: Boolean);
     procedure actMembersExecute(Sender: TObject);
     procedure edtFilterKeyPress(Sender: TObject; var Key: char);
     procedure edtFilterLoansKeyPress(Sender: TObject; var Key: char);
@@ -128,6 +135,7 @@ type
     FMedLoans: TtiModelMediator;
     FMedPayments: TtiModelMediator;
     FPersons: TPersonList;
+    FServiceDisplayList: TServiceDisplayList;
     FServices: TServiceList;
     SQLWhereBuilderLoans : TSQLWhereBuilder;
     SQLWhereBuilderPayments: TSQLWhereBuilder;
@@ -143,6 +151,7 @@ type
     property Services: TServiceList read FServices write SetServices;
     property PaymentDisplayList: TPaymentDisplayList read FPaymentDisplayList write FPaymentDisplayList;
     property LoanDisplayList: TLoanDisplayList read FLoanDisplayList write FLoanDisplayList;
+    property ServiceDisplayList: TServiceDisplayList read FServiceDisplayList write FServiceDisplayList;
   end;
 
 
@@ -169,9 +178,6 @@ const
   cSQLFilterPaymentsMember = 'p.NAME containing ?';
   cSQLFilterPaymentsORNumber = 'r.DOCNUMBER starting ?';
   cSQLFilterPaymentsService = 's.NAME = ?';
-  //todo: finalize Payment filter by Service (fix the combobox)
-
-  //cSQLFilterTextMembers = 'NAME containing ?';
 
 {$R *.lfm}
 
@@ -192,6 +198,18 @@ begin
   finally
     Free;
   end;
+end;
+
+//todo: filter Loans by Date: create a Date filter form with quick access for every possible combination
+procedure TfrmMain.ActionList1Update(AAction: TBasicAction; var Handled: Boolean
+  );
+begin
+  if AAction = ActClearPayee then
+    ActClearPayee.Enabled:= edtFilterPayments.Text <> ''
+  else if AAction = actClearORNo then
+    actClearORNo.Enabled:= edtFilterPaymentsORNumber.Text <> ''
+  else if AAction = actClearService then
+    actClearService.Enabled:= cmbPaymentsFilterService.Text <> '';
 end;
 
 procedure TfrmMain.actEditMemberExecute(Sender: TObject);
@@ -240,11 +258,26 @@ begin
 end;
 
 procedure TfrmMain.actEditServiceExecute(Sender: TObject);
+//D : TLoanDisplay;
+//M : TtiMediatorView;
+//O : TLoan;
+//B : TLoan; //Buffer for undo
+//i: Integer;
+//begin
+//M := FMedLoans.FindByComponent(sgdLoans).Mediator;
+//D := TLoanDisplay(TtiStringGridMediatorView(M).SelectedObject);
+//O := D.Loan;
 var
   O : TService;
   B : TService; //Buffer for undo
+  D : TServiceDisplay;
+  M : TtiMediatorView;
 begin
-  O := TService(FMedServices.SelectedObject[sgdServices]);
+  M := FMedServices.FindByComponent(sgdServices).Mediator;
+  D := TServiceDisplay(TtiStringGridMediatorView(M).SelectedObject);
+  O := D.Service;
+
+  //O := TService(FMedServices.SelectedObject[sgdServices]);
   B := TService.Create;
 
   B.Assign(O);
@@ -254,6 +287,7 @@ begin
     O.Assign(B);
     O.SaveObject;
     O.NotifyObservers;
+    O.Owner.NotifyObservers;
   end;
   B.Free;
 end;
@@ -330,6 +364,24 @@ begin
     O.Free;
 end;
 
+procedure TfrmMain.actClearORNoExecute(Sender: TObject);
+begin
+  edtFilterPaymentsORNumber.SetFocus;
+  edtFilterPaymentsORNumber.Text:= '';
+end;
+
+procedure TfrmMain.ActClearPayeeExecute(Sender: TObject);
+begin
+  edtFilterPayments.SetFocus;
+  edtFilterPayments.Text:= '';
+end;
+
+procedure TfrmMain.actClearServiceExecute(Sender: TObject);
+begin
+  cmbPaymentsFilterService.SetFocus;
+  cmbPaymentsFilterService.ItemIndex := -1;
+end;
+
 procedure TfrmMain.actCSVLoadPaymentExecute(Sender: TObject);
 begin
   with TOpenDialog.Create(Self) do
@@ -362,7 +414,7 @@ procedure TfrmMain.actDeleteServiceExecute(Sender: TObject);
 begin
   DeleteFromList( sgdServices, Services, TService );
 end;
-     //todo: fix loan adjustments list with xxxAsString
+
 procedure TfrmMain.actEditLoanExecute(Sender: TObject);
   var
     D : TLoanDisplay;
@@ -452,6 +504,7 @@ begin
   gLedgerManager.LoadPersons;
   FPersons := gLedgerManager.PersonList;
 
+  FServiceDisplayList := TServiceDisplayList.CreateCustom(gLedgerManager.Services);
   gLedgerManager.LoadServices;
   FServices := gLedgerManager.Services;
 
@@ -524,8 +577,7 @@ end;
 
 procedure TfrmMain.spbClearPaymentsFilterClick(Sender: TObject);
 begin
-  edtFilterPayments.SetFocus;
-  edtFilterPayments.Text:= '';
+
 end;
 
 procedure TfrmMain.spbClearMembersClick(Sender: TObject);
@@ -536,8 +588,6 @@ end;
 
 procedure TfrmMain.spbClearPaymentsFilterServiceClick(Sender: TObject);
 begin
-  cmbPaymentsFilterService.SetFocus;
-  cmbPaymentsFilterService.ItemIndex := -1;
 end;
 
 procedure TfrmMain.spbClearPaymentsORNoFilter1Click(Sender: TObject);
@@ -547,8 +597,7 @@ end;
 
 procedure TfrmMain.spbClearPaymentsORNoFilterClick(Sender: TObject);
 begin
-  edtFilterPaymentsORNumber.SetFocus;
-  edtFilterPaymentsORNumber.Text:= '';
+
 end;
 
 
@@ -609,9 +658,10 @@ begin
   begin
     FMedServices := TtiModelMediator.Create(Self);
     FMedServices.Name:= 'ServicesMediator';
-    FMedServices.AddComposite('Name(150,"Name");ServiceTypeGUI(100,"Type");MaxAmount(100,"Max Amount");InterestRate(100,"Interest");MaxTerm(100,"Terms");ID(100," ")',sgdServices);
+    FMedServices.AddComposite('Name(150,"Name");ServiceTypeGUI(100,"Type");MaxAmount(100,"Max Amount",>);InterestRate(100,"Interest",>);MaxTerm(100,"Terms",>);Dummy(100," ")',sgdServices);
   end;
-  FMedServices.Subject:= FServices;
+  //FMedServices.Subject:= FServices;
+  FMedServices.Subject := ServiceDisplayList;
   FMedServices.Active:= True;
 
   //loans mediator

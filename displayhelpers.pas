@@ -9,6 +9,38 @@ uses
 
 type
 
+  { TServiceDisplay }
+
+  TServiceDisplay = class(TBaseDisplayObject)
+    private
+      FService: TService;
+     function GetDisplay(AIndex : Integer) : String;
+     procedure SetService(AValue: TService);
+    public
+     constructor CreateCustom(const AService : TService);
+     destructor Destroy; override;
+     property Service : TService read FService write SetService;
+    published
+      property Name               : string index 0 read GetDisplay;
+      property MaxAmount          : string index 1 read GetDisplay;
+      property MinAmount          : string index 2 read GetDisplay;
+      property InterestRate       : string index 3 read GetDisplay;
+      property RebateRate         : string index 4 read GetDisplay;
+      property MinTerm            : string index 5 read GetDisplay;
+      property MaxTerm            : string index 6 read GetDisplay;
+      property ServiceTypeGUI     : string index 7 read GetDisplay;
+      property CSVUploadName      : string index 8 read GetDisplay;
+      property Active             : string index 9 read GetDisplay;
+    End;
+
+  { TServiceDisplayList }
+
+  TServiceDisplayList = class(TBaseDisplayList)
+  protected
+    function CreateDisplayInstance(AItem: TtiObject): TBaseDisplayObject; override;
+    function FindDisplayObject(AObject: TtiObject): TBaseDisplayObject; override;
+  end;
+
   { TLoanDisplay }
 
   TLoanDisplay = class(TBaseDisplayObject)
@@ -81,6 +113,73 @@ type
 implementation
 
 uses sysutils;
+
+{ TServiceDisplayList }
+
+function TServiceDisplayList.CreateDisplayInstance(AItem: TtiObject
+  ): TBaseDisplayObject;
+begin
+  Result := TServiceDisplay.CreateCustom(TService(AItem));
+end;
+
+function TServiceDisplayList.FindDisplayObject(AObject: TtiObject
+  ): TBaseDisplayObject;
+var
+  i: integer;
+begin
+  Result := nil;
+  for i := 0 to Count-1 do
+  begin
+    if (TServiceDisplay(Items[i]).Service = AObject) then
+    begin
+      Result := TBaseDisplayObject(Items[i]);
+      break;
+    end;
+  end;
+end;
+
+{ TServiceDisplay }
+
+function TServiceDisplay.GetDisplay(AIndex: Integer): String;
+begin
+  if Assigned(FService) then
+  begin
+    case AIndex of
+     0:  Result := Service.Name;
+     1:  Result := FormatFloat('#,0.00', Service.MaxAmount);
+     2:  Result := FormatFloat('#,0.00', Service.MinAmount);
+     3:  Result := FormatFloat('#,0.00', Service.InterestRate);
+     4:  Result := FormatFloat('#,0.00', Service.RebateRate);
+     5:  Result := IntToStr(Service.MinTerm);
+     6:  Result := IntToStr(Service.MaxTerm);
+     7:  Result := Service.ServiceTypeGUI;
+     8:  Result := Service.CSVUploadName;
+     9:  if Service.Active then Result := 'Active' else Result := '';
+    end; { Case }
+  end;
+end;
+
+procedure TServiceDisplay.SetService(AValue: TService);
+begin
+  if FService=AValue then Exit;
+  if Assigned(FService) then
+    FService.DetachObserver(Self);
+  FService:=AValue;
+  if Assigned(FService) then
+    FService.AttachObserver(Self);
+end;
+
+constructor TServiceDisplay.CreateCustom(const AService: TService);
+begin
+  inherited Create;
+  FService := AService;
+end;
+
+destructor TServiceDisplay.Destroy;
+begin
+  FService := nil;
+  inherited Destroy;
+end;
 
 { TLoanDisplayList }
 

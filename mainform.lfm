@@ -15,9 +15,9 @@ object frmMain: TfrmMain
     Height = 347
     Top = 0
     Width = 746
-    ActivePage = tabLoans
+    ActivePage = tabPayments
     Align = alClient
-    TabIndex = 2
+    TabIndex = 3
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
@@ -92,14 +92,15 @@ object frmMain: TfrmMain
     end
     object tabServices: TTabSheet
       Caption = 'Services'
-      ClientHeight = 319
+      ClientHeight = 321
       ClientWidth = 738
       object sgdServices: TStringGrid
         Left = 0
         Height = 286
-        Top = 33
+        Top = 35
         Width = 738
         Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 0
         FixedCols = 0
         FixedRows = 0
@@ -232,6 +233,7 @@ object frmMain: TfrmMain
         Height = 22
         Top = 8
         Width = 23
+        Action = ActClearPayee
         OnClick = spbClearPaymentsFilterClick
       end
       object btnAddPayment: TButton
@@ -298,6 +300,7 @@ object frmMain: TfrmMain
         Height = 22
         Top = 32
         Width = 23
+        Action = actClearORNo
         OnClick = spbClearPaymentsORNoFilterClick
       end
       object cmbPaymentsFilterService: TComboBox
@@ -323,6 +326,7 @@ object frmMain: TfrmMain
         Height = 22
         Top = 56
         Width = 23
+        Action = actClearService
         OnClick = spbClearPaymentsFilterServiceClick
       end
       object btnApplyPaymentFilter: TButton
@@ -380,6 +384,7 @@ object frmMain: TfrmMain
     end
   end
   object ActionList1: TActionList
+    OnUpdate = ActionList1Update
     left = 64
     top = 104
     object actFileEXit: TFileExit
@@ -458,6 +463,15 @@ object frmMain: TfrmMain
     object actFilterPayments: TAction
       Caption = 'Apply Filter'
       OnExecute = actFilterPaymentsExecute
+    end
+    object ActClearPayee: TAction
+      OnExecute = ActClearPayeeExecute
+    end
+    object actClearORNo: TAction
+      OnExecute = actClearORNoExecute
+    end
+    object actClearService: TAction
+      OnExecute = actClearServiceExecute
     end
   end
 end
