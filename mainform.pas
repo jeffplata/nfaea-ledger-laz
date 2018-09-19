@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ActnList, StdActns, ComCtrls, Grids, ExtCtrls, Buttons, StdCtrls
+  ActnList, StdActns, ComCtrls, Grids, ExtCtrls, Buttons, StdCtrls, EditBtn
   ,ledger_bom
   ,tiModelMediator
   ,tiListMediators
@@ -42,11 +42,17 @@ type
     ActClearPayee: TAction;
     actClearORNo: TAction;
     actClearService: TAction;
+    actFilterLoans: TAction;
+    actClearLoanMember: TAction;
+    actClearLoanDate1: TAction;
+    actClearLoanDate2: TAction;
+    actClearMember: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
     actFileEXit: TFileExit;
     btnAddPayment: TButton;
     btnApplyPaymentFilter: TButton;
+    btnApplyLoanFilter: TButton;
     btnDeletePayment: TButton;
     btnEditPayment: TButton;
     Button1: TButton;
@@ -59,11 +65,15 @@ type
     btnEditLoan: TButton;
     btnDeleteLoan: TButton;
     cmbPaymentsFilterService: TComboBox;
-    edtFilter: TLabeledEdit;
-    edtFilterLoans: TLabeledEdit;
+    dteLoans1: TDateEdit;
+    dteLoans2: TDateEdit;
+    edtFilterMember: TLabeledEdit;
+    edtLoanMember: TLabeledEdit;
     edtFilterPayments: TLabeledEdit;
     edtFilterPaymentsORNumber: TLabeledEdit;
     Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
@@ -79,6 +89,8 @@ type
     PageControl1: TPageControl;
     sgdLoans: TStringGrid;
     sgdPayments: TStringGrid;
+    spbClearLoanDate1: TSpeedButton;
+    spbClearLoanDate2: TSpeedButton;
     spbClearPaymentsFilter: TSpeedButton;
     spbClearMembers: TSpeedButton;
     spbClearLoanFilter: TSpeedButton;
@@ -95,6 +107,9 @@ type
     procedure actAddMemberExecute(Sender: TObject);
     procedure actAddPaymentExecute(Sender: TObject);
     procedure actAddServiceExecute(Sender: TObject);
+    procedure actClearLoanDate1Execute(Sender: TObject);
+    procedure actClearLoanMemberExecute(Sender: TObject);
+    procedure actClearMemberExecute(Sender: TObject);
     procedure actClearORNoExecute(Sender: TObject);
     procedure ActClearPayeeExecute(Sender: TObject);
     procedure actClearServiceExecute(Sender: TObject);
@@ -108,13 +123,15 @@ type
     procedure actEditMemberExecute(Sender: TObject);
     procedure actEditPaymentExecute(Sender: TObject);
     procedure actEditServiceExecute(Sender: TObject);
+    procedure actFilterLoansExecute(Sender: TObject);
     procedure actFilterPaymentsExecute(Sender: TObject);
     procedure actHelpAboutExecute(Sender: TObject);
     procedure actCSVLoadMemberExecute(Sender: TObject);
+    procedure actClearLoanDate2Execute(Sender: TObject);
     procedure ActionList1Update(AAction: TBasicAction; var Handled: Boolean);
-    procedure actMembersExecute(Sender: TObject);
-    procedure edtFilterKeyPress(Sender: TObject; var Key: char);
-    procedure edtFilterLoansKeyPress(Sender: TObject; var Key: char);
+    procedure dteLoans1ButtonClick(Sender: TObject);
+    procedure edtFilterMemberKeyPress(Sender: TObject; var Key: char);
+    procedure edtLoanMemberKeyPress(Sender: TObject; var Key: char);
     procedure edtFilterPaymentsKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure sgdLoansDblClick(Sender: TObject);
@@ -122,11 +139,6 @@ type
     procedure sgdPersonsDblClick(Sender: TObject);
     procedure sgdServicesDblClick(Sender: TObject);
     procedure spbClearLoanFilterClick(Sender: TObject);
-    procedure spbClearPaymentsFilterClick(Sender: TObject);
-    procedure spbClearMembersClick(Sender: TObject);
-    procedure spbClearPaymentsFilterServiceClick(Sender: TObject);
-    procedure spbClearPaymentsORNoFilter1Click(Sender: TObject);
-    procedure spbClearPaymentsORNoFilterClick(Sender: TObject);
   private
     FLoanDisplayList: TLoanDisplayList;
     FPaymentDisplayList: TPaymentDisplayList;
@@ -140,6 +152,7 @@ type
     SQLWhereBuilderLoans : TSQLWhereBuilder;
     SQLWhereBuilderPayments: TSQLWhereBuilder;
     procedure FilterPayments;
+    procedure FilterLoans;
     procedure SaveAdjustmentList(var O: TLoan);
     procedure SetPersons(AValue: TPersonList);
     procedure SetServices(AValue: TServiceList);
@@ -170,7 +183,7 @@ uses
   , PaymentEditForm
   , ResourceDM
   , PaymentCSVLoad
-  , ObjectUtils
+  , ObjectUtils, PeriodSelectForm
   ;
 
 const
@@ -178,6 +191,10 @@ const
   cSQLFilterPaymentsMember = 'p.NAME containing ?';
   cSQLFilterPaymentsORNumber = 'r.DOCNUMBER starting ?';
   cSQLFilterPaymentsService = 's.NAME = ?';
+
+  cSQLFilterLoansMember = 'p.NAME containg ?';
+  cSQLFilterLoansDateFrom = 'r.DOCDATE >= ?';
+  cSQLFilterLoansDateTo = 'r.DOCDATE <= ?';
 
 {$R *.lfm}
 
@@ -200,6 +217,12 @@ begin
   end;
 end;
 
+procedure TfrmMain.actClearLoanDate2Execute(Sender: TObject);
+begin
+  dteLoans2.Clear;
+  dteLoans2.SetFocus;
+end;
+
 //todo: filter Loans by Date: create a Date filter form with quick access for every possible combination
 procedure TfrmMain.ActionList1Update(AAction: TBasicAction; var Handled: Boolean
   );
@@ -209,7 +232,18 @@ begin
   else if AAction = actClearORNo then
     actClearORNo.Enabled:= edtFilterPaymentsORNumber.Text <> ''
   else if AAction = actClearService then
-    actClearService.Enabled:= cmbPaymentsFilterService.Text <> '';
+    actClearService.Enabled:= cmbPaymentsFilterService.Text <> ''
+
+  else if AAction = actClearLoanMember then
+    actClearLoanMember.Enabled:= edtLoanMember.TextHint <> ''
+  else if AAction = actClearLoanDate1 then
+    actClearLoanDate1.Enabled:= dteLoans1.Text <> ''
+  else if AAction = actClearLoanDate2 then
+    actClearLoanDate2.Enabled:= dteLoans2.Text <> ''
+
+  else if AAction = actClearMember then
+    actClearMember.Enabled:= edtFilterMember.Text <> ''
+  ;
 end;
 
 procedure TfrmMain.actEditMemberExecute(Sender: TObject);
@@ -292,6 +326,11 @@ begin
   B.Free;
 end;
 
+procedure TfrmMain.actFilterLoansExecute(Sender: TObject);
+begin
+  FilterLoans;
+end;
+
 procedure TfrmMain.actFilterPaymentsExecute(Sender: TObject);
 begin
   FilterPayments;
@@ -362,6 +401,24 @@ begin
   end
   else
     O.Free;
+end;
+
+procedure TfrmMain.actClearLoanDate1Execute(Sender: TObject);
+begin
+  dteLoans1.Clear;
+  dteLoans1.SetFocus;
+end;
+
+procedure TfrmMain.actClearLoanMemberExecute(Sender: TObject);
+begin
+  edtLoanMember.Clear;
+  edtLoanMember.SetFocus;
+end;
+
+procedure TfrmMain.actClearMemberExecute(Sender: TObject);
+begin
+  edtFilterMember.SetFocus;
+  edtFilterMember.Text:= '';
 end;
 
 procedure TfrmMain.actClearORNoExecute(Sender: TObject);
@@ -452,12 +509,31 @@ begin
   TAction(Sender).Enabled := sgdLoans.Selection.Top > 0;
 end;
 
-procedure TfrmMain.actMembersExecute(Sender: TObject);
+
+procedure TfrmMain.dteLoans1ButtonClick(Sender: TObject);
+var
+  d1, d2, d3: TDateTime;
+  start : TDateTime;
+  curEditor: TDateEdit;
 begin
-  //ShowPersons(nil);
+  d1 := 0;
+  d2 := 0;
+  d3 := 0;
+  curEditor :=  (sender as TDateEdit);
+  start := curEditor.Date;
+  SelectPeriod(d1, d2, d3, start);
+  if d1 <> 0 then curEditor.Date:= d1
+  else if d2 <> 0 then
+    begin
+      dteLoans1.Date:= d2;
+      dteLoans2.Date:= d3;
+    end;
+
+  abort;
 end;
 
-procedure TfrmMain.edtFilterKeyPress(Sender: TObject; var Key: char);
+
+procedure TfrmMain.edtFilterMemberKeyPress(Sender: TObject; var Key: char);
 begin
   if key = chr(13) then
   begin
@@ -469,7 +545,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.edtFilterLoansKeyPress(Sender: TObject; var Key: char);
+procedure TfrmMain.edtLoanMemberKeyPress(Sender: TObject; var Key: char);
 begin
   if key = chr(13) then
   begin
@@ -525,7 +601,11 @@ begin
     cmbPaymentsFilterService.items.Add(gLedgerManager.Services.Items[i].Name);
 
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearMembers.Glyph);
+
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLoanFilter.Glyph);
+  dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLoanDate1.Glyph);
+  dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLoanDate2.Glyph);
+
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPaymentsFilter.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPaymentsORNoFilter.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPaymentsFilterService.Glyph);
@@ -533,13 +613,15 @@ begin
   actEditLoan.OnUpdate:= @actEditLoanUpdate;
   actDeleteLoan.OnUpdate:= @actEditLoanUpdate;
 
+  //Loans Filter
   SQLWhereBuilderLoans := TSQLWhereBuilder.Create(Self);
-  SQLWhereBuilderLoans.AddWhereClauseAnd(cSQLFilterTextLoans,[edtFilterLoans,'Text']);
+  SQLWhereBuilderLoans.AddWhereClauseAnd(cSQLFilterTextLoans,[edtLoanMember,'Text']);
+  SQLWhereBuilderLoans.AddWhereClauseAnd(cSQLFilterLoansDateFrom,[dteLoans1,'Text']);
+  SQLWhereBuilderLoans.AddWhereClauseAnd(cSQLFilterLoansDateTo,[dteLoans2,'Text']);
+
 
   //Payments filter
   SQLWhereBuilderPayments := TSQLWhereBuilder.Create(Self);
-  //SQLWhereBuilderPayments.AddWhereClauseAnd( cSQLFilterTextPayments,
-  //  [edtFilterPayments,'Text',edtFilterPaymentsORNumber,'Text',cmbPaymentsFilterService,'Text']);
   SQLWhereBuilderPayments.AddWhereClauseAnd( cSQLFilterPaymentsMember,
     [edtFilterPayments, 'Text']);
   SQLWhereBuilderPayments.AddWhereClauseAnd( cSQLFilterPaymentsORNumber,
@@ -571,34 +653,10 @@ end;
 
 procedure TfrmMain.spbClearLoanFilterClick(Sender: TObject);
 begin
-  edtFilterLoans.SetFocus;
-  edtFilterLoans.Text:= '';
+  edtLoanMember.SetFocus;
+  edtLoanMember.Text:= '';
 end;
 
-procedure TfrmMain.spbClearPaymentsFilterClick(Sender: TObject);
-begin
-
-end;
-
-procedure TfrmMain.spbClearMembersClick(Sender: TObject);
-begin
-  edtFilter.SetFocus;
-  edtFilter.Text:= '';
-end;
-
-procedure TfrmMain.spbClearPaymentsFilterServiceClick(Sender: TObject);
-begin
-end;
-
-procedure TfrmMain.spbClearPaymentsORNoFilter1Click(Sender: TObject);
-begin
-
-end;
-
-procedure TfrmMain.spbClearPaymentsORNoFilterClick(Sender: TObject);
-begin
-
-end;
 
 
 procedure TfrmMain.SetPersons(AValue: TPersonList);
@@ -633,6 +691,21 @@ begin
   gLedgerManager.LoadPayments;
 
   gLedgerManager.PaymentList.EndUpdate;
+end;
+
+procedure TfrmMain.FilterLoans;
+begin
+  gLedgerManager.Loans.BeginUpdate;
+
+  SQLWhereBuilderLoans.UpdateWhereClauses;
+
+  gLedgerManager.Loans.ListFilter.Criteria:=
+    SQLWhereBuilderLoans.WhereList.Text;
+  gLedgerManager.Loans.ListFilter.Active:= (
+    SQLWhereBuilderLoans.WhereList.Text<>'');
+  gLedgerManager.LoadLoans;
+
+  gLedgerManager.Loans.EndUpdate;
 end;
 
 procedure TfrmMain.SetServices(AValue: TServiceList);

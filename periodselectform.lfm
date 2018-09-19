@@ -1,0 +1,214 @@
+object frmPeriodSelect: TfrmPeriodSelect
+  Left = 422
+  Height = 277
+  Top = 229
+  Width = 616
+  BorderStyle = bsDialog
+  Caption = 'Select Period'
+  ClientHeight = 277
+  ClientWidth = 616
+  OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
+  LCLVersion = '1.8.2.0'
+  object RadioGroup1: TRadioGroup
+    Left = 8
+    Height = 192
+    Top = 24
+    Width = 201
+    AutoFill = True
+    Caption = '              '
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    ClientHeight = 174
+    ClientWidth = 197
+    Columns = 2
+    Items.Strings = (
+      'Today'
+      'Yesterday'
+      'This Week'
+      'Previous Week'
+      'This Month'
+      'Previous Month'
+      'This Quarter'
+      'Previous Quarter'
+      'This Year'
+      'Previous Year'
+    )
+    OnSelectionChanged = RadioGroup1SelectionChanged
+    ParentFont = False
+    TabOrder = 0
+  end
+  object Label1: TLabel
+    AnchorSideLeft.Control = RadioGroup1
+    AnchorSideTop.Control = RadioGroup1
+    Left = 18
+    Height = 13
+    Top = 24
+    Width = 36
+    BorderSpacing.Left = 10
+    Caption = 'Period'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object GroupBox1: TGroupBox
+    Left = 216
+    Height = 192
+    Top = 24
+    Width = 200
+    Caption = '                           '
+    ClientHeight = 174
+    ClientWidth = 196
+    TabOrder = 1
+    object Calendar1: TCalendar
+      Left = 16
+      Height = 153
+      Top = 8
+      Width = 169
+      DateTime = 0
+      OnChange = Calendar1Change
+      OnClick = Calendar1Click
+      TabOrder = 0
+    end
+  end
+  object Label2: TLabel
+    AnchorSideLeft.Control = GroupBox1
+    AnchorSideTop.Control = GroupBox1
+    Left = 226
+    Height = 13
+    Top = 24
+    Width = 73
+    BorderSpacing.Left = 10
+    Caption = 'Specific Date'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object Button1: TButton
+    Left = 448
+    Height = 25
+    Top = 238
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Caption = 'Ok'
+    ModalResult = 1
+    TabOrder = 2
+  end
+  object Button2: TButton
+    Left = 528
+    Height = 25
+    Top = 238
+    Width = 75
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 3
+  end
+  object GroupBox2: TGroupBox
+    Left = 424
+    Height = 192
+    Top = 24
+    Width = 185
+    Caption = '                          '
+    ClientHeight = 174
+    ClientWidth = 181
+    TabOrder = 4
+    object cmbMonth: TComboBox
+      Left = 8
+      Height = 21
+      Top = 24
+      Width = 160
+      DropDownCount = 12
+      ItemHeight = 13
+      OnChange = cmbMonthChange
+      OnCloseUp = cmbMonthCloseUp
+      OnDropDown = cmbMonthDropDown
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object Label3: TLabel
+      AnchorSideLeft.Control = cmbMonth
+      AnchorSideTop.Side = asrBottom
+      AnchorSideBottom.Control = cmbMonth
+      Left = 8
+      Height = 16
+      Top = 8
+      Width = 30
+      Anchors = [akTop, akLeft, akBottom]
+      Caption = 'Month'
+      ParentColor = False
+    end
+    object Label4: TLabel
+      AnchorSideLeft.Control = cmbYear
+      AnchorSideBottom.Control = cmbYear
+      Left = 8
+      Height = 16
+      Top = 56
+      Width = 22
+      Anchors = [akTop, akLeft, akBottom]
+      Caption = 'Year'
+      ParentColor = False
+    end
+    object cmbYear: TComboBox
+      Left = 8
+      Height = 21
+      Top = 72
+      Width = 112
+      DropDownCount = 11
+      ItemHeight = 13
+      OnEditingDone = cmbYearEditingDone
+      TabOrder = 1
+    end
+    object SpeedButton1: TSpeedButton
+      AnchorSideLeft.Control = cmbYear
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cmbYear
+      AnchorSideTop.Side = asrCenter
+      Left = 120
+      Height = 22
+      Top = 71
+      Width = 23
+      Action = actYearPlus
+    end
+    object SpeedButton2: TSpeedButton
+      AnchorSideLeft.Control = SpeedButton1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Side = asrCenter
+      Left = 143
+      Height = 22
+      Top = 71
+      Width = 23
+      Action = actYearMinus
+    end
+  end
+  object Label5: TLabel
+    AnchorSideLeft.Control = GroupBox2
+    AnchorSideTop.Control = GroupBox2
+    Left = 434
+    Height = 13
+    Top = 24
+    Width = 68
+    BorderSpacing.Left = 10
+    Caption = 'Month/Year'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object ActionList1: TActionList
+    left = 120
+    top = 8
+    object actYearPlus: TAction
+      Caption = '+'
+      OnExecute = actYearPlusExecute
+    end
+    object actYearMinus: TAction
+      Caption = '-'
+    end
+  end
+end

@@ -15,18 +15,18 @@ object frmMain: TfrmMain
     Height = 347
     Top = 0
     Width = 746
-    ActivePage = tabPayments
+    ActivePage = tabPersons
     Align = alClient
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
-      ClientHeight = 319
+      ClientHeight = 321
       ClientWidth = 738
       object sgdPersons: TStringGrid
         Left = 0
-        Height = 286
-        Top = 33
+        Height = 281
+        Top = 40
         Width = 738
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -38,35 +38,38 @@ object frmMain: TfrmMain
         TabOrder = 0
         OnDblClick = sgdPersonsDblClick
       end
-      object edtFilter: TLabeledEdit
-        Left = 32
-        Height = 23
+      object edtFilterMember: TLabeledEdit
+        Left = 304
+        Height = 21
         Top = 8
         Width = 144
-        EditLabel.AnchorSideTop.Control = edtFilter
+        EditLabel.AnchorSideTop.Control = edtFilterMember
         EditLabel.AnchorSideTop.Side = asrCenter
-        EditLabel.AnchorSideRight.Control = edtFilter
-        EditLabel.AnchorSideBottom.Control = edtFilter
+        EditLabel.AnchorSideRight.Control = edtFilterMember
+        EditLabel.AnchorSideBottom.Control = edtFilterMember
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 3
-        EditLabel.Height = 15
+        EditLabel.Left = 277
+        EditLabel.Height = 13
         EditLabel.Top = 12
-        EditLabel.Width = 26
+        EditLabel.Width = 24
         EditLabel.Caption = 'Filter'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
         TabOrder = 1
-        OnKeyPress = edtFilterKeyPress
+        OnKeyPress = edtFilterMemberKeyPress
       end
       object spbClearMembers: TSpeedButton
-        Left = 180
+        AnchorSideLeft.Control = edtFilterMember
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = edtFilterMember
+        Left = 448
         Height = 22
         Top = 8
         Width = 23
-        OnClick = spbClearMembersClick
+        Action = actClearMember
       end
       object Button1: TButton
-        Left = 224
+        Left = 8
         Height = 22
         Top = 8
         Width = 75
@@ -74,7 +77,10 @@ object frmMain: TfrmMain
         TabOrder = 2
       end
       object Button2: TButton
-        Left = 304
+        AnchorSideLeft.Control = Button1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = Button1
+        Left = 83
         Height = 22
         Top = 8
         Width = 75
@@ -82,7 +88,11 @@ object frmMain: TfrmMain
         TabOrder = 3
       end
       object Button3: TButton
-        Left = 384
+        AnchorSideLeft.Control = Button2
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = Button2
+        AnchorSideRight.Control = Button2
+        Left = 158
         Height = 22
         Top = 8
         Width = 75
@@ -96,8 +106,8 @@ object frmMain: TfrmMain
       ClientWidth = 738
       object sgdServices: TStringGrid
         Left = 0
-        Height = 286
-        Top = 35
+        Height = 281
+        Top = 40
         Width = 738
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -117,7 +127,10 @@ object frmMain: TfrmMain
         TabOrder = 1
       end
       object Button5: TButton
-        Left = 88
+        AnchorSideLeft.Control = Button4
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = Button4
+        Left = 83
         Height = 22
         Top = 8
         Width = 75
@@ -125,7 +138,10 @@ object frmMain: TfrmMain
         TabOrder = 2
       end
       object Button6: TButton
-        Left = 168
+        AnchorSideLeft.Control = Button5
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = Button5
+        Left = 158
         Height = 22
         Top = 8
         Width = 75
@@ -139,8 +155,8 @@ object frmMain: TfrmMain
       ClientWidth = 738
       object sgdLoans: TStringGrid
         Left = 0
-        Height = 288
-        Top = 33
+        Height = 233
+        Top = 88
         Width = 738
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -149,59 +165,167 @@ object frmMain: TfrmMain
         FixedRows = 0
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
         RowCount = 0
-        TabOrder = 0
+        TabOrder = 7
         OnDblClick = sgdLoansDblClick
       end
-      object edtFilterLoans: TLabeledEdit
-        Left = 32
+      object edtLoanMember: TLabeledEdit
+        Left = 304
         Height = 21
         Top = 8
         Width = 144
-        EditLabel.AnchorSideTop.Control = edtFilterLoans
+        EditLabel.AnchorSideTop.Control = edtLoanMember
         EditLabel.AnchorSideTop.Side = asrCenter
-        EditLabel.AnchorSideRight.Control = edtFilterLoans
-        EditLabel.AnchorSideBottom.Control = edtFilterLoans
+        EditLabel.AnchorSideRight.Control = edtLoanMember
+        EditLabel.AnchorSideBottom.Control = edtLoanMember
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 5
+        EditLabel.Left = 263
         EditLabel.Height = 13
         EditLabel.Top = 12
-        EditLabel.Width = 24
-        EditLabel.Caption = 'Filter'
+        EditLabel.Width = 38
+        EditLabel.Caption = 'Member'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
-        TabOrder = 1
-        OnKeyPress = edtFilterLoansKeyPress
+        TabOrder = 0
+        OnKeyPress = edtLoanMemberKeyPress
       end
       object spbClearLoanFilter: TSpeedButton
-        Left = 180
+        AnchorSideLeft.Control = edtLoanMember
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = edtLoanMember
+        AnchorSideTop.Side = asrCenter
+        Left = 448
         Height = 22
-        Top = 8
+        Top = 7
         Width = 23
+        Action = actClearLoanMember
         OnClick = spbClearLoanFilterClick
       end
       object btnAddLoan: TButton
-        Left = 224
+        Left = 8
         Height = 22
         Top = 8
         Width = 75
         Action = actAddLoan
-        TabOrder = 2
+        TabOrder = 4
       end
       object btnEditLoan: TButton
-        Left = 304
+        AnchorSideLeft.Control = btnAddLoan
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = btnAddLoan
+        Left = 83
         Height = 22
         Top = 8
         Width = 75
         Action = actEditLoan
-        TabOrder = 3
+        TabOrder = 5
       end
       object btnDeleteLoan: TButton
-        Left = 384
+        AnchorSideLeft.Control = btnEditLoan
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = btnEditLoan
+        Left = 158
         Height = 22
         Top = 8
         Width = 75
         Action = actDeleteLoan
-        TabOrder = 4
+        TabOrder = 6
+      end
+      object dteLoans1: TDateEdit
+        AnchorSideLeft.Control = edtLoanMember
+        AnchorSideTop.Control = edtLoanMember
+        AnchorSideTop.Side = asrBottom
+        Left = 304
+        Height = 21
+        Top = 32
+        Width = 144
+        CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+        DateOrder = doNone
+        ButtonWidth = 23
+        BorderSpacing.Top = 3
+        NumGlyphs = 1
+        MaxLength = 0
+        OnButtonClick = dteLoans1ButtonClick
+        TabOrder = 1
+      end
+      object dteLoans2: TDateEdit
+        AnchorSideLeft.Control = dteLoans1
+        AnchorSideTop.Control = dteLoans1
+        AnchorSideTop.Side = asrBottom
+        Left = 304
+        Height = 21
+        Top = 56
+        Width = 144
+        CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+        DateOrder = doNone
+        ButtonWidth = 23
+        BorderSpacing.Top = 3
+        NumGlyphs = 1
+        MaxLength = 0
+        OnButtonClick = dteLoans1ButtonClick
+        TabOrder = 2
+      end
+      object spbClearLoanDate1: TSpeedButton
+        AnchorSideLeft.Control = dteLoans1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = dteLoans1
+        AnchorSideTop.Side = asrCenter
+        Left = 448
+        Height = 22
+        Top = 31
+        Width = 23
+        Action = actClearLoanDate1
+      end
+      object spbClearLoanDate2: TSpeedButton
+        AnchorSideLeft.Control = dteLoans2
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = dteLoans2
+        AnchorSideTop.Side = asrCenter
+        Left = 448
+        Height = 22
+        Top = 55
+        Width = 23
+        Action = actClearLoanDate2
+      end
+      object btnApplyLoanFilter: TButton
+        AnchorSideLeft.Control = spbClearLoanFilter
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = spbClearLoanFilter
+        AnchorSideTop.Side = asrCenter
+        Left = 479
+        Height = 22
+        Top = 7
+        Width = 67
+        Action = actFilterLoans
+        BorderSpacing.Left = 8
+        TabOrder = 3
+      end
+      object Label2: TLabel
+        AnchorSideTop.Control = dteLoans1
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = dteLoans1
+        Left = 276
+        Height = 13
+        Top = 36
+        Width = 24
+        Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 4
+        Caption = 'From'
+        ParentColor = False
+      end
+      object Label3: TLabel
+        AnchorSideTop.Control = dteLoans2
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = dteLoans2
+        Left = 288
+        Height = 13
+        Top = 60
+        Width = 12
+        Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 4
+        Caption = 'To'
+        ParentColor = False
       end
     end
     object tabPayments: TTabSheet
@@ -209,7 +333,7 @@ object frmMain: TfrmMain
       ClientHeight = 321
       ClientWidth = 738
       object edtFilterPayments: TLabeledEdit
-        Left = 64
+        Left = 304
         Height = 21
         Top = 8
         Width = 144
@@ -218,7 +342,7 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtFilterPayments
         EditLabel.AnchorSideBottom.Control = edtFilterPayments
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 23
+        EditLabel.Left = 263
         EditLabel.Height = 13
         EditLabel.Top = 12
         EditLabel.Width = 38
@@ -229,15 +353,18 @@ object frmMain: TfrmMain
         OnKeyPress = edtFilterPaymentsKeyPress
       end
       object spbClearPaymentsFilter: TSpeedButton
-        Left = 208
+        AnchorSideLeft.Control = edtFilterPayments
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = edtFilterPayments
+        AnchorSideTop.Side = asrCenter
+        Left = 448
         Height = 22
-        Top = 8
+        Top = 7
         Width = 23
         Action = ActClearPayee
-        OnClick = spbClearPaymentsFilterClick
       end
       object btnAddPayment: TButton
-        Left = 352
+        Left = 8
         Height = 22
         Top = 8
         Width = 75
@@ -245,7 +372,10 @@ object frmMain: TfrmMain
         TabOrder = 1
       end
       object btnEditPayment: TButton
-        Left = 432
+        AnchorSideLeft.Control = btnAddPayment
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = btnAddPayment
+        Left = 83
         Height = 22
         Top = 8
         Width = 75
@@ -253,7 +383,10 @@ object frmMain: TfrmMain
         TabOrder = 2
       end
       object btnDeletePayment: TButton
-        Left = 512
+        AnchorSideLeft.Control = btnEditPayment
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = btnEditPayment
+        Left = 158
         Height = 22
         Top = 8
         Width = 75
@@ -262,8 +395,8 @@ object frmMain: TfrmMain
       end
       object sgdPayments: TStringGrid
         Left = 0
-        Height = 241
-        Top = 80
+        Height = 233
+        Top = 88
         Width = 738
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -276,16 +409,20 @@ object frmMain: TfrmMain
         OnDblClick = sgdPaymentsDblClick
       end
       object edtFilterPaymentsORNumber: TLabeledEdit
-        Left = 64
+        AnchorSideLeft.Control = edtFilterPayments
+        AnchorSideTop.Control = edtFilterPayments
+        AnchorSideTop.Side = asrBottom
+        Left = 304
         Height = 21
         Top = 32
         Width = 144
+        BorderSpacing.Top = 3
         EditLabel.AnchorSideTop.Control = edtFilterPaymentsORNumber
         EditLabel.AnchorSideTop.Side = asrCenter
         EditLabel.AnchorSideRight.Control = edtFilterPaymentsORNumber
         EditLabel.AnchorSideBottom.Control = edtFilterPaymentsORNumber
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 6
+        EditLabel.Left = 246
         EditLabel.Height = 13
         EditLabel.Top = 36
         EditLabel.Width = 55
@@ -296,45 +433,65 @@ object frmMain: TfrmMain
         OnKeyPress = edtFilterPaymentsKeyPress
       end
       object spbClearPaymentsORNoFilter: TSpeedButton
-        Left = 208
+        AnchorSideLeft.Control = edtFilterPaymentsORNumber
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = edtFilterPaymentsORNumber
+        AnchorSideTop.Side = asrCenter
+        Left = 448
         Height = 22
-        Top = 32
+        Top = 31
         Width = 23
         Action = actClearORNo
-        OnClick = spbClearPaymentsORNoFilterClick
       end
       object cmbPaymentsFilterService: TComboBox
-        Left = 64
+        AnchorSideLeft.Control = edtFilterPaymentsORNumber
+        AnchorSideTop.Control = edtFilterPaymentsORNumber
+        AnchorSideTop.Side = asrBottom
+        Left = 304
         Height = 21
         Top = 56
         Width = 144
+        BorderSpacing.Top = 3
         ItemHeight = 13
         Style = csDropDownList
         TabOrder = 6
       end
       object Label1: TLabel
-        Left = 24
+        AnchorSideTop.Control = cmbPaymentsFilterService
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cmbPaymentsFilterService
+        Left = 266
         Height = 13
         Top = 60
         Width = 35
         Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 3
         Caption = 'Service'
         ParentColor = False
       end
       object spbClearPaymentsFilterService: TSpeedButton
-        Left = 208
+        AnchorSideLeft.Control = cmbPaymentsFilterService
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cmbPaymentsFilterService
+        AnchorSideTop.Side = asrCenter
+        Left = 448
         Height = 22
-        Top = 56
+        Top = 55
         Width = 23
         Action = actClearService
-        OnClick = spbClearPaymentsFilterServiceClick
       end
       object btnApplyPaymentFilter: TButton
-        Left = 240
+        AnchorSideLeft.Control = spbClearPaymentsFilter
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = spbClearPaymentsFilter
+        AnchorSideTop.Side = asrCenter
+        Left = 479
         Height = 22
-        Top = 8
-        Width = 75
+        Top = 7
+        Width = 67
         Action = actFilterPayments
+        BorderSpacing.Left = 8
         TabOrder = 7
       end
     end
@@ -401,7 +558,6 @@ object frmMain: TfrmMain
     object actMembers: TAction
       Category = 'System'
       Caption = '&Members'
-      OnExecute = actMembersExecute
     end
     object actEditMember: TAction
       Caption = 'Edit'
@@ -472,6 +628,22 @@ object frmMain: TfrmMain
     end
     object actClearService: TAction
       OnExecute = actClearServiceExecute
+    end
+    object actFilterLoans: TAction
+      Caption = 'Apply Filter'
+      OnExecute = actFilterLoansExecute
+    end
+    object actClearLoanMember: TAction
+      OnExecute = actClearLoanMemberExecute
+    end
+    object actClearLoanDate1: TAction
+      OnExecute = actClearLoanDate1Execute
+    end
+    object actClearLoanDate2: TAction
+      OnExecute = actClearLoanDate2Execute
+    end
+    object actClearMember: TAction
+      OnExecute = actClearMemberExecute
     end
   end
 end
