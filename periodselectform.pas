@@ -32,6 +32,7 @@ type
     RadioGroup1: TRadioGroup;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
+    procedure actYearMinusExecute(Sender: TObject);
     procedure actYearPlusExecute(Sender: TObject);
     procedure Calendar1Change(Sender: TObject);
     procedure Calendar1Click(Sender: TObject);
@@ -46,6 +47,7 @@ type
     Fd1: TDateTime;
     Fd2: TDateTime;
     Fd3: TDateTime;
+    function IncrementYear(const incBy: integer): integer;
   private
     procedure ResetPeriodSelection;
     procedure ResetYearMOnthSelection;
@@ -112,6 +114,26 @@ end;
 procedure TfrmPeriodSelect.RadioGroup1SelectionChanged(Sender: TObject);
 begin
   ResetYearMOnthSelection;
+end;
+
+function TfrmPeriodSelect.IncrementYear(const incBy: integer): integer;
+var
+  y: word;
+begin
+  if (cmbYear.Text <> '') then
+    try
+      y := StrToInt(cmbYear.Text);
+      if (y < 1) or (y > 9999) then
+        abort;
+      y := y + incBy;
+    except
+      MessageDlg('Error', 'Invalid year value.', mtError, [mbOk], 0);
+      cmbYear.SetFocus;
+      exit; // <==
+    end
+  else
+    y := YearOf(Date);
+  Result:=y;
 end;
 
 procedure TfrmPeriodSelect.ResetPeriodSelection;
@@ -203,10 +225,16 @@ begin
 end;
 
 procedure TfrmPeriodSelect.actYearPlusExecute(Sender: TObject);
-var
-  y : word;
+//var
+//  i : integer;
 begin
-  //todo: validate year
+  //if sender = actYearPlus then i := 1 else i := -1;
+  cmbYear.Text := IntToStr( IncrementYear(1) );
+end;
+
+procedure TfrmPeriodSelect.actYearMinusExecute(Sender: TObject);
+begin
+  cmbYear.Text := IntToStr( IncrementYear(-1) );
 end;
 
 procedure TfrmPeriodSelect.Calendar1Click(Sender: TObject);

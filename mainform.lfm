@@ -515,7 +515,7 @@ object frmMain: TfrmMain
     object MenuItem3: TMenuItem
       Caption = 'S&ystem'
       object MenuItem6: TMenuItem
-        Action = actMembers
+        Caption = '&Members'
         object MenuItem9: TMenuItem
           Action = actCSVLoadMember
         end

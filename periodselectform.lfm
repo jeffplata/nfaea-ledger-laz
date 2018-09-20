@@ -209,6 +209,7 @@ object frmPeriodSelect: TfrmPeriodSelect
     end
     object actYearMinus: TAction
       Caption = '-'
+      OnExecute = actYearMinusExecute
     end
   end
 end
