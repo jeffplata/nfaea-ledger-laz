@@ -704,13 +704,19 @@ procedure TReadPersonsVisitor.Init;
 begin
   Query.SQLText:= SQLReadPersons;
   // where clause start
-  if TPersonList(Visited).PersonsFilter.Active then
+  if TPersonList(Visited).ListFilter.Active then
   begin
     Query.SQL.Add(' WHERE');
-    Query.SQL.Add(' '+TPersonList(Visited).PersonsFilter.Criteria);
-    TPersonList(Visited).PersonsFilter.Active  := False;
+    Query.SQL.Add(' '+TPersonList(Visited).ListFilter.Criteria);
   end;
   //where clause end
+
+  //if TPersonList(Visited).PersonsFilter.Active then
+  //begin
+  //  Query.SQL.Add(' WHERE');
+  //  Query.SQL.Add(' '+TPersonList(Visited).PersonsFilter.Criteria);
+  //  TPersonList(Visited).PersonsFilter.Active  := False;
+  //end;
 end;
 
 function TReadPersonsVisitor.AcceptVisitor: Boolean;

@@ -25,7 +25,7 @@ type
     destructor Destroy; override;
   end;
 
-  TPersonsFilter = class(TObjectListFilter);
+  //TPersonsFilter = class(TObjectListFilter);
 
   { TManualObject }
 
@@ -201,14 +201,14 @@ type
 
   { TPersonList }
 
-  TPersonList = class(TtiObjectList)
+  TPersonList = class(TFilteredObjectList)
   private
-    FPersonsFilter: TPersonsFilter;
+    //FPersonsFilter: TPersonsFilter;
   protected
     function  GetItems(i: integer): TPerson; reintroduce;
     procedure SetItems(i: integer; const Value: TPerson); reintroduce;
   public
-    property PersonsFilter: TPersonsFilter read FPersonsFilter write FPersonsFilter;
+    //property PersonsFilter: TPersonsFilter read FPersonsFilter write FPersonsFilter;
     property  Items[i:integer]: TPerson read GetItems write SetItems;
     procedure Add(AObject:TPerson); reintroduce;
     constructor Create; override;
@@ -1255,13 +1255,13 @@ end;
 constructor TPersonList.Create;
 begin
   inherited Create;
-  FPersonsFilter := TPersonsFilter.Create;
-  FPersonsFilter.Active:= False;
+  //FPersonsFilter := TPersonsFilter.Create;
+  //FPersonsFilter.Active:= False;
 end;
 
 destructor TPersonList.Destroy;
 begin
-  FPersonsFilter.Free;
+  //FPersonsFilter.Free;
   inherited Destroy;
 end;
 

@@ -49,7 +49,7 @@
         <PackageName Value="LCL"/>
       </Item8>
     </RequiredPackages>
-    <Units Count="20">
+    <Units Count="21">
       <Unit0>
         <Filename Value="nfaealedger.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -171,6 +171,13 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="PeriodSelectForm"/>
       </Unit19>
+      <Unit20>
+        <Filename Value="LoanCSVLoad.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmLoanCSVLoad"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit20>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

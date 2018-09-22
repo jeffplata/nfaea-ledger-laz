@@ -151,6 +151,7 @@ type
     FServices: TServiceList;
     SQLWhereBuilderLoans : TSQLWhereBuilder;
     SQLWhereBuilderPayments: TSQLWhereBuilder;
+    SQLWhereBuilderMembers: TSQLWhereBuilder;
     procedure FilterPayments;
     procedure FilterLoans;
     procedure SaveAdjustmentList(var O: TLoan);
@@ -187,6 +188,8 @@ uses
   ;
 
 const
+  cSQLFilterMembers = 'NAME containing ? or EMPNO starting ?';
+
   cSQLFilterPaymentsMember = 'p.NAME containing ?';
   cSQLFilterPaymentsORNumber = 'r.DOCNUMBER starting ?';
   cSQLFilterPaymentsService = 's.NAME = ?';
@@ -233,7 +236,7 @@ begin
     actClearService.Enabled:= cmbPaymentsFilterService.Text <> ''
 
   else if AAction = actClearLoanMember then
-    actClearLoanMember.Enabled:= edtLoanMember.TextHint <> ''
+    actClearLoanMember.Enabled:= edtLoanMember.Text <> ''
   else if AAction = actClearLoanDate1 then
     actClearLoanDate1.Enabled:= dteLoans1.Text <> ''
   else if AAction = actClearLoanDate2 then
@@ -560,6 +563,7 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 var
   i: Integer;
+
 begin
   RegisterFallBackMediators;
   RegisterFallBackListmediators;
@@ -601,6 +605,11 @@ begin
 
   actEditLoan.OnUpdate:= @actEditLoanUpdate;
   actDeleteLoan.OnUpdate:= @actEditLoanUpdate;
+
+  //Members Filter
+  SQLWhereBuilderMembers := TSQLWhereBuilder.Create(Self);
+  SQLWhereBuilderMembers.AddWhereClauseAnd(cSQLFilterMembers,
+    [edtFilterMember,'Text',edtFilterMember,'Text']);
 
   //Loans Filter
   SQLWhereBuilderLoans := TSQLWhereBuilder.Create(Self);
@@ -761,9 +770,17 @@ end;
 
 procedure TfrmMain.FilterPersons(AText: string);
 begin
-  Persons.PersonsFilter.Active:= (AText <> '');
-  Persons.PersonsFilter.Criteria:= 'NAME containing '+QuotedStr(AText);
+
+  SQLWhereBuilderMembers.UpdateWhereClauses;
+  gLedgerManager.PersonList.ListFilter.Criteria:=
+    SQLWhereBuilderMembers.WhereList.Text;
+  gLedgerManager.PersonList.ListFilter.Active:= (
+    SQLWhereBuilderMembers.WhereList.Text<>'');
   gLedgerManager.LoadPersons;
+
+  //Persons.PersonsFilter.Active:= (AText <> '');
+  //Persons.PersonsFilter.Criteria:= 'NAME containing '+QuotedStr(AText);
+  //gLedgerManager.LoadPersons;
 end;
 
 
