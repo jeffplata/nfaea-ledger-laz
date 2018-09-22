@@ -15,9 +15,9 @@ object frmMain: TfrmMain
     Height = 347
     Top = 0
     Width = 746
-    ActivePage = tabPersons
+    ActivePage = tabLoans
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'

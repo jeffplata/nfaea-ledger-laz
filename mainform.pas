@@ -187,12 +187,11 @@ uses
   ;
 
 const
-  cSQLFilterTextLoans = 'p.NAME containing ?';
   cSQLFilterPaymentsMember = 'p.NAME containing ?';
   cSQLFilterPaymentsORNumber = 'r.DOCNUMBER starting ?';
   cSQLFilterPaymentsService = 's.NAME = ?';
 
-  cSQLFilterLoansMember = 'p.NAME containg ?';
+  cSQLFilterLoansMember = 'p.NAME containing ?';
   cSQLFilterLoansDateFrom = 'r.DOCDATE >= ?';
   cSQLFilterLoansDateTo = 'r.DOCDATE <= ?';
 
@@ -223,7 +222,6 @@ begin
   dteLoans2.SetFocus;
 end;
 
-//todo: filter Loans by Date: create a Date filter form with quick access for every possible combination
 procedure TfrmMain.ActionList1Update(AAction: TBasicAction; var Handled: Boolean
   );
 begin
@@ -292,15 +290,6 @@ begin
 end;
 
 procedure TfrmMain.actEditServiceExecute(Sender: TObject);
-//D : TLoanDisplay;
-//M : TtiMediatorView;
-//O : TLoan;
-//B : TLoan; //Buffer for undo
-//i: Integer;
-//begin
-//M := FMedLoans.FindByComponent(sgdLoans).Mediator;
-//D := TLoanDisplay(TtiStringGridMediatorView(M).SelectedObject);
-//O := D.Loan;
 var
   O : TService;
   B : TService; //Buffer for undo
@@ -615,7 +604,7 @@ begin
 
   //Loans Filter
   SQLWhereBuilderLoans := TSQLWhereBuilder.Create(Self);
-  SQLWhereBuilderLoans.AddWhereClauseAnd(cSQLFilterTextLoans,[edtLoanMember,'Text']);
+  SQLWhereBuilderLoans.AddWhereClauseAnd(cSQLFilterLoansMember,[edtLoanMember,'Text']);
   SQLWhereBuilderLoans.AddWhereClauseAnd(cSQLFilterLoansDateFrom,[dteLoans1,'Text']);
   SQLWhereBuilderLoans.AddWhereClauseAnd(cSQLFilterLoansDateTo,[dteLoans2,'Text']);
 
