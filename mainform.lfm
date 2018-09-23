@@ -21,11 +21,11 @@ object frmMain: TfrmMain
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
-      ClientHeight = 319
+      ClientHeight = 321
       ClientWidth = 738
       object sgdPersons: TStringGrid
         Left = 0
-        Height = 279
+        Height = 281
         Top = 40
         Width = 738
         Align = alBottom
@@ -40,7 +40,7 @@ object frmMain: TfrmMain
       end
       object edtFilterMember: TLabeledEdit
         Left = 304
-        Height = 23
+        Height = 21
         Top = 8
         Width = 144
         EditLabel.AnchorSideTop.Control = edtFilterMember
@@ -48,10 +48,10 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtFilterMember
         EditLabel.AnchorSideBottom.Control = edtFilterMember
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 275
-        EditLabel.Height = 15
+        EditLabel.Left = 277
+        EditLabel.Height = 13
         EditLabel.Top = 12
-        EditLabel.Width = 26
+        EditLabel.Width = 24
         EditLabel.Caption = 'Filter'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -448,11 +448,11 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = edtFilterPaymentsORNumber
         AnchorSideTop.Side = asrBottom
         Left = 304
-        Height = 23
+        Height = 21
         Top = 56
         Width = 144
         BorderSpacing.Top = 3
-        ItemHeight = 15
+        ItemHeight = 13
         Style = csDropDownList
         TabOrder = 6
       end
@@ -524,6 +524,12 @@ object frmMain: TfrmMain
         Caption = 'Payments'
         object MenuItem11: TMenuItem
           Action = actCSVLoadPayment
+        end
+      end
+      object MenuItem12: TMenuItem
+        Caption = 'Loans'
+        object MenuItem13: TMenuItem
+          Action = actCSVLoadLoan
         end
       end
       object MenuItem7: TMenuItem
@@ -644,6 +650,10 @@ object frmMain: TfrmMain
     end
     object actClearMember: TAction
       OnExecute = actClearMemberExecute
+    end
+    object actCSVLoadLoan: TAction
+      Caption = 'Load from CSV'
+      OnExecute = actCSVLoadLoanExecute
     end
   end
 end

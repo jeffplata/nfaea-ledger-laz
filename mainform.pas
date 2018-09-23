@@ -47,6 +47,7 @@ type
     actClearLoanDate1: TAction;
     actClearLoanDate2: TAction;
     actClearMember: TAction;
+    actCSVLoadLoan: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
     actFileEXit: TFileExit;
@@ -78,6 +79,8 @@ type
     MenuItem1: TMenuItem;
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
+    MenuItem12: TMenuItem;
+    MenuItem13: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
@@ -113,6 +116,7 @@ type
     procedure actClearORNoExecute(Sender: TObject);
     procedure ActClearPayeeExecute(Sender: TObject);
     procedure actClearServiceExecute(Sender: TObject);
+    procedure actCSVLoadLoanExecute(Sender: TObject);
     procedure actCSVLoadPaymentExecute(Sender: TObject);
     procedure actDeleteLoanExecute(Sender: TObject);
     procedure actDeleteMemberExecute(Sender: TObject);
@@ -184,7 +188,7 @@ uses
   , PaymentEditForm
   , ResourceDM
   , PaymentCSVLoad
-  , ObjectUtils, PeriodSelectForm
+  , ObjectUtils, PeriodSelectForm, LoanCSVLoad
   ;
 
 const
@@ -429,6 +433,18 @@ procedure TfrmMain.actClearServiceExecute(Sender: TObject);
 begin
   cmbPaymentsFilterService.SetFocus;
   cmbPaymentsFilterService.ItemIndex := -1;
+end;
+
+procedure TfrmMain.actCSVLoadLoanExecute(Sender: TObject);
+begin
+with TOpenDialog.Create(Self) do
+  try
+    Filter:= 'CSV|*.CSV';
+    if Execute then
+      ShowLoanCSVLoad(FileName);
+  finally
+    Free;
+  end;
 end;
 
 procedure TfrmMain.actCSVLoadPaymentExecute(Sender: TObject);

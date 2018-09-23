@@ -19,20 +19,18 @@ type
     btnSave: TButton;
     btnCancel: TButton;
     DataSource1: TDataSource;
-    edtDate: TDateEdit;
     DBGrid1: TDBGrid;
-    edtORNumber: TEdit;
-    Label1: TLabel;
-    Label2: TLabel;
     SdfDataSet1: TSdfDataSet;
     procedure actSaveExecute(Sender: TObject);
     procedure actSaveUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
+    required_ : TStringList;
+    missing_ : TStringList;
     skip_ : TStringList;
     invalidEmpnos_: TStringList;
-    L: TPaymentList;
+    L: TLoanList;
     procedure BuildList( const ANumber: string; const ADate: TDateTime );
     procedure SaveToDB;
     function isValidORNumber( AORNumber : string ): Boolean;
@@ -43,12 +41,15 @@ type
 const
   cInvalidEmpno = 'Operation Aborted.'#13#10#13#10'The following Employee Numbers are invalid:'+
     #13#10'(Copied to Clipboard)'#13#10#13#10;
-  cInvalidColumns = 'Verification required.'#13#10#13#10+
-        'The following columns which are not defined'#13#10+
-        'in the Services table will not be saved:'#13#10#13#10;
+
+  cMissingColumns = 'Verification required.'#13#10#13#10+
+    'The following required columns cannot be found:'#13#10#13#10;
+
+  cCannotContinue = 'Operation cannot continue.';
+
   cSaveAborted = 'Operation aborted.'#13#10'OR Number %s has already been used.';
 
-procedure ShowPaymentCSVLoad( AFileName: string );
+procedure ShowLoanCSVLoad( AFileName: string );
 
 
 implementation
@@ -58,7 +59,7 @@ uses
   ,ledgermanager, Clipbrd
   ;
 
-procedure ShowPaymentCSVLoad(AFileName: string);
+procedure ShowLoanCSVLoad(AFileName: string);
 var
   s_ : TStringList;
   sInvalidColumns: string;
@@ -71,7 +72,9 @@ begin
 
   with TfrmLoanCSVLoad.Create(Application) do
   try
-    skip_.AddStrings(['EMPNO','NAME','TOTAL']);
+    skip_.AddStrings(['EMPNO','NAME']);
+    required_.AddStrings(['EMPNO','NAME','PRINCIPAL','INTEREST','TOTAL',
+       'DATE','TERMS','FROM','TO','AMORTIZATION','BALANCE']);
 
     SdfDataSet1.FileName:= AFileName;
     SdfDataSet1.FirstLineAsSchema:= True;
@@ -81,28 +84,27 @@ begin
     for i := 0 to DBGrid1.Columns.Count-1 do
       DBGrid1.Columns[i].Width := 100;
 
-    //verify that CSV columns exist in Services.CSVUploadNames
-    For i := 0 to SdfDataSet1.Schema.Count-1 do
-      if ( skip_.IndexOf(SdfDataSet1.Schema[i]) = -1 ) and ( s_.IndexOf(SdfDataSet1.Schema[i]) = -1 ) then
-        sInvalidColumns:= sInvalidColumns + SdfDataSet1.Schema[i] + #13#10;
+    //Verify that CSV columns are as expected
+    for i := 0 to required_.Count-1 do
+      if (SdfDataSet1.Schema.IndexOf(required_[i]) = -1) then
+        missing_.Add(required_[i]);
 
-    if sInvalidColumns<> '' then
-      ShowMessage( cInvalidColumns + sInvalidColumns);
-    if sInvalidColumns <> '' then
+    if missing_.Count > 0 then
+    begin
+      ShowMessage( cMissingColumns + missing_.Text +#13#10+ cCannotContinue );
       btnSave.Tag:= 9;  // 9 = will not enable
+    end;
 
-    if ShowModal=mrOk then
-      begin
-        //validate ORNumber is not yet used
-        if isValidORNumber( edtORNumber.Text ) then
-        begin
-          BuildList(edtORNumber.Text, edtDate.Date);
-          if invalidEmpnos_.Count = 0 then
-            SaveToDB;
-        end // isValidOR
-        else
-          ShowMessage(Format(cSaveAborted,[edtORNumber.Text]));
-      end;   // showmodal
+    showmodal;
+    //if ShowModal=mrOk then
+    //  begin
+    //      BuildList(edtORNumber.Text, edtDate.Date);
+    //      if invalidEmpnos_.Count = 0 then
+    //        SaveToDB;
+    //    end // isValidOR
+    //    else
+    //      ShowMessage(Format(cSaveAborted,[edtORNumber.Text]));
+    //  end;   // showmodal
   finally
     Free;
   end;
@@ -110,16 +112,18 @@ begin
   s_.Free;
 end;
 
+
 {$R *.lfm}
 
 { TfrmLoanCSVLoad }
 
 procedure TfrmLoanCSVLoad.FormCreate(Sender: TObject);
 begin
+  required_      := TStringList.Create;
+  missing_       := TStringList.Create;
   skip_          := TStringList.Create;
   invalidEmpnos_ := TStringList.Create;
-  L              := TPaymentList.Create;
-  edtDate.Date:= Date;
+  L              := TLoanList.Create;
 end;
 
 procedure TfrmLoanCSVLoad.actSaveExecute(Sender: TObject);
@@ -129,13 +133,13 @@ end;
 
 procedure TfrmLoanCSVLoad.actSaveUpdate(Sender: TObject);
 begin
-  actSave.Enabled:= (btnSave.Tag <> 9) and (edtORNumber.Text <> '')
-    and (edtDate.Text <> '');
+  actSave.Enabled:= (btnSave.Tag <> 9);
 end;
 
 
 procedure TfrmLoanCSVLoad.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(required_);
   FreeAndNil(skip_);
   FreeAndNil(invalidEmpnos_);
   FreeAndNil(L);
@@ -144,7 +148,7 @@ end;
 procedure TfrmLoanCSVLoad.BuildList(const ANumber: string;
   const ADate: TDateTime);
 var
-  P: TPayment;
+  O: TLoan;
   i: Integer;
   fldn: string;
   P_OID, S_OID: string;
@@ -159,8 +163,7 @@ begin
     while not SdfDataSet1.EOF do
     begin
       EmpNo:= '';
-      //todo: prevalidate: cannot continue without an EMPNO column
-
+      //todo: continue here
       for i := 0 to SdfDataSet1.FieldCount -1 do
       begin
         fldn := UpperCase( SdfDataSet1.Schema[i] );
@@ -188,13 +191,13 @@ begin
           P_OID:= gLedgerManager.PersonsLookup.Items[0].OID.AsString;
         end;
 
-        P := TPayment.Create;  //dont forget the OID on save
-        P.DocDate              := ADate;
-        P.DocNumber            := ANumber;
-        P.Amount               := Amount;
-        P.Service.OID.AsString := S_OID;
-        P.Person.OID.AsString  := P_OID;
-        L.Add( P );
+        O := TLoan.Create;  //dont forget the OID on save
+        O.DocDate              := ADate;
+        O.DocNumber            := ANumber;
+        O.Amount               := Amount;
+        O.Service.OID.AsString := S_OID;
+        O.Person.OID.AsString  := P_OID;
+        L.Add( O );
       end;  //for
 
       SdfDataSet1.Next;
