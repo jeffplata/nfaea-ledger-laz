@@ -2,32 +2,33 @@ object frmMain: TfrmMain
   Left = 324
   Height = 390
   Top = 167
-  Width = 746
+  Width = 779
   Caption = 'NFAEA Ledger'
   ClientHeight = 370
-  ClientWidth = 746
+  ClientWidth = 779
   Menu = MainMenu1
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   Position = poScreenCenter
   LCLVersion = '1.8.2.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 347
     Top = 0
-    Width = 746
-    ActivePage = tabPersons
+    Width = 779
+    ActivePage = tabLoans
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
       ClientHeight = 321
-      ClientWidth = 738
+      ClientWidth = 771
       object sgdPersons: TStringGrid
         Left = 0
         Height = 281
         Top = 40
-        Width = 738
+        Width = 771
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 0
@@ -103,12 +104,12 @@ object frmMain: TfrmMain
     object tabServices: TTabSheet
       Caption = 'Services'
       ClientHeight = 321
-      ClientWidth = 738
+      ClientWidth = 771
       object sgdServices: TStringGrid
         Left = 0
         Height = 281
         Top = 40
-        Width = 738
+        Width = 771
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 0
@@ -151,13 +152,13 @@ object frmMain: TfrmMain
     end
     object tabLoans: TTabSheet
       Caption = 'Loans'
-      ClientHeight = 319
-      ClientWidth = 738
+      ClientHeight = 321
+      ClientWidth = 771
       object sgdLoans: TStringGrid
         Left = 0
-        Height = 231
-        Top = 88
-        Width = 738
+        Height = 257
+        Top = 64
+        Width = 771
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 0
@@ -170,7 +171,7 @@ object frmMain: TfrmMain
       end
       object edtLoanMember: TLabeledEdit
         Left = 304
-        Height = 23
+        Height = 21
         Top = 8
         Width = 144
         EditLabel.AnchorSideTop.Control = edtLoanMember
@@ -178,10 +179,10 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtLoanMember
         EditLabel.AnchorSideBottom.Control = edtLoanMember
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 256
-        EditLabel.Height = 15
+        EditLabel.Left = 263
+        EditLabel.Height = 13
         EditLabel.Top = 12
-        EditLabel.Width = 45
+        EditLabel.Width = 38
         EditLabel.Caption = 'Member'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -195,10 +196,9 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 448
         Height = 22
-        Top = 8
+        Top = 7
         Width = 23
         Action = actClearLoanMember
-        OnClick = spbClearLoanFilterClick
       end
       object btnAddLoan: TButton
         Left = 8
@@ -231,12 +231,10 @@ object frmMain: TfrmMain
         TabOrder = 6
       end
       object dteLoans1: TDateEdit
-        AnchorSideLeft.Control = edtLoanMember
-        AnchorSideTop.Control = edtLoanMember
         AnchorSideTop.Side = asrBottom
-        Left = 304
-        Height = 23
-        Top = 34
+        Left = 512
+        Height = 21
+        Top = 9
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -251,9 +249,9 @@ object frmMain: TfrmMain
         AnchorSideLeft.Control = dteLoans1
         AnchorSideTop.Control = dteLoans1
         AnchorSideTop.Side = asrBottom
-        Left = 304
-        Height = 23
-        Top = 60
+        Left = 512
+        Height = 21
+        Top = 33
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -269,9 +267,9 @@ object frmMain: TfrmMain
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = dteLoans1
         AnchorSideTop.Side = asrCenter
-        Left = 448
+        Left = 656
         Height = 22
-        Top = 34
+        Top = 8
         Width = 23
         Action = actClearLoanDate1
       end
@@ -280,33 +278,34 @@ object frmMain: TfrmMain
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = dteLoans2
         AnchorSideTop.Side = asrCenter
-        Left = 448
+        Left = 656
         Height = 22
-        Top = 60
+        Top = 32
         Width = 23
         Action = actClearLoanDate2
       end
       object btnApplyLoanFilter: TButton
-        AnchorSideLeft.Control = spbClearLoanFilter
+        AnchorSideLeft.Control = spbClearLoanDate1
         AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = spbClearLoanFilter
+        AnchorSideTop.Control = spbClearLoanDate1
         AnchorSideTop.Side = asrCenter
-        Left = 479
+        Left = 687
         Height = 22
         Top = 8
         Width = 67
-        Action = actFilterLoans
         BorderSpacing.Left = 8
+        Caption = 'Apply Filter'
+        OnClick = btnApplyLoanFilterClick
         TabOrder = 3
       end
       object Label2: TLabel
         AnchorSideTop.Control = dteLoans1
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dteLoans1
-        Left = 272
-        Height = 15
-        Top = 38
-        Width = 28
+        Left = 484
+        Height = 13
+        Top = 13
+        Width = 24
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -317,21 +316,59 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLoans2
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dteLoans2
-        Left = 286
-        Height = 15
-        Top = 64
-        Width = 14
+        Left = 496
+        Height = 13
+        Top = 37
+        Width = 12
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
         Caption = 'To'
         ParentColor = False
       end
+      object cmbLoanLoanTypes: TComboBox
+        AnchorSideLeft.Control = edtLoanMember
+        AnchorSideTop.Control = edtLoanMember
+        AnchorSideTop.Side = asrBottom
+        Left = 304
+        Height = 21
+        Top = 32
+        Width = 144
+        BorderSpacing.Top = 3
+        ItemHeight = 13
+        Style = csDropDownList
+        TabOrder = 8
+      end
+      object Label4: TLabel
+        AnchorSideTop.Control = cmbLoanLoanTypes
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cmbLoanLoanTypes
+        Left = 250
+        Height = 13
+        Top = 36
+        Width = 50
+        Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 4
+        Caption = 'Loan Type'
+        ParentColor = False
+      end
+      object spbClearLoanType: TSpeedButton
+        AnchorSideLeft.Control = cmbLoanLoanTypes
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = cmbLoanLoanTypes
+        AnchorSideTop.Side = asrCenter
+        Left = 448
+        Height = 22
+        Top = 31
+        Width = 23
+        Action = actClearLoanType
+      end
     end
     object tabPayments: TTabSheet
       Caption = 'Payments'
       ClientHeight = 321
-      ClientWidth = 738
+      ClientWidth = 771
       object edtFilterPayments: TLabeledEdit
         Left = 304
         Height = 21
@@ -397,7 +434,7 @@ object frmMain: TfrmMain
         Left = 0
         Height = 233
         Top = 88
-        Width = 738
+        Width = 771
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 0
@@ -482,11 +519,11 @@ object frmMain: TfrmMain
         Action = actClearService
       end
       object btnApplyPaymentFilter: TButton
-        AnchorSideLeft.Control = spbClearPaymentsFilter
+        AnchorSideLeft.Control = spbClearPMTDate1
         AnchorSideLeft.Side = asrBottom
-        AnchorSideTop.Control = spbClearPaymentsFilter
+        AnchorSideTop.Control = spbClearPMTDate1
         AnchorSideTop.Side = asrCenter
-        Left = 479
+        Left = 679
         Height = 22
         Top = 7
         Width = 67
@@ -494,13 +531,273 @@ object frmMain: TfrmMain
         BorderSpacing.Left = 8
         TabOrder = 7
       end
+      object Label5: TLabel
+        AnchorSideTop.Control = dtePaymentDate1
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = dtePaymentDate1
+        Left = 476
+        Height = 13
+        Top = 12
+        Width = 24
+        Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 4
+        Caption = 'From'
+        ParentColor = False
+      end
+      object Label6: TLabel
+        AnchorSideTop.Control = dtePaymentDate2
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = dtePaymentDate2
+        Left = 488
+        Height = 13
+        Top = 36
+        Width = 12
+        Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 4
+        Caption = 'To'
+        ParentColor = False
+      end
+      object dtePaymentDate1: TDateEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 504
+        Height = 21
+        Top = 8
+        Width = 144
+        CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+        DateOrder = doNone
+        ButtonWidth = 23
+        BorderSpacing.Top = 3
+        NumGlyphs = 1
+        MaxLength = 0
+        OnButtonClick = dtePaymentDate1ButtonClick
+        TabOrder = 8
+      end
+      object dtePaymentDate2: TDateEdit
+        AnchorSideLeft.Control = dtePaymentDate1
+        AnchorSideTop.Control = dtePaymentDate1
+        AnchorSideTop.Side = asrBottom
+        Left = 504
+        Height = 21
+        Top = 32
+        Width = 144
+        CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+        DateOrder = doNone
+        ButtonWidth = 23
+        BorderSpacing.Top = 3
+        NumGlyphs = 1
+        MaxLength = 0
+        OnButtonClick = dtePaymentDate1ButtonClick
+        TabOrder = 9
+      end
+      object spbClearPMTDate1: TSpeedButton
+        AnchorSideLeft.Control = dtePaymentDate1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = dtePaymentDate1
+        AnchorSideTop.Side = asrCenter
+        Left = 648
+        Height = 22
+        Top = 7
+        Width = 23
+        Action = actClearPaymentDate1
+      end
+      object spbClearPMTDate2: TSpeedButton
+        AnchorSideLeft.Control = dtePaymentDate2
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = dtePaymentDate2
+        AnchorSideTop.Side = asrCenter
+        Left = 648
+        Height = 22
+        Top = 31
+        Width = 23
+        Action = actClearPaymentDate2
+      end
+    end
+    object tabLedger: TTabSheet
+      Caption = 'Ledger'
+      ClientHeight = 321
+      ClientWidth = 771
+      object cmbLedgerService: TComboBox
+        AnchorSideLeft.Control = edtLedgerName
+        AnchorSideTop.Control = edtLedgerName
+        AnchorSideTop.Side = asrBottom
+        Left = 80
+        Height = 21
+        Top = 33
+        Width = 152
+        BorderSpacing.Top = 3
+        ItemHeight = 13
+        Style = csDropDownList
+        TabOrder = 0
+      end
+      object edtLedgerName: TEdit
+        Left = 80
+        Height = 21
+        Top = 9
+        Width = 152
+        ReadOnly = True
+        TabOrder = 1
+      end
+      object btnAddPayment1: TButton
+        AnchorSideLeft.Control = edtLedgerName
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = edtLedgerName
+        AnchorSideTop.Side = asrCenter
+        Left = 232
+        Height = 22
+        Top = 8
+        Width = 48
+        Action = actSelectMember
+        TabOrder = 2
+      end
+      object Label7: TLabel
+        AnchorSideTop.Control = dteLedgerDate1
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = dteLedgerDate1
+        Left = 292
+        Height = 13
+        Top = 13
+        Width = 24
+        Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 4
+        Caption = 'From'
+        ParentColor = False
+      end
+      object Label8: TLabel
+        AnchorSideTop.Control = dteLedgerDate2
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = dteLedgerDate2
+        Left = 304
+        Height = 13
+        Top = 37
+        Width = 12
+        Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 4
+        Caption = 'To'
+        ParentColor = False
+      end
+      object dteLedgerDate1: TDateEdit
+        AnchorSideTop.Side = asrBottom
+        Left = 320
+        Height = 21
+        Top = 9
+        Width = 144
+        CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+        DateOrder = doNone
+        ButtonWidth = 23
+        BorderSpacing.Top = 3
+        NumGlyphs = 1
+        MaxLength = 0
+        OnButtonClick = dteLedgerDate1ButtonClick
+        TabOrder = 3
+      end
+      object dteLedgerDate2: TDateEdit
+        AnchorSideLeft.Control = dteLedgerDate1
+        AnchorSideTop.Control = dteLedgerDate1
+        AnchorSideTop.Side = asrBottom
+        Left = 320
+        Height = 21
+        Top = 33
+        Width = 144
+        CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
+        DateOrder = doNone
+        ButtonWidth = 23
+        BorderSpacing.Top = 3
+        NumGlyphs = 1
+        MaxLength = 0
+        OnButtonClick = dteLedgerDate1ButtonClick
+        TabOrder = 4
+      end
+      object spbClearLedgerDate1: TSpeedButton
+        AnchorSideLeft.Control = dteLedgerDate1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = dteLedgerDate1
+        AnchorSideTop.Side = asrCenter
+        Left = 464
+        Height = 22
+        Top = 8
+        Width = 23
+        Action = actClearLedgerDate1
+      end
+      object spbClearLedgerDate2: TSpeedButton
+        AnchorSideLeft.Control = dteLedgerDate2
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = dteLedgerDate2
+        AnchorSideTop.Side = asrCenter
+        Left = 464
+        Height = 22
+        Top = 32
+        Width = 23
+        Action = actClearLedgerDate2
+      end
+      object btnApplyPaymentFilter1: TButton
+        AnchorSideLeft.Control = spbClearLedgerDate1
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = spbClearLedgerDate1
+        AnchorSideTop.Side = asrCenter
+        Left = 495
+        Height = 22
+        Top = 8
+        Width = 75
+        BorderSpacing.Left = 8
+        Caption = 'Show Ledger'
+        TabOrder = 5
+      end
+      object sgdLedger: TStringGrid
+        Left = 0
+        Height = 257
+        Top = 64
+        Width = 771
+        Align = alBottom
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ColCount = 0
+        FixedCols = 0
+        FixedRows = 0
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goThumbTracking, goSmoothScroll]
+        RowCount = 0
+        TabOrder = 6
+        OnDblClick = sgdLoansDblClick
+      end
+      object Label9: TLabel
+        AnchorSideLeft.Control = edtLedgerName
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = edtLedgerName
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = edtLedgerName
+        Left = 9
+        Height = 13
+        Top = 13
+        Width = 68
+        Alignment = taRightJustify
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 3
+        Caption = 'Member Name'
+        ParentColor = False
+      end
+      object Label10: TLabel
+        AnchorSideTop.Control = cmbLedgerService
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cmbLedgerService
+        Left = 8
+        Height = 13
+        Top = 37
+        Width = 69
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 3
+        Caption = 'Service'
+        ParentColor = False
+      end
     end
   end
   object StatusBar1: TStatusBar
     Left = 0
     Height = 23
     Top = 347
-    Width = 746
+    Width = 779
     Panels = <>
   end
   object MainMenu1: TMainMenu
@@ -654,6 +951,25 @@ object frmMain: TfrmMain
     object actCSVLoadLoan: TAction
       Caption = 'Load from CSV'
       OnExecute = actCSVLoadLoanExecute
+    end
+    object actClearLoanType: TAction
+      OnExecute = actClearLoanTypeExecute
+    end
+    object actClearPaymentDate1: TAction
+      OnExecute = actClearPaymentDate1Execute
+    end
+    object actClearPaymentDate2: TAction
+      OnExecute = actClearPaymentDate2Execute
+    end
+    object actClearLedgerDate1: TAction
+      OnExecute = actClearLedgerDate1Execute
+    end
+    object actClearLedgerDate2: TAction
+      OnExecute = actClearLedgerDate2Execute
+    end
+    object actSelectMember: TAction
+      Caption = 'Select'
+      OnExecute = actSelectMemberExecute
     end
   end
 end

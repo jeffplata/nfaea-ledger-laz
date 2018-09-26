@@ -305,14 +305,17 @@ type
   TPersonLedgerItem = class(TtiObject)
   private
     FCharges: Currency;
+    FParticulars: string;
     FPayments: Currency;
-    FPerson: TPerson;
+    FPerson: TPersonBasic;
     FReference: String;
     FService: TService;
     FTransDate: TDate;
     procedure SetCharges(AValue: Currency);
+    procedure SetParticulars(AValue: string);
     procedure SetPayments(AValue: Currency);
     procedure SetPerson(AValue: TPerson);
+    procedure SetPerson(AValue: TPersonBasic);
     procedure SetReference(AValue: String);
     procedure SetService(AValue: TService);
     procedure SetTransDate(AValue: TDate);
@@ -321,11 +324,14 @@ type
     procedure SetOwner(const Value: TPersonLedger); reintroduce;
   public
     property  Owner: TPersonLedger read GetOwner write SetOwner;
+    constructor create; override;
+    destructor destroy; override;
   published
-    property Person: TPerson read FPerson write SetPerson;
-    property TransDate: TDate read FTransDate write SetTransDate;
+    property Person: TPersonBasic read FPerson write SetPerson;
     property Service: TService read FService write SetService;
+    property TransDate: TDate read FTransDate write SetTransDate;
     property Reference: String read FReference write SetReference;
+    property Particulars: string read FParticulars write SetParticulars;
     property Charges: Currency read FCharges write SetCharges;
     property Payments: Currency read FPayments write SetPayments;
   end;
@@ -348,6 +354,7 @@ type
     FAdjustmentList: TLoanAdjustmentList;
     FAdjustments: Currency;
     FAmortization: Currency;
+    FBalance: Currency;
     FDocDate: TDate;
     FDocNumber: string;
     FInterest: Currency;
@@ -369,6 +376,7 @@ type
     function GetServiceID: string;
     procedure SetAdjustments(AValue: Currency);
     procedure SetAmortization(AValue: Currency);
+    procedure SetBalance(AValue: Currency);
     procedure SetDocDate(AValue: TDate);
     procedure SetDocNumber(AValue: string);
     procedure SetInterest(AValue: Currency);
@@ -420,6 +428,7 @@ type
     Property Amortization: Currency read FAmortization write SetAmortization;
     Property PaymentStart: Tdate read FPaymentStart write SetPaymentStart;
     Property PaymentEnd: Tdate read FPaymentEnd write SetPaymentEnd;
+    property Balance: Currency read FBalance write SetBalance;
     property AdjustmentList: TLoanAdjustmentList read FAdjustmentList; // write SetAdjustmentList;
   end;
 
@@ -798,6 +807,12 @@ begin
   FAmortization:=AValue;
 end;
 
+procedure TLoan.SetBalance(AValue: Currency);
+begin
+  if FBalance=AValue then Exit;
+  FBalance:=AValue;
+end;
+
 function TLoan.GetPersonID: string;
 begin
   result := Person.OID.AsString;
@@ -1071,6 +1086,12 @@ begin
   FCharges:=AValue;
 end;
 
+procedure TPersonLedgerItem.SetParticulars(AValue: string);
+begin
+  if FParticulars=AValue then Exit;
+  FParticulars:=AValue;
+end;
+
 procedure TPersonLedgerItem.SetPayments(AValue: Currency);
 begin
   if FPayments=AValue then Exit;
@@ -1078,6 +1099,12 @@ begin
 end;
 
 procedure TPersonLedgerItem.SetPerson(AValue: TPerson);
+begin
+  if FPerson=AValue then Exit;
+  FPerson:=AValue;
+end;
+
+procedure TPersonLedgerItem.SetPerson(AValue: TPersonBasic);
 begin
   if FPerson=AValue then Exit;
   FPerson:=AValue;
@@ -1109,6 +1136,22 @@ end;
 procedure TPersonLedgerItem.SetOwner(const Value: TPersonLedger);
 begin
   inherited SetOwner(Value);
+end;
+
+constructor TPersonLedgerItem.create;
+begin
+  inherited create;
+  FPerson := TPersonBasic.Create;
+  FService := TService.Create;
+end;
+
+destructor TPersonLedgerItem.destroy;
+begin
+  FService := nil;
+  FService.Free;
+  FPerson := nil;
+  FPerson.free;
+  inherited destroy;
 end;
 
 { TServiceList }

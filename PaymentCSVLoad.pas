@@ -30,6 +30,8 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
+    required_ : TStringList;
+    missing_ : TStringList;
     skip_ : TStringList;
     invalidEmpnos_: TStringList;
     L: TPaymentList;
@@ -43,9 +45,16 @@ type
 const
   cInvalidEmpno = 'Operation Aborted.'#13#10#13#10'The following Employee Numbers are invalid:'+
     #13#10'(Copied to Clipboard)'#13#10#13#10;
+
+  cMissingColumns = 'Verification required.'#13#10#13#10+
+    'The following required columns cannot be found:'#13#10#13#10;
+
+  cCannotContinue = 'Operation cannot continue.';
+
   cInvalidColumns = 'Verification required.'#13#10#13#10+
         'The following columns which are not defined'#13#10+
         'in the Services table will not be saved:'#13#10#13#10;
+
   cSaveAborted = 'Operation aborted.'#13#10'OR Number %s has already been used.';
 
 procedure ShowPaymentCSVLoad( AFileName: string );
@@ -72,6 +81,7 @@ begin
   with TfrmPaymentCSVLoad.Create(Application) do
   try
     skip_.AddStrings(['EMPNO','NAME','TOTAL']);
+    required_.AddStrings(['EMPNO']);
 
     SdfDataSet1.FileName:= AFileName;
     SdfDataSet1.FirstLineAsSchema:= True;
@@ -81,15 +91,34 @@ begin
     for i := 0 to DBGrid1.Columns.Count-1 do
       DBGrid1.Columns[i].Width := 100;
 
-    //verify that CSV columns exist in Services.CSVUploadNames
-    For i := 0 to SdfDataSet1.Schema.Count-1 do
-      if ( skip_.IndexOf(SdfDataSet1.Schema[i]) = -1 ) and ( s_.IndexOf(SdfDataSet1.Schema[i]) = -1 ) then
-        sInvalidColumns:= sInvalidColumns + SdfDataSet1.Schema[i] + #13#10;
+    //Verify presence of EMPNO column
+    for i := 0 to required_.Count-1 do
+      if (SdfDataSet1.Schema.IndexOf(required_[i]) = -1) then
+        missing_.Add(required_[i]);
 
-    if sInvalidColumns<> '' then
-      ShowMessage( cInvalidColumns + sInvalidColumns);
-    if sInvalidColumns <> '' then
+    if missing_.Count > 0 then
+    begin
+      ShowMessage( cMissingColumns + missing_.Text +#13#10+ cCannotContinue );
       btnSave.Tag:= 9;  // 9 = will not enable
+    end
+    else
+    begin
+      //verify that CSV columns exist in Services.CSVUploadNames
+      For i := 0 to SdfDataSet1.Schema.Count-1 do
+        if ( skip_.IndexOf(SdfDataSet1.Schema[i]) = -1 ) and ( s_.IndexOf(SdfDataSet1.Schema[i]) = -1 ) then
+          sInvalidColumns:= sInvalidColumns + SdfDataSet1.Schema[i] + #13#10;
+      if sInvalidColumns<> '' then
+      begin
+        ShowMessage( cInvalidColumns + sInvalidColumns);
+        btnSave.Tag:= 9;  // 9 = will not enable
+      end;
+    end;
+
+    if btnSave.Tag = 9 then
+    begin
+      edtORNumber.Enabled:= False;
+      edtDate.Enabled:= False;
+    end;
 
     if ShowModal=mrOk then
       begin
@@ -116,6 +145,8 @@ end;
 
 procedure TfrmPaymentCSVLoad.FormCreate(Sender: TObject);
 begin
+  required_      := TStringList.Create;
+  missing_       := TStringList.Create;
   skip_          := TStringList.Create;
   invalidEmpnos_ := TStringList.Create;
   L              := TPaymentList.Create;
@@ -136,6 +167,8 @@ end;
 
 procedure TfrmPaymentCSVLoad.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(missing_);
+  FreeAndNil(required_);
   FreeAndNil(skip_);
   FreeAndNil(invalidEmpnos_);
   FreeAndNil(L);
@@ -183,7 +216,7 @@ begin
           if gLedgerManager.PersonsLookup.Count = 0 then
           begin
             invalidEmpnos_.Add(EmpNo);
-            Break;    //<==
+            Break;    //<== break for loop
           end;
           P_OID:= gLedgerManager.PersonsLookup.Items[0].OID.AsString;
         end;

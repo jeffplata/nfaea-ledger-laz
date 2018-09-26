@@ -154,7 +154,7 @@ const
   SQLCreateLoan =
       'INSERT INTO LOAN (OID, PERSON_OID, SERVICE_OID, DOCNUMBER, DOCDATE, NOTES, PRINCIPAL,'+
       '    INTEREST, TOTAL, PREVIOUSBALANCE, REBATES, ADJUSTMENTS, NETPROCEEDS, INTERESTRATE,'+
-      '    REBATERATE, TERMS, AMORTIZATION, PAYMENTSTART, PAYMENTEND)'+
+      '    REBATERATE, TERMS, AMORTIZATION, PAYMENTSTART, PAYMENTEND, BALANCE)'+
       'VALUES ('+
       '    :OID, '+
       '    :PERSON_OID, '+
@@ -174,7 +174,8 @@ const
       '    :TERMS, '+
       '    :AMORTIZATION, '+
       '    :PAYMENTSTART, '+
-      '    :PAYMENTEND'+
+      '    :PAYMENTEND, '+
+      '    :BALANCE'+
       ');'
       ;
 
@@ -263,6 +264,9 @@ const
       ;
 
   SQLDeleteLoanAdjustment = 'delete from LOANADJUSTMENT where OID=:OID';
+
+  SQLReadLedger =
+    'select DOCDATE, DOCNUMBER, AMOUNT from LOAN';
 
 { TSaveLoanAdjustmentVisitor }
 
@@ -465,6 +469,11 @@ procedure TSaveLoanVisitor.SetupParams;
       Query.ParamAsFloat['AMORTIZATION']    := O.Amortization;
       Query.ParamAsDateTime['PAYMENTSTART'] := O.PaymentStart;
       Query.ParamAsDateTime['PAYMENTEND']   := O.PaymentEnd;
+      //if O.Balance = 0 then
+      //  Query.ParamAsString['BALANCE']      := NullStr
+      //else
+      if O.Balance <> 0 then
+        Query.ParamAsFloat['BALANCE']       := O.Balance;
     end;
   end;
 

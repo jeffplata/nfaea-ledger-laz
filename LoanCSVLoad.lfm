@@ -12,8 +12,8 @@ object frmLoanCSVLoad: TfrmLoanCSVLoad
   LCLVersion = '1.8.2.0'
   object DBGrid1: TDBGrid
     Left = 8
-    Height = 344
-    Top = 8
+    Height = 304
+    Top = 48
     Width = 592
     Anchors = [akTop, akLeft, akRight, akBottom]
     Color = clWindow
@@ -40,6 +40,28 @@ object frmLoanCSVLoad: TfrmLoanCSVLoad
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 2
+  end
+  object Label1: TLabel
+    AnchorSideTop.Control = cmbService
+    AnchorSideRight.Control = cmbService
+    Left = 8
+    Height = 13
+    Top = 16
+    Width = 91
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Right = 5
+    Caption = 'Select Loan type:'
+    ParentColor = False
+  end
+  object cmbService: TComboBox
+    Left = 104
+    Height = 21
+    Top = 16
+    Width = 164
+    ItemHeight = 13
+    Style = csDropDownList
+    TabOrder = 3
   end
   object SdfDataSet1: TSdfDataSet
     FileMustExist = True

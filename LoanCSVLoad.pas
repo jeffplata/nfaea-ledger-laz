@@ -18,8 +18,10 @@ type
     ActionList1: TActionList;
     btnSave: TButton;
     btnCancel: TButton;
+    cmbService: TComboBox;
     DataSource1: TDataSource;
     DBGrid1: TDBGrid;
+    Label1: TLabel;
     SdfDataSet1: TSdfDataSet;
     procedure actSaveExecute(Sender: TObject);
     procedure actSaveUpdate(Sender: TObject);
@@ -31,9 +33,8 @@ type
     skip_ : TStringList;
     invalidEmpnos_: TStringList;
     L: TLoanList;
-    procedure BuildList( const ANumber: string; const ADate: TDateTime );
+    procedure BuildList( AServiceOID: string );
     procedure SaveToDB;
-    function isValidORNumber( AORNumber : string ): Boolean;
   public
 
   end;
@@ -61,14 +62,9 @@ uses
 
 procedure ShowLoanCSVLoad(AFileName: string);
 var
-  s_ : TStringList;
-  sInvalidColumns: string;
   i: Integer;
+  ServiceID: string;
 begin
-
-  s_ := TStringList.Create;
-  for i := 0 to gLedgerManager.Services.Count -1 do
-    s_.Add(UpperCase(gLedgerManager.Services.Items[i].CSVUploadName ) );
 
   with TfrmLoanCSVLoad.Create(Application) do
   try
@@ -95,21 +91,17 @@ begin
       btnSave.Tag:= 9;  // 9 = will not enable
     end;
 
-    showmodal;
-    //if ShowModal=mrOk then
-    //  begin
-    //      BuildList(edtORNumber.Text, edtDate.Date);
-    //      if invalidEmpnos_.Count = 0 then
-    //        SaveToDB;
-    //    end // isValidOR
-    //    else
-    //      ShowMessage(Format(cSaveAborted,[edtORNumber.Text]));
-    //  end;   // showmodal
+    if ShowModal=mrOk then
+    begin
+      ServiceID:= gLedgerManager.Services.FindByProps(['NAME'],[cmbService.Text]).OID.AsString;
+      BuildList( ServiceID );
+      if invalidEmpnos_.Count = 0 then
+        SaveToDB;
+    end;
   finally
     Free;
   end;
 
-  s_.Free;
 end;
 
 
@@ -118,12 +110,19 @@ end;
 { TfrmLoanCSVLoad }
 
 procedure TfrmLoanCSVLoad.FormCreate(Sender: TObject);
+var
+  i: Integer;
 begin
   required_      := TStringList.Create;
   missing_       := TStringList.Create;
   skip_          := TStringList.Create;
   invalidEmpnos_ := TStringList.Create;
   L              := TLoanList.Create;
+
+  for i := 0 to gLedgerManager.Services.Count -1 do
+    if gLedgerManager.Services.Items[i].ServiceType = 'LOAN' then
+      cmbService.Items.Add(gLedgerManager.Services.Items[i].Name);
+  cmbService.ItemIndex:= 0;
 end;
 
 procedure TfrmLoanCSVLoad.actSaveExecute(Sender: TObject);
@@ -145,66 +144,61 @@ begin
   FreeAndNil(L);
 end;
 
-procedure TfrmLoanCSVLoad.BuildList(const ANumber: string;
-  const ADate: TDateTime);
+procedure TfrmLoanCSVLoad.BuildList(AServiceOID: string);
 var
   O: TLoan;
-  i: Integer;
-  fldn: string;
-  P_OID, S_OID: string;
+  P_OID : string;
   EmpNo: string;
-  s: string;
-  Amount: Currency;
+  PersonsLookup: TPersonsLookUp;
 begin
   // iterate
+  PersonsLookup := TPersonsLookUp.Create;
+
   DBGrid1.BeginUpdate;
   try
     SdfDataSet1.First;
     while not SdfDataSet1.EOF do
     begin
       EmpNo:= '';
-      //todo: continue here
-      for i := 0 to SdfDataSet1.FieldCount -1 do
+
+      if Empno = '' then
       begin
-        fldn := UpperCase( SdfDataSet1.Schema[i] );
-        if skip_.IndexOf( fldn ) > -1 then Continue; //<==
-        s := StringReplace( SdfDataSet1.FieldByName( fldn ).AsString, ',', '', [rfReplaceAll]);
-        if s = '' then s := '0';
-        Amount:= StrToCurr(s);
-        if Amount = 0 then Continue; //<==
-
-        S_OID := gLedgerManager.Services.FindByProps(['CSVUploadName'],[fldn]).OID.AsString;
-
-        if Empno = '' then
+        EmpNo := SdfDataSet1.FieldByName('EMPNO').AsString;
+        PersonsLookup.ListFilter.Criteria:= 'EMPNO = '+QuotedStr(EmpNo);
+        PersonsLookup.ListFilter.Active:= True;
+        PersonsLookup.Clear;
+        GTIOPFManager.Read(PersonsLookup);
+        PersonsLookup.ListFilter.Active:= False;
+        if PersonsLookup.Count = 0 then
         begin
-          EmpNo := SdfDataSet1.FieldByName('EMPNO').AsString;
-          gLedgerManager.PersonsLookup.ListFilter.Criteria:= 'EMPNO = '+QuotedStr(EmpNo);
-          gLedgerManager.PersonsLookup.ListFilter.Active:= True;
-          gLedgerManager.PersonsLookup.Clear;
-          GTIOPFManager.Read(gLedgerManager.PersonsLookup);
-          gLedgerManager.PersonsLookup.ListFilter.Active:= False;
-          if gLedgerManager.PersonsLookup.Count = 0 then
-          begin
-            invalidEmpnos_.Add(EmpNo);
-            Break;    //<==
-          end;
-          P_OID:= gLedgerManager.PersonsLookup.Items[0].OID.AsString;
+          invalidEmpnos_.Add(EmpNo);
+          SdfDataSet1.Next;
+          Continue;    //<== next record (while)
         end;
 
+        P_OID:= PersonsLookup.Items[0].OID.AsString;
         O := TLoan.Create;  //dont forget the OID on save
-        O.DocDate              := ADate;
-        O.DocNumber            := ANumber;
-        O.Amount               := Amount;
-        O.Service.OID.AsString := S_OID;
+        O.DocDate      := SdfDataSet1.FieldByName('DATE').AsDateTime;
+        O.DocNumber    := 'UPLOAD';
+        O.Principal    := SdfDataSet1.FieldByName('PRINCIPAL').AsCurrency;
+        O.Interest     := SdfDataSet1.FieldByName('INTEREST').AsCurrency;
+        O.Total        := SdfDataSet1.FieldByName('TOTAL').AsCurrency;
+        O.Terms        := sdfDataSet1.FieldByName('TERMS').AsInteger;
+        O.PaymentStart := SdfDataSet1.FieldByName('FROM').AsDateTime;
+        O.PaymentEnd   := SdfDataSet1.FieldByName('TO').AsDateTime;
+        O.Amortization := SdfDataSet1.FieldByName('AMORTIZATION').AsCurrency;
+        O.Balance      := SdfDataSet1.FieldByName('BALANCE').AsCurrency;
+
+        O.Service.OID.AsString := AServiceOID;
         O.Person.OID.AsString  := P_OID;
         L.Add( O );
-      end;  //for
 
+      end; // if empno
       SdfDataSet1.Next;
-    end;  //while
-
+    end //while
   finally
     DBGrid1.EndUpdate;
+    PersonsLookup.Free;
   end;
 
   if invalidEmpnos_.Count > 0 then
@@ -216,30 +210,15 @@ end;
 
 procedure TfrmLoanCSVLoad.SaveToDB;
 var
-  P: TPayment;
+  P: TLoan;
   i: Integer;
 begin
   for i := 0 to L.Count-1 do
   begin
-    P := TPayment(L.Items[i]);
+    P := TLoan(L.Items[i]);
     GTIOPFManager.DefaultOIDGenerator.AssignNextOID(P.OID);
     P.SaveObject;
   end;
-end;
-
-function TfrmLoanCSVLoad.isValidORNumber(AORNumber: string): Boolean;
-var
-  PmtList: TPaymentList;
-begin
-
-  PmtList := TPaymentList.Create;
-  PmtList.ListFilter.Criteria:= 'DOCNUMBER = '+QuotedStr(AORNumber);
-  PmtList.ListFilter.Active:= True;
-  GTIOPFManager.Read(PmtList);
-  PmtList.ListFilter.Active:= False;
-  //if PmtList.Count = 0 means OR Number is not yet used
-  Result := (PmtList.Count = 0);
-
 end;
 
 
