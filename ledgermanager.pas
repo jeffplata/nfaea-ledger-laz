@@ -156,6 +156,9 @@ begin
 
   FPaymentList :=  TPaymentList.Create;
   FPaymentList.Owner := Self;
+
+  FLedger := TPersonLedger.create;
+  FLedger.Owner := self;
 end;
 
 destructor TLedgerManager.Destroy;
@@ -207,9 +210,21 @@ begin
 end;
 
 procedure TLedgerManager.LoadLedger;
+var
+  i: integer;
+  runbalance: Currency;
+  O: TPersonLedgerItem;
 begin
   FLedger.Clear;
   GTIOPFManager.Read(FLedger);
+
+  runbalance := 0.00;
+  for i := 0 to fledger.count -1 do
+  begin
+    O := fledger.items[i];
+    O.Balance:= runbalance + O.Charges - O.Payments;
+    runbalance:= O.Balance;
+  end;
 end;
 
 

@@ -179,6 +179,7 @@ type
     procedure sgdServicesDblClick(Sender: TObject);
     procedure spbClearLoanFilterClick(Sender: TObject);
   private
+    FLedgerDisplay: TLedgerDisplay;
     FLedgerPerson: TPersonBasic;
     FLoanDisplayList: TLoanDisplayList;
     FPaymentDisplayList: TPaymentDisplayList;
@@ -205,10 +206,11 @@ type
   public
     property Persons: TPersonList read FPersons write SetPersons;
     property Services: TServiceList read FServices write SetServices;
+    property LedgerPerson: TPersonBasic read FLedgerPerson write FLedgerPerson;
     property PaymentDisplayList: TPaymentDisplayList read FPaymentDisplayList write FPaymentDisplayList;
     property LoanDisplayList: TLoanDisplayList read FLoanDisplayList write FLoanDisplayList;
     property ServiceDisplayList: TServiceDisplayList read FServiceDisplayList write FServiceDisplayList;
-    property LedgerPerson: TPersonBasic read FLedgerPerson write FLedgerPerson;
+    property LedgerDisplay: TLedgerDisplay read FLedgerDisplay write FLedgerDisplay;
   end;
 
 
@@ -771,9 +773,10 @@ begin
   FLoanDisplayList := TLoanDisplayList.CreateCustom(gLedgerManager.Loans);
   gLedgerManager.LoadLoans;
 
-
   FPaymentDisplayList := TPaymentDisplayList.CreateCustom(gLedgerManager.PaymentList);
   gLedgerManager.LoadPayments;
+
+  FLedgerDisplay := TLedgerDisplay.CreateCustom(gLedgerManager.Ledger);
 
   SetupMediators;
 
@@ -973,8 +976,14 @@ begin
   FMedPayments.Active:= True;
 
   //ledger mediator
-if not ass
-//todo: continue here;
+  //todo: consider ledger without member name, then include name when like this
+  if not Assigned(FMedLedger) then
+  begin
+    FMedLedger := TtiModelMediator.create(self);
+    FMedLedger.AddComposite('transdate(100,"Date");reference(100,"Reference");charges(100,"Debit",>);payments(100,"Credit",>);balance(100,"Balance",>);d(100," ")',sgdLedger);
+  end;
+  FMedLedger.Subject := LedgerDisplay;
+  FMedLedger.Active:= True;
 
 end;
 

@@ -9,6 +9,36 @@ uses
 
 type
 
+  { TLedgerItemDisplay }
+
+  TLedgerItemDisplay = class(TBaseDisplayObject)
+    private
+      FPersonLedgerItem: TPersonLedgerItem;
+     function GetDisplay(AIndex : Integer) : String;
+     procedure SetPersonLedgerItem(AValue: TPersonLedgerItem);
+    public
+     constructor CreateCustom(const APersonLedgerItem : TPersonLedgerItem);
+     destructor Destroy; override;
+     property PersonLedgerItem : TPersonLedgerItem read FPersonLedgerItem write SetPersonLedgerItem;
+    published
+      property PersonUI     : string index 0 read GetDisplay;
+      property ServiceUI    : string index 1 read GetDisplay;
+      property TransDate    : string index 2 read GetDisplay;
+      property Reference    : string index 3 read GetDisplay;
+      property Particulars  : string index 4 read GetDisplay;
+      property Charges      : string index 5 read GetDisplay;
+      property Payments     : string index 6 read GetDisplay;
+      property Balance      : string index 7 read GetDisplay;
+    End;
+
+  { TLedgerDisplay }
+
+  TLedgerDisplay = class(TBaseDisplayList)
+  protected
+    function CreateDisplayInstance(AItem: TtiObject): TBaseDisplayObject; override;
+    function FindDisplayObject(AObject: TtiObject): TBaseDisplayObject; override;
+  end;
+
   { TServiceDisplay }
 
   TServiceDisplay = class(TBaseDisplayObject)
@@ -113,6 +143,73 @@ type
 implementation
 
 uses sysutils;
+
+{ TLedgerDisplay }
+
+function TLedgerDisplay.CreateDisplayInstance(AItem: TtiObject
+  ): TBaseDisplayObject;
+begin
+  Result := TLedgerItemDisplay.CreateCustom(TPersonLedgerItem(AItem));
+end;
+
+function TLedgerDisplay.FindDisplayObject(AObject: TtiObject
+  ): TBaseDisplayObject;
+var
+  i: integer;
+begin
+  Result := nil;
+  for i := 0 to Count-1 do
+  begin
+    if (TLedgerItemDisplay(Items[i]).PersonLedgerItem = AObject) then
+    begin
+      Result := TBaseDisplayObject(Items[i]);
+      break;
+    end;
+  end;
+end;
+
+
+{ TLedgerItemDisplay }
+
+function TLedgerItemDisplay.GetDisplay(AIndex: Integer): String;
+begin
+  if Assigned(FPersonLedgerItem) then
+  begin
+    case AIndex of
+     0:  Result :=  PersonLedgerItem.PersonUI ;
+     1:  Result :=  PersonLedgerItem.ServiceUI ;
+     2:  Result :=  Datetostr(PersonLedgerItem.TransDate) ;
+     3:  Result :=  PersonLedgerItem.Reference ;
+     4:  Result :=  PersonLedgerItem.Particulars ;
+     5:  Result :=  FormatFloat('#,0.00', PersonLedgerItem.Charges)    ;
+     6:  Result :=  FormatFloat('#,0.00', PersonLedgerItem.Payments)    ;
+     7:  Result :=  FormatFloat('#,0.00', PersonLedgerItem.Balance)    ;
+    end; { Case }
+  end;
+end;
+
+procedure TLedgerItemDisplay.SetPersonLedgerItem(AValue: TPersonLedgerItem);
+begin
+  if FPersonLedgerItem=AValue then Exit;
+  if Assigned(FPersonLedgerItem) then
+    FPersonLedgerItem.DetachObserver(Self);
+  FPersonLedgerItem:=AValue;
+  if Assigned(FPersonLedgerItem) then
+    FPersonLedgerItem.AttachObserver(Self);
+end;
+
+constructor TLedgerItemDisplay.CreateCustom(
+  const APersonLedgerItem: TPersonLedgerItem);
+begin
+  inherited Create;
+  FPersonLedgerItem := APersonLedgerItem;
+end;
+
+destructor TLedgerItemDisplay.Destroy;
+begin
+  FPersonLedgerItem := nil;
+  inherited Destroy;
+end;
 
 { TServiceDisplayList }
 

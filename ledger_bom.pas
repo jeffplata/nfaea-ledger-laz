@@ -304,6 +304,7 @@ type
 
   TPersonLedgerItem = class(TtiObject)
   private
+    FBalance: currency;
     FCharges: Currency;
     FParticulars: string;
     FPayments: Currency;
@@ -313,6 +314,7 @@ type
     FService: TService;
     FServiceUI: string;
     FTransDate: TDate;
+    procedure SetBalance(AValue: currency);
     procedure SetCharges(AValue: Currency);
     procedure SetParticulars(AValue: string);
     procedure SetPayments(AValue: Currency);
@@ -340,6 +342,7 @@ type
     property Particulars: string read FParticulars write SetParticulars;
     property Charges: Currency read FCharges write SetCharges;
     property Payments: Currency read FPayments write SetPayments;
+    property Balance: currency read FBalance write SetBalance;
   end;
 
   TPersonLedger = class(TFilteredObjectList)
@@ -1090,6 +1093,12 @@ procedure TPersonLedgerItem.SetCharges(AValue: Currency);
 begin
   if FCharges=AValue then Exit;
   FCharges:=AValue;
+end;
+
+procedure TPersonLedgerItem.SetBalance(AValue: currency);
+begin
+  if FBalance=AValue then Exit;
+  FBalance:=AValue;
 end;
 
 procedure TPersonLedgerItem.SetParticulars(AValue: string);

@@ -132,7 +132,7 @@ end;
 
 procedure TfrmLoanCSVLoad.actSaveUpdate(Sender: TObject);
 begin
-  actSave.Enabled:= (btnSave.Tag <> 9);
+  actSave.Enabled:= (btnSave.Tag <> 9) and (cmbService.Text <> '');
 end;
 
 

@@ -318,9 +318,9 @@ var
 
 begin
   O:= TPersonLedgerItem.Create;
-  O.OID.AssignFromTIQuery('OID',Query);
+  //O.OID.AssignFromTIQuery('OID',Query);
 
-  O.PersonUI:= query.fieldasstring['PERSON'];
+  O.PersonUI:= query.fieldasstring['MEMBER'];
   O.ServiceUI:= query.FieldAsString['SERVICE'];
   O.TransDate:= query.FieldAsDateTime['DOCDATE'];
   O.Reference:= query.FieldAsString['DOCNUMBER'];
