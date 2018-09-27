@@ -308,16 +308,20 @@ type
     FParticulars: string;
     FPayments: Currency;
     FPerson: TPersonBasic;
+    FPersonUI: string;
     FReference: String;
     FService: TService;
+    FServiceUI: string;
     FTransDate: TDate;
     procedure SetCharges(AValue: Currency);
     procedure SetParticulars(AValue: string);
     procedure SetPayments(AValue: Currency);
     procedure SetPerson(AValue: TPerson);
     procedure SetPerson(AValue: TPersonBasic);
+    procedure SetPersonUI(AValue: string);
     procedure SetReference(AValue: String);
     procedure SetService(AValue: TService);
+    procedure SetServiceUI(AValue: string);
     procedure SetTransDate(AValue: TDate);
   protected
     function  GetOwner: TPersonLedger; reintroduce;
@@ -329,6 +333,8 @@ type
   published
     property Person: TPersonBasic read FPerson write SetPerson;
     property Service: TService read FService write SetService;
+    property PersonUI: string read FPersonUI write SetPersonUI;
+    property ServiceUI: string read FServiceUI write SetServiceUI;
     property TransDate: TDate read FTransDate write SetTransDate;
     property Reference: String read FReference write SetReference;
     property Particulars: string read FParticulars write SetParticulars;
@@ -336,7 +342,7 @@ type
     property Payments: Currency read FPayments write SetPayments;
   end;
 
-  TPersonLedger = class(TtiObjectList)
+  TPersonLedger = class(TFilteredObjectList)
   private
   protected
     function  GetItems(i: integer): TPersonLedgerItem; reintroduce;
@@ -1110,6 +1116,12 @@ begin
   FPerson:=AValue;
 end;
 
+procedure TPersonLedgerItem.SetPersonUI(AValue: string);
+begin
+  if FPersonUI=AValue then Exit;
+  FPersonUI:=AValue;
+end;
+
 procedure TPersonLedgerItem.SetReference(AValue: String);
 begin
   if FReference=AValue then Exit;
@@ -1120,6 +1132,12 @@ procedure TPersonLedgerItem.SetService(AValue: TService);
 begin
   if FService=AValue then Exit;
   FService:=AValue;
+end;
+
+procedure TPersonLedgerItem.SetServiceUI(AValue: string);
+begin
+  if FServiceUI=AValue then Exit;
+  FServiceUI:=AValue;
 end;
 
 procedure TPersonLedgerItem.SetTransDate(AValue: TDate);

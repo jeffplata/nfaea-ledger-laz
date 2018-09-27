@@ -16,9 +16,9 @@ object frmMain: TfrmMain
     Height = 347
     Top = 0
     Width = 779
-    ActivePage = tabLoans
+    ActivePage = tabLedger
     Align = alClient
-    TabIndex = 2
+    TabIndex = 4
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
@@ -295,7 +295,6 @@ object frmMain: TfrmMain
         Width = 67
         BorderSpacing.Left = 8
         Caption = 'Apply Filter'
-        OnClick = btnApplyLoanFilterClick
         TabOrder = 3
       end
       object Label2: TLabel
@@ -742,8 +741,8 @@ object frmMain: TfrmMain
         Height = 22
         Top = 8
         Width = 75
+        Action = actShowLedger
         BorderSpacing.Left = 8
-        Caption = 'Show Ledger'
         TabOrder = 5
       end
       object sgdLedger: TStringGrid
@@ -970,6 +969,10 @@ object frmMain: TfrmMain
     object actSelectMember: TAction
       Caption = 'Select'
       OnExecute = actSelectMemberExecute
+    end
+    object actShowLedger: TAction
+      Caption = 'Show Ledger'
+      OnExecute = actShowLedgerExecute
     end
   end
 end

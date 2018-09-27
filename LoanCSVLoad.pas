@@ -122,7 +122,7 @@ begin
   for i := 0 to gLedgerManager.Services.Count -1 do
     if gLedgerManager.Services.Items[i].ServiceType = 'LOAN' then
       cmbService.Items.Add(gLedgerManager.Services.Items[i].Name);
-  cmbService.ItemIndex:= 0;
+  //cmbService.ItemIndex:= 0;
 end;
 
 procedure TfrmLoanCSVLoad.actSaveExecute(Sender: TObject);

@@ -14,6 +14,16 @@ uses
 
 type
 
+  { TReadLedgerVisitor }
+
+  TReadLedgerVisitor = Class(TtiVisitorSelect)
+  Protected
+    Procedure Init; override;
+    Function AcceptVisitor : Boolean; override;
+    Procedure SetupParams; override;
+    Procedure MapRowToObject; override;
+  end;
+
   { TReadLoanAdjustmentsVisitor }
 
   TReadLoanAdjustmentsVisitor = Class(TtiVisitorSelect)
@@ -266,7 +276,60 @@ const
   SQLDeleteLoanAdjustment = 'delete from LOANADJUSTMENT where OID=:OID';
 
   SQLReadLedger =
-    'select DOCDATE, DOCNUMBER, AMOUNT from LOAN';
+      'select m.*, p.NAME MEMBER, s.NAME SERVICE '+
+      'from  '+
+      '( '+
+      'select 1 PRIORITY, PERSON_OID, SERVICE_OID, DOCDATE, DOCNUMBER, coalesce(BALANCE,TOTAL) DEBIT, 0 CREDIT from LOAN  '+
+      'union all '+
+      'select 2 PRIORITY, PERSON_OID, SERVICE_OID, DOCDATE, DOCNUMBER, 0 DEBIT, AMOUNT CREDIT from PAYMENT '+
+      ') m '+
+      'left join PERSON p on p.OID=m.PERSON_OID '+
+      'left join SERVICE s on s.OID=m.SERVICE_OID '+
+      '%s '+
+      'ORDER BY DOCDATE, PRIORITY'
+    ;
+
+{ TReadLedgerVisitor }
+
+procedure TReadLedgerVisitor.Init;
+var
+  w: String;
+begin
+  if TPersonLedger(Visited).ListFilter.Active then
+  begin
+    w := ' WHERE '+ TPersonLedger(Visited).ListFilter.Criteria
+  end;
+  Query.SQLText:= Format(SQLReadLedger,[w]);
+end;
+
+function TReadLedgerVisitor.AcceptVisitor: Boolean;
+begin
+  Result:= Visited is TPersonLedger;
+end;
+
+procedure TReadLedgerVisitor.SetupParams;
+begin
+
+end;
+
+procedure TReadLedgerVisitor.MapRowToObject;
+var
+  O : TPersonLedgerItem;
+
+begin
+  O:= TPersonLedgerItem.Create;
+  O.OID.AssignFromTIQuery('OID',Query);
+
+  O.PersonUI:= query.fieldasstring['PERSON'];
+  O.ServiceUI:= query.FieldAsString['SERVICE'];
+  O.TransDate:= query.FieldAsDateTime['DOCDATE'];
+  O.Reference:= query.FieldAsString['DOCNUMBER'];
+  O.Charges:= query.FieldAsFloat['DEBIT'];
+  O.Payments:= query.FieldAsFloat['CREDIT'];
+
+  O.ObjectState:=posClean;
+  TPersonLedger(Visited).Add(O);
+end;
 
 { TSaveLoanAdjustmentVisitor }
 
@@ -774,6 +837,8 @@ begin
 
     RegReadVisitor(TReadLoanAdjustmentsVisitor);
     RegSaveVisitor(TSaveLoanAdjustmentVisitor);
+
+    RegReadVisitor(TReadLedgerVisitor);
 
   end;
 end;

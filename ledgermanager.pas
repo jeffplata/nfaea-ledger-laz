@@ -15,6 +15,7 @@ type
 
   TLedgerManager = class(TtiObject)
   private
+    FLedger: TPersonLedger;
     FLoans: TLoanList;
     FPaymentList: TPaymentList;
     FPersonList: TPersonList;
@@ -22,6 +23,7 @@ type
     FServiceBasicList: TServiceBasicList;
     FServices: TServiceList;
     function GetServiceBasicList: TServiceBasicList;
+    procedure SetLedger(AValue: TPersonLedger);
     procedure SetLoans(AValue: TLoanList);
     procedure SetPaymentList(AValue: TPaymentList);
     procedure SetPersonList(AValue: TPersonList);
@@ -37,14 +39,15 @@ type
     procedure LoadPersonsLookup( force: boolean = False );
     procedure LoadLoans;
     procedure LoadPayments;
+    procedure LoadLedger;
   published
     property PersonList: TPersonList read FPersonList write SetPersonList;
     property Services: TServiceList read FServices write SetServices;
     property Loans: TLoanList read FLoans write SetLoans;
     property PersonsLookup: TPersonsLookUp read FPersonsLookup write SetPersonsLookup;
     property PaymentList: TPaymentList read FPaymentList write SetPaymentList;
-    //property ServiceBasicList: TServiceBasicList read FServiceBasicList write SetServiceBasicList;
     property ServiceBasicList: TServiceBasicList read GetServiceBasicList;
+    property Ledger: TPersonLedger read FLedger write SetLedger;
   end;
 
   //global Singleton
@@ -112,6 +115,12 @@ begin
     end;
   end;
   Result := FServiceBasicList;
+end;
+
+procedure TLedgerManager.SetLedger(AValue: TPersonLedger);
+begin
+  if FLedger=AValue then Exit;
+  FLedger:=AValue;
 end;
 
 procedure TLedgerManager.SetPaymentList(AValue: TPaymentList);
@@ -195,6 +204,12 @@ procedure TLedgerManager.LoadPayments;
 begin
   FPaymentList.Clear;
   GTIOPFManager.Read(FPaymentList);
+end;
+
+procedure TLedgerManager.LoadLedger;
+begin
+  FLedger.Clear;
+  GTIOPFManager.Read(FLedger);
 end;
 
 

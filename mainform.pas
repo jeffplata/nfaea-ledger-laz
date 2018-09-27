@@ -48,6 +48,7 @@ type
     actClearPaymentDate2: TAction;
     actClearLedgerDate1: TAction;
     actClearLedgerDate2: TAction;
+    actShowLedger: TAction;
     actSelectMember: TAction;
     actMembers: TAction;
     ActionList1: TActionList;
@@ -163,7 +164,7 @@ type
     procedure actClearLoanDate2Execute(Sender: TObject);
     procedure ActionList1Update(AAction: TBasicAction; var Handled: Boolean);
     procedure actSelectMemberExecute(Sender: TObject);
-    procedure btnApplyLoanFilterClick(Sender: TObject);
+    procedure actShowLedgerExecute(Sender: TObject);
     procedure dteLedgerDate1ButtonClick(Sender: TObject);
     procedure dteLoans1ButtonClick(Sender: TObject);
     procedure dtePaymentDate1ButtonClick(Sender: TObject);
@@ -185,12 +186,14 @@ type
     FMedServices: TtiModelMediator;
     FMedLoans: TtiModelMediator;
     FMedPayments: TtiModelMediator;
+    FMedLedger: TtiModelMediator;
     FPersons: TPersonList;
     FServiceDisplayList: TServiceDisplayList;
     FServices: TServiceList;
     SQLWhereBuilderLoans : TSQLWhereBuilder;
     SQLWhereBuilderPayments: TSQLWhereBuilder;
     SQLWhereBuilderMembers: TSQLWhereBuilder;
+    SQLWhereBuilderLedger: TSQLWhereBuilder;
     procedure FilterPayments;
     procedure FilterLoans;
     procedure SaveAdjustmentList(var O: TLoan);
@@ -238,6 +241,9 @@ const
   cSQLFilterLoansLoanType = 's.NAME = ?';
   cSQLFilterLoansDateFrom = 'r.DOCDATE >= ?';
   cSQLFilterLoansDateTo = 'r.DOCDATE <= ?';
+
+  cSQLFilterLedgerMember = 'p.NAME = ?';
+  cSQLFilterLedgerService = 's.NAME = ?';
 
 {$R *.lfm}
 
@@ -296,6 +302,9 @@ begin
 
   else if AAction = actClearMember then
     actClearMember.Enabled:= edtFilterMember.Text <> ''
+
+  else if AAction = actShowLedger then
+    actShowLedger.Enabled:= (edtLedgerName.Text <> '') and (cmbLedgerService.Text<>'');
   ;
 end;
 
@@ -320,23 +329,22 @@ procedure TfrmMain.actSelectMemberExecute(Sender: TObject);
     end;
   end;
 
-procedure TfrmMain.btnApplyLoanFilterClick(Sender: TObject);
+procedure TfrmMain.actShowLedgerExecute(Sender: TObject);
 begin
-  select m.*, p.NAME, s.NAME
-from
-(
-select 1 PRIORITY, PERSON_OID, SERVICE_OID, DOCDATE, DOCNUMBER, coalesce(BALANCE,TOTAL) DEBIT, 0 CREDIT from LOAN
-union all
-select 2 PRIORITY, PERSON_OID, SERVICE_OID, DOCDATE, DOCNUMBER, 0 DEBIT, AMOUNT CREDIT from PAYMENT
-) m
-left join PERSON p on p.OID=m.PERSON_OID
-left join SERVICE s on s.OID=m.SERVICE_OID
+  gLedgerManager.Ledger.BeginUpdate;
 
-WHERE p.NAME containing 'plata'
-and s.NAME containing 'appl'
+  SQLWhereBuilderLedger.UpdateWhereClauses;
 
-ORDER BY DOCDATE, PRIORITY
+  gLedgerManager.Ledger.ListFilter.Criteria:=
+    SQLWhereBuilderLedger.WhereList.Text;
+  gLedgerManager.Ledger.ListFilter.Active:= (
+    SQLWhereBuilderLedger.WhereList.Text<>'');
+  gLedgerManager.LoadLedger;
+
+  gLedgerManager.Ledger.EndUpdate;
 end;
+
+
 
 procedure TfrmMain.dteLedgerDate1ButtonClick(Sender: TObject);
 var
@@ -822,6 +830,13 @@ begin
   SQLWhereBuilderPayments.AddWhereClauseAnd( cSQLFilterPaymentsService,
     [cmbPaymentsFilterService, 'Text']);
 
+  //Ledger filter
+  SQLWhereBuilderLedger := TSQLWhereBuilder.create(Self);
+  SQLWhereBuilderLedger.AddWhereClauseAnd( cSQLFilterLedgerMember,
+    [edtLedgerName, 'Text']);
+  SQLWhereBuilderLedger.AddWhereClauseAnd( cSQLFilterLedgerService,
+    [cmbLedgerService, 'Text']);
+
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
@@ -956,6 +971,10 @@ begin
   //FMedPayments.Subject:= gLedgerManager.PaymentList;
   FMedPayments.Subject := PaymentDisplayList;
   FMedPayments.Active:= True;
+
+  //ledger mediator
+if not ass
+//todo: continue here;
 
 end;
 
