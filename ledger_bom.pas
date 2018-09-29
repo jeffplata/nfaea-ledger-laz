@@ -312,6 +312,7 @@ type
     FPersonUI: string;
     FReference: String;
     FService: TService;
+    FServiceType: string;
     FServiceUI: string;
     FTransDate: TDate;
     procedure SetBalance(AValue: currency);
@@ -323,6 +324,7 @@ type
     procedure SetPersonUI(AValue: string);
     procedure SetReference(AValue: String);
     procedure SetService(AValue: TService);
+    procedure SetServiceType(AValue: string);
     procedure SetServiceUI(AValue: string);
     procedure SetTransDate(AValue: TDate);
   protected
@@ -337,6 +339,7 @@ type
     property Service: TService read FService write SetService;
     property PersonUI: string read FPersonUI write SetPersonUI;
     property ServiceUI: string read FServiceUI write SetServiceUI;
+    property ServiceType: string read FServiceType write SetServiceType;
     property TransDate: TDate read FTransDate write SetTransDate;
     property Reference: String read FReference write SetReference;
     property Particulars: string read FParticulars write SetParticulars;
@@ -1141,6 +1144,12 @@ procedure TPersonLedgerItem.SetService(AValue: TService);
 begin
   if FService=AValue then Exit;
   FService:=AValue;
+end;
+
+procedure TPersonLedgerItem.SetServiceType(AValue: string);
+begin
+  if FServiceType=AValue then Exit;
+  FServiceType:=AValue;
 end;
 
 procedure TPersonLedgerItem.SetServiceUI(AValue: string);

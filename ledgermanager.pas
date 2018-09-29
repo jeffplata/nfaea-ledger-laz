@@ -222,7 +222,10 @@ begin
   for i := 0 to fledger.count -1 do
   begin
     O := fledger.items[i];
-    O.Balance:= runbalance + O.Charges - O.Payments;
+    if fledger.items[i].ServiceType = 'LOAN' then
+      O.Balance:= runbalance + O.Charges - O.Payments
+    else
+      O.Balance:= runbalance - O.Charges + O.Payments;
     runbalance:= O.Balance;
   end;
 end;

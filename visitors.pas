@@ -276,12 +276,17 @@ const
   SQLDeleteLoanAdjustment = 'delete from LOANADJUSTMENT where OID=:OID';
 
   SQLReadLedger =
-      'select m.*, p.NAME MEMBER, s.NAME SERVICE '+
+      'select m.*, p.NAME MEMBER, s.NAME SERVICE, s.SERVICETYPE '+
       'from  '+
       '( '+
       'select 1 PRIORITY, PERSON_OID, SERVICE_OID, DOCDATE, DOCNUMBER, coalesce(BALANCE,TOTAL) DEBIT, 0 CREDIT from LOAN  '+
       'union all '+
       'select 2 PRIORITY, PERSON_OID, SERVICE_OID, DOCDATE, DOCNUMBER, 0 DEBIT, AMOUNT CREDIT from PAYMENT '+
+      'union all '+
+      'select 3 PRIORITY, l.PERSON_OID, a.SERVICE_OID, l.DOCDATE, ''LOAN ADJ '' || l.DOCNUMBER, '+
+      '  iif( AMOUNT>=0, abs(AMOUNT), 0 ) DEBIT, '+
+      '  iif( AMOUNT<0, abs(AMOUNT), 0 ) CREDIT   '+
+      '  from LOANADJUSTMENT a join LOAN l on l.OID=a.LOAN_OID '+
       ') m '+
       'left join PERSON p on p.OID=m.PERSON_OID '+
       'left join SERVICE s on s.OID=m.SERVICE_OID '+
@@ -326,6 +331,7 @@ begin
   O.Reference:= query.FieldAsString['DOCNUMBER'];
   O.Charges:= query.FieldAsFloat['DEBIT'];
   O.Payments:= query.FieldAsFloat['CREDIT'];
+  O.ServiceType:= query.FieldAsString['SERVICETYPE'];
 
   O.ObjectState:=posClean;
   TPersonLedger(Visited).Add(O);

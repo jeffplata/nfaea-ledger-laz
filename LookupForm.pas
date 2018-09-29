@@ -60,7 +60,7 @@ type
   end;
 
   procedure SelectObject( var O : TClassOfObject; AObjectList: TtiObjectList;
-    ASQLFilterText: string; AUIColumns: string );
+    ASQLFilterText: string; AUIColumns: string; const KeyBuffer: string = '' );
 
 
 implementation
@@ -74,16 +74,21 @@ uses
 {$R *.lfm}
 
 procedure SelectObject(var O: TClassOfObject; AObjectList: TtiObjectList;
-  ASQLFilterText: string; AUIColumns: string);
+  ASQLFilterText: string; AUIColumns: string; const KeyBuffer: string);
 const
   lFilter: string = '';
 begin
   O := nil;
+  if KeyBuffer <> '' then lFilter := KeyBuffer;
   with TfrmLookUp.Create(Application) do
   try
     SQLFilterText:= ASQLFilterText;
     UIColumns:= AUIColumns;
     LabeledEdit1.Text := lFilter;
+    if KeyBuffer <> '' then
+      LabeledEdit1.SelStart:= 1000
+    else
+      LabeledEdit1.SelectAll;
 
     Data := AObjectList;
     Init;

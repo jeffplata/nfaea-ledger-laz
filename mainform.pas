@@ -169,6 +169,7 @@ type
     procedure dteLoans1ButtonClick(Sender: TObject);
     procedure dtePaymentDate1ButtonClick(Sender: TObject);
     procedure edtFilterMemberKeyPress(Sender: TObject; var Key: char);
+    procedure edtLedgerNameKeyPress(Sender: TObject; var Key: char);
     procedure edtLoanMemberKeyPress(Sender: TObject; var Key: char);
     procedure edtFilterPaymentsKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
@@ -179,6 +180,7 @@ type
     procedure sgdServicesDblClick(Sender: TObject);
     procedure spbClearLoanFilterClick(Sender: TObject);
   private
+    KeyBuffer: string;
     FLedgerDisplay: TLedgerDisplay;
     FLedgerPerson: TPersonBasic;
     FLoanDisplayList: TLoanDisplayList;
@@ -317,7 +319,7 @@ procedure TfrmMain.actSelectMemberExecute(Sender: TObject);
     temp := TPersonBasic.Create;
     try
       gLedgerManager.LoadPersonsLookup;
-      SelectObject( TClassOfObject(temp),gLedgerManager.PersonsLookup,'NAME containing ?','Name' );
+      SelectObject( TClassOfObject(temp),gLedgerManager.PersonsLookup,'NAME containing ?','Name', KeyBuffer );
       if temp <> nil then
       begin
         if not Assigned(FLedgerPerson) then
@@ -482,6 +484,7 @@ begin
     O.SaveObject;
 
     //FMedPayments.SelectedObject[sgdPayments] := O;  // go to last inserted
+
     sgdPayments.Row:= sgdPayments.RowCount-1;
     sgdPayments.TopRow:= sgdPayments.RowCount-1;
   end
@@ -500,6 +503,7 @@ begin
     gLedgerManager.Loans.Add(O);
     O.SaveObject;
     //FMedLoans.SelectedObject[sgdLoans] := O;  // go to last inserted
+
     sgdLoans.Row:= sgdLoans.RowCount -1;
     sgdLoans.TopRow:= sgdLoans.RowCount -1;
 
@@ -728,6 +732,17 @@ begin
 
     FPersons.EndUpdate;
   end;
+end;
+
+procedure TfrmMain.edtLedgerNameKeyPress(Sender: TObject; var Key: char);
+begin
+  if key in ['A'..'Z','a'..'z'] then
+  begin
+    KeyBuffer:= Key;
+    Key := #0;
+    actSelectMember.Execute;
+  end;
+  KeyBuffer:= '';
 end;
 
 procedure TfrmMain.edtLoanMemberKeyPress(Sender: TObject; var Key: char);

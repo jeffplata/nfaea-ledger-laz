@@ -181,9 +181,9 @@ begin
      2:  Result :=  Datetostr(PersonLedgerItem.TransDate) ;
      3:  Result :=  PersonLedgerItem.Reference ;
      4:  Result :=  PersonLedgerItem.Particulars ;
-     5:  Result :=  FormatFloat('#,0.00', PersonLedgerItem.Charges)    ;
-     6:  Result :=  FormatFloat('#,0.00', PersonLedgerItem.Payments)    ;
-     7:  Result :=  FormatFloat('#,0.00', PersonLedgerItem.Balance)    ;
+     5:  Result :=  FormatFloat('#,0.00;(#,0.00); ', PersonLedgerItem.Charges)    ;
+     6:  Result :=  FormatFloat('#,0.00;(#,0.00); ', PersonLedgerItem.Payments)    ;
+     7:  Result :=  FormatFloat('#,0.00;(#,0.00); ', PersonLedgerItem.Balance)    ;
     end; { Case }
   end;
 end;

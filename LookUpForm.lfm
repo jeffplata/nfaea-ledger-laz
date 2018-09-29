@@ -33,6 +33,7 @@ object frmLookUp: TfrmLookUp
     Top = 8
     Width = 312
     Anchors = [akTop, akLeft, akRight]
+    AutoSelect = False
     EditLabel.AnchorSideTop.Control = LabeledEdit1
     EditLabel.AnchorSideTop.Side = asrCenter
     EditLabel.AnchorSideRight.Control = LabeledEdit1
