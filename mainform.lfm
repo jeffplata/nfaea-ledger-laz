@@ -330,11 +330,11 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = edtLoanMember
         AnchorSideTop.Side = asrBottom
         Left = 304
-        Height = 23
+        Height = 21
         Top = 32
         Width = 144
         BorderSpacing.Top = 3
-        ItemHeight = 15
+        ItemHeight = 13
         Style = csDropDownList
         TabOrder = 8
       end
@@ -484,11 +484,11 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = edtFilterPaymentsORNumber
         AnchorSideTop.Side = asrBottom
         Left = 304
-        Height = 23
+        Height = 21
         Top = 60
         Width = 144
         BorderSpacing.Top = 3
-        ItemHeight = 15
+        ItemHeight = 13
         Style = csDropDownList
         TabOrder = 6
       end
@@ -615,24 +615,24 @@ object frmMain: TfrmMain
     end
     object tabLedger: TTabSheet
       Caption = 'Ledger'
-      ClientHeight = 319
+      ClientHeight = 321
       ClientWidth = 771
       object cmbLedgerService: TComboBox
         AnchorSideLeft.Control = edtLedgerName
         AnchorSideTop.Control = edtLedgerName
         AnchorSideTop.Side = asrBottom
         Left = 88
-        Height = 23
-        Top = 35
+        Height = 21
+        Top = 33
         Width = 152
         BorderSpacing.Top = 3
-        ItemHeight = 15
+        ItemHeight = 13
         Style = csDropDownList
         TabOrder = 2
       end
       object edtLedgerName: TEdit
         Left = 88
-        Height = 23
+        Height = 21
         Top = 9
         Width = 152
         OnKeyPress = edtLedgerNameKeyPress
@@ -645,7 +645,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 240
         Height = 22
-        Top = 9
+        Top = 8
         Width = 48
         Action = actSelectMember
         TabOrder = 1
@@ -654,10 +654,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLedgerDate1
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dteLedgerDate1
-        Left = 296
-        Height = 15
+        Left = 300
+        Height = 13
         Top = 13
-        Width = 28
+        Width = 24
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -668,10 +668,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLedgerDate2
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dteLedgerDate2
-        Left = 310
-        Height = 15
-        Top = 39
-        Width = 14
+        Left = 312
+        Height = 13
+        Top = 37
+        Width = 12
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -681,7 +681,7 @@ object frmMain: TfrmMain
       object dteLedgerDate1: TDateEdit
         AnchorSideTop.Side = asrBottom
         Left = 328
-        Height = 23
+        Height = 21
         Top = 9
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
@@ -698,8 +698,8 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLedgerDate1
         AnchorSideTop.Side = asrBottom
         Left = 328
-        Height = 23
-        Top = 35
+        Height = 21
+        Top = 33
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -717,7 +717,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 472
         Height = 22
-        Top = 9
+        Top = 8
         Width = 23
         Action = actClearLedgerDate1
       end
@@ -728,18 +728,18 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 472
         Height = 22
-        Top = 35
+        Top = 32
         Width = 23
         Action = actClearLedgerDate2
       end
-      object btnApplyPaymentFilter1: TButton
+      object btnShowLedger: TButton
         AnchorSideLeft.Control = spbClearLedgerDate1
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = spbClearLedgerDate1
         AnchorSideTop.Side = asrCenter
         Left = 503
         Height = 22
-        Top = 9
+        Top = 8
         Width = 75
         Action = actShowLedger
         BorderSpacing.Left = 8
@@ -747,7 +747,7 @@ object frmMain: TfrmMain
       end
       object sgdLedger: TStringGrid
         Left = 0
-        Height = 255
+        Height = 257
         Top = 64
         Width = 771
         Align = alBottom
@@ -766,10 +766,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = edtLedgerName
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = edtLedgerName
-        Left = 5
-        Height = 15
+        Left = 17
+        Height = 13
         Top = 13
-        Width = 80
+        Width = 68
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 3
@@ -781,14 +781,61 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cmbLedgerService
         Left = 8
-        Height = 15
-        Top = 39
+        Height = 13
+        Top = 37
         Width = 77
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 3
         Caption = 'Service'
         ParentColor = False
+      end
+      object spbClearLedgerDate3: TSpeedButton
+        AnchorSideLeft.Control = btnShowLedger
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = btnShowLedger
+        AnchorSideTop.Side = asrCenter
+        Left = 578
+        Height = 22
+        Top = 8
+        Width = 23
+        Action = actPrintLedger
+        Glyph.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+          FF00FFFFFF00C89662FDCA9865FFCA9765FFCA9765FFCA9765FFCA9764FFC997
+          64FFC99764FFCA9865FFC89562FDFFFFFF00FFFFFF00FFFFFF00A1A1A1C27A7A
+          7ADA585858FFC79561FFF9F7F6FFF9F1ECFFF9F1EBFFF8F0E9FFF7EDE6FFF4EA
+          E1FFF2E8DEFFFAF8F6FFC79461FF242424FF4B4B4BD9969696BF6B6B6BFDA7A7
+          A7FFB5B5B5FF818181FFAFACAAFFC5C0BDFFC5C0BDFFC5C0BDFFC5C0BDFFC5C0
+          BDFFC5C0BDFFADAAA8FF2C2C2CFFB5B5B5FF9B9B9BFF232323FF707070FFB5B5
+          B5FFB5B5B5FF959595FF818181FF818181FF797979FF6E6E6EFF616161FF5252
+          52FF434343FF424242FF6E6E6EFFB5B5B5FFB5B5B5FF252525FF757575FFBBBB
+          BBFFBBBBBBFF8D8D8DFFD4D4D4FFB9B9B9FFB9B9B9FFB9B9B9FFB9B9B9FFB9B9
+          B9FFB9B9B9FFD3D3D3FF838383FFBBBBBBFFBBBBBBFF2A2A2AFF7A7A7AFFD7D7
+          D7FFD7D7D7FF979797FFD8D8D8FFBFBFBFFFBFBFBFFFBFBFBFFFBFBFBFFFBFBF
+          BFFFBFBFBFFFD7D7D7FF8E8E8EFFD7D7D7FFD7D7D7FF3F3F3FFF7E7E7EFFF9F9
+          F9FFF9F9F9FFABABABFFDFDFDFFFCBCBCBFFCBCBCBFFCBCBCBFFCBCBCBFFCBCB
+          CBFFCBCBCBFFDFDFDFFFA3A3A3FFF9F9F9FFF9F9F9FF616161FF848484F9FCFC
+          FCFFFCFCFCFFCBCBCBFFF2F2F2FFF2F2F2FFF2F2F2FFF2F2F2FFF2F2F2FFF2F2
+          F2FFF2F2F2FFF2F2F2FFC6C6C6FFFCFCFCFFFCFCFCFF717171FE979797DAD2D2
+          D2FFE8E8E8FF7D7D7DFF7D7D7DFF7D7D7DFF7D7D7DFF7D7D7DFF7D7D7DFF7D7D
+          7DFF7D7D7DFF7D7D7DFF7D7D7DFFE8E8E8FFC4C4C4FF6D6D6DE1DDDDDDCD9A9A
+          9AFFCCCCCCFFC78B4EFFF9F4EDFFFEE8D8FFFEE8D7FFFDE5D3FFFCE4D1FFFAE0
+          C7FFF9DDC3FFFAF4EDFFC7854AFFC3C3C3FF747474FFCDCDCDCDFFFFFF00CECE
+          CEC2878787F4C5894CFFF9F4EFFFFEE7D7FFFDE7D5FFFCE6D2FFFBE1CCFFF8DC
+          C2FFF6DABDFFFAF4EFFFC48348FF616161F4BCBCBCC2FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00C68C4FF9F9F4F0FFFCE6D3FFFDE7D3FFFBE3CDFFFAE0C8FFF5D6
+          BBFFF3D4B5FFF8F4F0FFC4854AF9FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00C88D51F7F9F5F1FFFCE3CFFFFCE4CFFFFAE1CAFFF9DDC4FFF4E9
+          DFFFF7F2ECFFF5EFE9FFC38048FBFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00C88D52F6F9F5F1FFFCE3CDFFFBE3CDFFF9E0C8FFF8DCC2FFFDFB
+          F8FFFCE6CDFFE2B684FFD5A884C5FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00C5884DFAF7F2ECFFF8F4EEFFF8F3EDFFF8F3EDFFF8F2ECFFF2E6
+          D7FFE2B27DFFDB9569F6FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+          FF00FFFFFF00E8CEB9C3D7AA7CCDC88C50FEC88C4FFFCA9155F7CB9055F7C589
+          4DFEDDAF8DC1FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
+        }
       end
     end
   end
@@ -974,5 +1021,20 @@ object frmMain: TfrmMain
       Caption = 'Show Ledger'
       OnExecute = actShowLedgerExecute
     end
+    object actPrintLedger: TAction
+      OnExecute = actPrintLedgerExecute
+    end
+  end
+  object frReport1: TfrReport
+    InitialZoom = pzDefault
+    Options = []
+    PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
+    DataType = dtDataSet
+    left = 633
+    top = 45
+  end
+  object frUserDataset1: TfrUserDataset
+    left = 672
+    top = 45
   end
 end

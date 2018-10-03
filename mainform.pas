@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, IDEWindowIntf, Forms, Controls, Graphics,
   Dialogs, Menus, ActnList, StdActns, ComCtrls, Grids, ExtCtrls, Buttons,
   StdCtrls, EditBtn, ledger_bom, tiModelMediator, tiListMediators, tiMediators,
-  tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers
+  tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers, LR_Class, LR_DSet
   ;
 
 type
@@ -48,6 +48,7 @@ type
     actClearPaymentDate2: TAction;
     actClearLedgerDate1: TAction;
     actClearLedgerDate2: TAction;
+    actPrintLedger: TAction;
     actShowLedger: TAction;
     actSelectMember: TAction;
     actMembers: TAction;
@@ -57,7 +58,7 @@ type
     btnAddPayment1: TButton;
     btnApplyPaymentFilter: TButton;
     btnApplyLoanFilter: TButton;
-    btnApplyPaymentFilter1: TButton;
+    btnShowLedger: TButton;
     btnDeletePayment: TButton;
     btnEditPayment: TButton;
     Button1: TButton;
@@ -83,6 +84,8 @@ type
     edtLoanMember: TLabeledEdit;
     edtFilterPayments: TLabeledEdit;
     edtFilterPaymentsORNumber: TLabeledEdit;
+    frReport1: TfrReport;
+    frUserDataset1: TfrUserDataset;
     Label1: TLabel;
     Label10: TLabel;
     Label2: TLabel;
@@ -111,6 +114,7 @@ type
     sgdLoans: TStringGrid;
     sgdLedger: TStringGrid;
     sgdPayments: TStringGrid;
+    spbClearLedgerDate3: TSpeedButton;
     spbClearLoanDate1: TSpeedButton;
     spbClearLoanDate2: TSpeedButton;
     spbClearPMTDate1: TSpeedButton;
@@ -163,6 +167,7 @@ type
     procedure actCSVLoadMemberExecute(Sender: TObject);
     procedure actClearLoanDate2Execute(Sender: TObject);
     procedure ActionList1Update(AAction: TBasicAction; var Handled: Boolean);
+    procedure actPrintLedgerExecute(Sender: TObject);
     procedure actSelectMemberExecute(Sender: TObject);
     procedure actShowLedgerExecute(Sender: TObject);
     procedure dteLedgerDate1ButtonClick(Sender: TObject);
@@ -310,6 +315,15 @@ begin
   else if AAction = actShowLedger then
     actShowLedger.Enabled:= (edtLedgerName.Text <> '') and (cmbLedgerService.Text<>'');
   ;
+end;
+
+procedure TfrmMain.actPrintLedgerExecute(Sender: TObject);
+begin
+  with frReport1 do
+  begin
+    LoadFromFile('reports\Ledger.lrf');
+    ShowReport;
+  end;
 end;
 
 procedure TfrmMain.actSelectMemberExecute(Sender: TObject);

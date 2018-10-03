@@ -23,34 +23,37 @@
         <LaunchingApplication PathPlusParams="\usr\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="9">
+    <RequiredPackages Count="10">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="lazreport"/>
       </Item1>
       <Item2>
-        <PackageName Value="jujiboutils"/>
+        <PackageName Value="IDEIntf"/>
       </Item2>
       <Item3>
-        <PackageName Value="LazControls"/>
+        <PackageName Value="jujiboutils"/>
       </Item3>
       <Item4>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LazControls"/>
       </Item4>
       <Item5>
-        <PackageName Value="SDFLaz"/>
+        <PackageName Value="FCL"/>
       </Item5>
       <Item6>
-        <PackageName Value="DateTimeCtrls"/>
+        <PackageName Value="SDFLaz"/>
       </Item6>
       <Item7>
-        <PackageName Value="tiopfLCL"/>
+        <PackageName Value="DateTimeCtrls"/>
       </Item7>
       <Item8>
-        <PackageName Value="tiOPF"/>
+        <PackageName Value="tiopfLCL"/>
       </Item8>
       <Item9>
-        <PackageName Value="LCL"/>
+        <PackageName Value="tiOPF"/>
       </Item9>
+      <Item10>
+        <PackageName Value="LCL"/>
+      </Item10>
     </RequiredPackages>
     <Units Count="21">
       <Unit0>
