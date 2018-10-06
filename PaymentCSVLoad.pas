@@ -192,7 +192,6 @@ begin
     while not SdfDataSet1.EOF do
     begin
       EmpNo:= '';
-      //todo: prevalidate: cannot continue without an EMPNO column
 
       for i := 0 to SdfDataSet1.FieldCount -1 do
       begin

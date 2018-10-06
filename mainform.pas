@@ -85,7 +85,7 @@ type
     edtFilterPayments: TLabeledEdit;
     edtFilterPaymentsORNumber: TLabeledEdit;
     frReport1: TfrReport;
-    frUserDataset1: TfrUserDataset;
+    frUserDatasetLedger: TfrUserDataset;
     Label1: TLabel;
     Label10: TLabel;
     Label2: TLabel;
@@ -179,12 +179,19 @@ type
     procedure edtFilterPaymentsKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure frReport1GetValue(const ParName: String; var ParValue: Variant);
+    procedure frUserDatasetLedgerCheckEOF(Sender: TObject; var Eof: Boolean);
+    procedure frUserDatasetLedgerFirst(Sender: TObject);
+    procedure frUserDatasetLedgerNext(Sender: TObject);
     procedure sgdLoansDblClick(Sender: TObject);
     procedure sgdPaymentsDblClick(Sender: TObject);
     procedure sgdPersonsDblClick(Sender: TObject);
     procedure sgdServicesDblClick(Sender: TObject);
     procedure spbClearLoanFilterClick(Sender: TObject);
   private
+    LedgerPointer: integer;
+    LedgerDebitTotal: Double;
+    LedgerCreditTotal: Double;
     KeyBuffer: string;
     FLedgerDisplay: TLedgerDisplay;
     FLedgerPerson: TPersonBasic;
@@ -313,7 +320,7 @@ begin
     actClearMember.Enabled:= edtFilterMember.Text <> ''
 
   else if AAction = actShowLedger then
-    actShowLedger.Enabled:= (edtLedgerName.Text <> '') and (cmbLedgerService.Text<>'');
+    actShowLedger.Enabled:= (edtLedgerName.Text <> '') and (cmbLedgerService.Text<>'')
   ;
 end;
 
@@ -874,6 +881,64 @@ end;
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FLedgerPerson);
+end;
+
+procedure TfrmMain.frReport1GetValue(const ParName: String;
+  var ParValue: Variant);
+var
+  o: TLedgerItemDisplay;
+begin
+  if (LedgerPointer <= (LedgerDisplay.Count-1)) then
+    o := TLedgerItemDisplay( LedgerDisplay.Items[LedgerPointer] );
+
+  if (ParName = 'Member') or (ParName = 'Service') then
+  begin
+     if ParName = 'Member' then
+      ParValue:= LedgerPerson.Name
+    else if ParName = 'Service' then
+      ParValue := cmbLedgerService.Text
+  end
+  else begin
+    if ParName = 'TransDate' then
+      ParValue:= o.TransDate
+    else if ParName = 'Reference' then
+      ParValue:= o.Reference
+    else if ParName = 'Debit' then
+      ParValue:= o.Charges
+    else if ParName = 'Credit' then
+      ParValue:= o.Payments
+    else if ParName = 'Balance' then
+      ParValue:= o.Balance
+    else if ParName = 'DebitTotal' then
+      ParValue:= FormatFloat('#,0.00;(#,0.00); ', LedgerDebitTotal)
+    else if ParName = 'CreditTotal' then
+      ParValue:= FormatFloat('#,0.00;(#,0.00); ', LedgerCreditTotal)
+  end
+
+    ;
+end;
+
+procedure TfrmMain.frUserDatasetLedgerCheckEOF(Sender: TObject; var Eof: Boolean
+  );
+begin
+  Eof := (LedgerPointer > (LedgerDisplay.Count-1));
+end;
+
+procedure TfrmMain.frUserDatasetLedgerFirst(Sender: TObject);
+begin
+  LedgerPointer:= 0;
+  LedgerDebitTotal:= TLedgerItemDisplay( LedgerDisplay.items[0] ).PersonLedgerItem.Charges;
+  LedgerCreditTotal:= TLedgerItemDisplay( LedgerDisplay.items[0] ).PersonLedgerItem.Payments;
+end;
+
+procedure TfrmMain.frUserDatasetLedgerNext(Sender: TObject);
+begin
+  Inc(LedgerPointer);
+  if (LedgerPointer <= (LedgerDisplay.Count-1)) then
+  begin
+    LedgerDebitTotal:= LedgerDebitTotal + TLedgerItemDisplay( LedgerDisplay.items[LedgerPointer] ).PersonLedgerItem.Charges;
+    LedgerCreditTotal:= LedgerCreditTotal + TLedgerItemDisplay( LedgerDisplay.items[LedgerPointer] ).PersonLedgerItem.Payments;
+  end;
 end;
 
 
