@@ -9,7 +9,8 @@ uses
 
 const
   iindBtnFilterCancel = 0;
-  iindBtnDummy = 1;
+  iindBtnPrint = 1;
+  iindBtnDummy = 99;
 
 type
 

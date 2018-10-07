@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, FileUtil, IDEWindowIntf, Forms, Controls, Graphics,
   Dialogs, Menus, ActnList, StdActns, ComCtrls, Grids, ExtCtrls, Buttons,
   StdCtrls, EditBtn, ledger_bom, tiModelMediator, tiListMediators, tiMediators,
-  tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers, LR_Class, LR_DSet
+  tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers, LR_Class, LR_DSet,
+  LR_DBSet
   ;
 
 type
@@ -48,6 +49,7 @@ type
     actClearPaymentDate2: TAction;
     actClearLedgerDate1: TAction;
     actClearLedgerDate2: TAction;
+    actPrintLoans: TAction;
     actPrintLedger: TAction;
     actShowLedger: TAction;
     actSelectMember: TAction;
@@ -85,9 +87,11 @@ type
     edtFilterPayments: TLabeledEdit;
     edtFilterPaymentsORNumber: TLabeledEdit;
     frReport1: TfrReport;
+    frUserDatasetLoans: TfrUserDataset;
     frUserDatasetLedger: TfrUserDataset;
     Label1: TLabel;
     Label10: TLabel;
+    Label11: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -114,9 +118,10 @@ type
     sgdLoans: TStringGrid;
     sgdLedger: TStringGrid;
     sgdPayments: TStringGrid;
-    spbClearLedgerDate3: TSpeedButton;
+    spbPrintLedger: TSpeedButton;
     spbClearLoanDate1: TSpeedButton;
     spbClearLoanDate2: TSpeedButton;
+    spbPrintLoans: TSpeedButton;
     spbClearPMTDate1: TSpeedButton;
     spbClearPMTDate2: TSpeedButton;
     spbClearLoanType: TSpeedButton;
@@ -166,6 +171,7 @@ type
     procedure actHelpAboutExecute(Sender: TObject);
     procedure actCSVLoadMemberExecute(Sender: TObject);
     procedure actClearLoanDate2Execute(Sender: TObject);
+    procedure actPrintLoansExecute(Sender: TObject);
     procedure ActionList1Update(AAction: TBasicAction; var Handled: Boolean);
     procedure actPrintLedgerExecute(Sender: TObject);
     procedure actSelectMemberExecute(Sender: TObject);
@@ -180,15 +186,20 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure frReport1GetValue(const ParName: String; var ParValue: Variant);
+    procedure frReport1GetValueForLoans(const ParName: String; var ParValue: Variant);
     procedure frUserDatasetLedgerCheckEOF(Sender: TObject; var Eof: Boolean);
     procedure frUserDatasetLedgerFirst(Sender: TObject);
     procedure frUserDatasetLedgerNext(Sender: TObject);
+    procedure frUserDatasetLoansCheckEOF(Sender: TObject; var Eof: Boolean);
+    procedure frUserDatasetLoansFirst(Sender: TObject);
+    procedure frUserDatasetLoansNext(Sender: TObject);
     procedure sgdLoansDblClick(Sender: TObject);
     procedure sgdPaymentsDblClick(Sender: TObject);
     procedure sgdPersonsDblClick(Sender: TObject);
     procedure sgdServicesDblClick(Sender: TObject);
     procedure spbClearLoanFilterClick(Sender: TObject);
   private
+    LoanPointer: integer;
     LedgerPointer: integer;
     LedgerDebitTotal: Double;
     LedgerCreditTotal: Double;
@@ -288,6 +299,22 @@ begin
   dteLoans2.SetFocus;
 end;
 
+procedure TfrmMain.actPrintLoansExecute(Sender: TObject);
+var
+  frReportLoans: TfrReport;
+begin
+  with TfrReport.Create(Self) do
+  try
+    Clear;
+    Dataset := frUserDatasetLoans;
+    OnGetValue:= @frReport1GetValueForLoans;
+    LoadFromFile('reports\Loans.lrf');
+    ShowReport;
+  finally
+    free;
+  end;
+end;
+
 procedure TfrmMain.ActionList1Update(AAction: TBasicAction; var Handled: Boolean
   );
 begin
@@ -328,6 +355,9 @@ procedure TfrmMain.actPrintLedgerExecute(Sender: TObject);
 begin
   with frReport1 do
   begin
+    Clear;
+    Dataset := frUserDatasetLedger;
+    OnGetValue:= @frReport1GetValue;
     LoadFromFile('reports\Ledger.lrf');
     ShowReport;
   end;
@@ -834,6 +864,7 @@ begin
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLoanType.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLoanDate1.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLoanDate2.Glyph);
+  dmResources.imlButtonGlyphs.GetBitmap(iindBtnPrint,spbPrintLoans.Glyph);
 
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPaymentsFilter.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPaymentsORNoFilter.Glyph);
@@ -843,6 +874,7 @@ begin
 
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLedgerDate1.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLedgerDate2.Glyph);
+  dmResources.imlButtonGlyphs.GetBitmap(iindBtnPrint,spbPrintLedger.Glyph);
 
   actEditLoan.OnUpdate:= @actEditLoanUpdate;
   actDeleteLoan.OnUpdate:= @actEditLoanUpdate;
@@ -918,6 +950,52 @@ begin
     ;
 end;
 
+procedure TfrmMain.frReport1GetValueForLoans(const ParName: String;
+  var ParValue: Variant);
+var
+  o: TLoanDisplay;
+begin
+  if (LoanPointer <= (LoanDisplayList.Count-1)) then
+    o := TLoanDisplay( LoanDisplayList.Items[LoanPointer] );
+
+  begin
+    if ParName = 'Period' then
+      ParValue:= datetostr(date)
+    else if ParName = 'DocDate' then
+      ParValue:= o.DocDate
+    else if ParName = 'DocNumber' then
+      ParValue := o.DocNumber
+    else if ParName = 'Member' then
+      ParValue:= o.Person
+    else if ParName = 'Principal' then
+      ParValue:= o.Loan.Principal
+    else if ParName = 'Interest' then
+      ParValue:= o.Loan.Interest
+    else if ParName = 'Total' then
+      ParValue:= o.Loan.Total
+    else if ParName = 'Rebates' then
+      ParValue:= o.Loan.Rebates
+    else if ParName = 'Adjustments' then
+      ParValue:= o.Loan.Adjustments
+    else if ParName = 'NetProceeds' then
+      ParValue:= o.Loan.NetProceeds
+    else if ParName = 'foPrincipal' then
+      ParValue:= ''
+    else if ParName = 'foInterest' then
+      ParValue:= ''
+    else if ParName = 'foTotal' then
+      ParValue:= ''
+    else if ParName = 'foRebates' then
+      ParValue:= ''
+    else if ParName = 'foAdjustments' then
+      ParValue:= ''
+    else if ParName = 'foNetProceeds' then
+      ParValue:= ''
+  end
+
+    ;
+end;
+
 procedure TfrmMain.frUserDatasetLedgerCheckEOF(Sender: TObject; var Eof: Boolean
   );
 begin
@@ -938,6 +1016,29 @@ begin
   begin
     LedgerDebitTotal:= LedgerDebitTotal + TLedgerItemDisplay( LedgerDisplay.items[LedgerPointer] ).PersonLedgerItem.Charges;
     LedgerCreditTotal:= LedgerCreditTotal + TLedgerItemDisplay( LedgerDisplay.items[LedgerPointer] ).PersonLedgerItem.Payments;
+  end;
+end;
+
+procedure TfrmMain.frUserDatasetLoansCheckEOF(Sender: TObject; var Eof: Boolean
+  );
+begin
+  Eof := (LoanPointer > (LoanDisplayList.Count-1));
+end;
+
+procedure TfrmMain.frUserDatasetLoansFirst(Sender: TObject);
+begin
+  LoanPointer:= 0;
+  //LedgerDebitTotal:= TLedgerItemDisplay( LedgerDisplay.items[0] ).PersonLedgerItem.Charges;
+  //LedgerCreditTotal:= TLedgerItemDisplay( LedgerDisplay.items[0] ).PersonLedgerItem.Payments;
+end;
+
+procedure TfrmMain.frUserDatasetLoansNext(Sender: TObject);
+begin
+  Inc(LoanPointer);
+  if (LoanPointer <= (LoanDisplayList.Count-1)) then
+  begin
+    //LedgerDebitTotal:= LedgerDebitTotal + TLedgerItemDisplay( LedgerDisplay.items[LedgerPointer] ).PersonLedgerItem.Charges;
+    //LedgerCreditTotal:= LedgerCreditTotal + TLedgerItemDisplay( LedgerDisplay.items[LedgerPointer] ).PersonLedgerItem.Payments;
   end;
 end;
 
@@ -1044,7 +1145,6 @@ begin
     FMedServices.Name:= 'ServicesMediator';
     FMedServices.AddComposite('Name(150,"Name");ServiceTypeGUI(100,"Type");MaxAmount(100,"Max Amount",>);InterestRate(100,"Interest",>);MaxTerm(100,"Terms",>);Dummy(100," ")',sgdServices);
   end;
-  //FMedServices.Subject:= FServices;
   FMedServices.Subject := ServiceDisplayList;
   FMedServices.Active:= True;
 
@@ -1053,9 +1153,8 @@ begin
   begin
     FMedLoans := TtiModelMediator.Create(Self);
     FMedLoans.Name:= 'LoansMediator';
-    FMedLoans.AddComposite('Person(120,"Member");Service(120,"Loan Type");Principal(100,"Amount",>);Interest(100,"Interest",>);Total(100,"Total",>);Adjustments(100,"Adjustments",>);Amortization(100,"Amortization",>);DocDate;DocNumber;ID(100," ")',sgdLoans);
+    FMedLoans.AddComposite('DocDate;DocNumber;Person(120,"Member");Service(120,"Loan Type");Principal(100,"Amount",>);Interest(100,"Interest",>);Total(100,"Total",>);Adjustments(100,"Adjustments",>);NetProceeds(100,"Net Proceeds",>);Amortization(100,"Amortization",>);PaymentStart(100,"Pmt Start");ID(100," ")',sgdLoans);
   end;
-  //FMedLoans.Subject:= gLedgerManager.Loans;
   FMedLoans.Subject := LoanDisplayList;
   FMedLoans.Active:= True;
 
@@ -1065,12 +1164,10 @@ begin
     FMedPayments := TtiModelMediator.Create(Self);
     FMedPayments.AddComposite('Person(150,"Member");DocDate;DocNumber;Service;Amount(100,"Amount",>);dummy(100," ")', sgdPayments);
   end;
-  //FMedPayments.Subject:= gLedgerManager.PaymentList;
   FMedPayments.Subject := PaymentDisplayList;
   FMedPayments.Active:= True;
 
   //ledger mediator
-  //todo: consider ledger without member name, then include name when like this
   if not Assigned(FMedLedger) then
   begin
     FMedLedger := TtiModelMediator.create(self);
