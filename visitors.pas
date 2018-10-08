@@ -159,7 +159,9 @@ const
       'SELECT r.*, p.NAME PERSON_NAME, s.NAME SERVICE_NAME '+
       'FROM LOAN r                             '+
       'left join PERSON p on p.OID=r.PERSON_OID   '+
-      'left join SERVICE s on s.OID=r.SERVICE_OID '
+      'left join SERVICE s on s.OID=r.SERVICE_OID '+
+      '%s '+
+      'order by r.DOCDATE, r.DOCNUMBER'
       ;
   SQLCreateLoan =
       'INSERT INTO LOAN (OID, PERSON_OID, SERVICE_OID, DOCNUMBER, DOCDATE, NOTES, PRINCIPAL,'+
@@ -550,16 +552,21 @@ procedure TSaveLoanVisitor.SetupParams;
 { TReadLoansVisitor }
 
 procedure TReadLoansVisitor.Init;
+var
+  sWhere: string;
 begin
-  Query.SQLText:= SQLReadLoans;
+  //Query.SQLText:= SQLReadLoans;
   // where clause start
+  sWhere:= '';
   if TLoanList(Visited).ListFilter.Active then
   begin
-    Query.SQL.Add(' WHERE');
-    Query.SQL.Add(' '+TLoanList(Visited).ListFilter.Criteria);
+    sWhere:= ' WHERE '+TLoanList(Visited).ListFilter.Criteria;
+    //Query.SQL.Add(' WHERE');
+    //Query.SQL.Add(' '+TLoanList(Visited).ListFilter.Criteria);
   end;
-  Query.SQL.Add('order by r.DOCNUMBER, r.OID');
+  //Query.SQL.Add('order by r.DOCNUMBER, r.OID');
   //where clause end
+  Query.SQLText:= Format(SQLReadLoans,[sWhere]);
 end;
 
 function TReadLoansVisitor.AcceptVisitor: Boolean;

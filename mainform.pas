@@ -8,8 +8,8 @@ uses
   Classes, SysUtils, FileUtil, IDEWindowIntf, Forms, Controls, Graphics,
   Dialogs, Menus, ActnList, StdActns, ComCtrls, Grids, ExtCtrls, Buttons,
   StdCtrls, EditBtn, ledger_bom, tiModelMediator, tiListMediators, tiMediators,
-  tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers, LR_Class, LR_DSet,
-  LR_DBSet
+  tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers, BufDataset, db,
+  SdfData, LR_Class, LR_DSet, LR_DBSet
   ;
 
 type
@@ -63,6 +63,7 @@ type
     btnShowLedger: TButton;
     btnDeletePayment: TButton;
     btnEditPayment: TButton;
+    BufDataset1: TBufDataset;
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -86,6 +87,7 @@ type
     edtLoanMember: TLabeledEdit;
     edtFilterPayments: TLabeledEdit;
     edtFilterPaymentsORNumber: TLabeledEdit;
+    frDBDataSet1: TfrDBDataSet;
     frReport1: TfrReport;
     frUserDatasetLoans: TfrUserDataset;
     frUserDatasetLedger: TfrUserDataset;
@@ -967,12 +969,16 @@ begin
       ParValue := o.DocNumber
     else if ParName = 'Member' then
       ParValue:= o.Person
+    else if ParName = 'Service' then
+      ParValue:= o.Service
     else if ParName = 'Principal' then
       ParValue:= o.Loan.Principal
     else if ParName = 'Interest' then
       ParValue:= o.Loan.Interest
     else if ParName = 'Total' then
       ParValue:= o.Loan.Total
+    else if ParName = 'PreviousBalance' then
+      ParValue:= o.Loan.PreviousBalance
     else if ParName = 'Rebates' then
       ParValue:= o.Loan.Rebates
     else if ParName = 'Adjustments' then
@@ -980,17 +986,19 @@ begin
     else if ParName = 'NetProceeds' then
       ParValue:= o.Loan.NetProceeds
     else if ParName = 'foPrincipal' then
-      ParValue:= ''
+      ParValue:= 'foPrincipal'
     else if ParName = 'foInterest' then
-      ParValue:= ''
+      ParValue:= 'foInterest'
     else if ParName = 'foTotal' then
-      ParValue:= ''
+      ParValue:= 'foTotal'
+    else if ParName = 'foPreviousBalance' then
+      ParValue:= 'foPreviousBalance'
     else if ParName = 'foRebates' then
-      ParValue:= ''
+      ParValue:= 'foRebates'
     else if ParName = 'foAdjustments' then
-      ParValue:= ''
+      ParValue:= 'foAdjustments'
     else if ParName = 'foNetProceeds' then
-      ParValue:= ''
+      ParValue:= 'foNetProceeds'
   end
 
     ;
