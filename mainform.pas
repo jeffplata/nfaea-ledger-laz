@@ -9,7 +9,7 @@ uses
   Dialogs, Menus, ActnList, StdActns, ComCtrls, Grids, ExtCtrls, Buttons,
   StdCtrls, EditBtn, ledger_bom, tiModelMediator, tiListMediators, tiMediators,
   tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers, BufDataset, db,
-  SdfData, LR_Class, LR_DSet, LR_DBSet
+  SdfData, dbf, LR_Class, LR_DSet, LR_DBSet
   ;
 
 type
@@ -256,7 +256,7 @@ uses
   , PaymentEditForm
   , ResourceDM
   , PaymentCSVLoad
-  , ObjectUtils, PeriodSelectForm, LoanCSVLoad, LookupForm
+  , ObjectUtils, PeriodSelectForm, LoanCSVLoad, LookupForm, ListToBufDatasetU
   ;
 
 const
@@ -302,9 +302,10 @@ begin
 end;
 
 procedure TfrmMain.actPrintLoansExecute(Sender: TObject);
-var
-  frReportLoans: TfrReport;
 begin
+
+  ListToBufDataset(gLedgerManager.Loans,BufDataset1,['DOcNumber','DocDate','Principal']);
+{
   with TfrReport.Create(Self) do
   try
     Clear;
@@ -315,6 +316,7 @@ begin
   finally
     free;
   end;
+  }
 end;
 
 procedure TfrmMain.ActionList1Update(AAction: TBasicAction; var Handled: Boolean

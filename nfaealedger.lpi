@@ -23,39 +23,42 @@
         <LaunchingApplication PathPlusParams="\usr\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="10">
+    <RequiredPackages Count="11">
       <Item1>
-        <PackageName Value="lazreport"/>
+        <PackageName Value="DBFLaz"/>
       </Item1>
       <Item2>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="lazreport"/>
       </Item2>
       <Item3>
-        <PackageName Value="jujiboutils"/>
+        <PackageName Value="IDEIntf"/>
       </Item3>
       <Item4>
-        <PackageName Value="LazControls"/>
+        <PackageName Value="jujiboutils"/>
       </Item4>
       <Item5>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LazControls"/>
       </Item5>
       <Item6>
-        <PackageName Value="SDFLaz"/>
+        <PackageName Value="FCL"/>
       </Item6>
       <Item7>
-        <PackageName Value="DateTimeCtrls"/>
+        <PackageName Value="SDFLaz"/>
       </Item7>
       <Item8>
-        <PackageName Value="tiopfLCL"/>
+        <PackageName Value="DateTimeCtrls"/>
       </Item8>
       <Item9>
-        <PackageName Value="tiOPF"/>
+        <PackageName Value="tiopfLCL"/>
       </Item9>
       <Item10>
-        <PackageName Value="LCL"/>
+        <PackageName Value="tiOPF"/>
       </Item10>
+      <Item11>
+        <PackageName Value="LCL"/>
+      </Item11>
     </RequiredPackages>
-    <Units Count="21">
+    <Units Count="22">
       <Unit0>
         <Filename Value="nfaealedger.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -184,6 +187,11 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit20>
+      <Unit21>
+        <Filename Value="listtobufdatasetU.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="ListToBufDatasetU"/>
+      </Unit21>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

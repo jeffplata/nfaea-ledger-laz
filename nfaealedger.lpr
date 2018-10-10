@@ -8,8 +8,9 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, mainform, ledger_bom, ledgermanager, visitors, PersonEditForm,
-  datetimectrls, sdflaz, lazcontrols, MemberCSVLoad, Model_View,
-  ResourceDM, SQLWhereBuilderNV, ObjectListFilter, DisplayHelpers, PeriodSelectForm;
+  datetimectrls, sdflaz, lazcontrols, dbflaz, MemberCSVLoad, Model_View,
+  ResourceDM, SQLWhereBuilderNV, ObjectListFilter, DisplayHelpers,
+  PeriodSelectForm;
 
 {$R *.res}
 
