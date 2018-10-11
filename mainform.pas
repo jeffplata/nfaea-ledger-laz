@@ -7,9 +7,9 @@ interface
 uses
   Classes, SysUtils, FileUtil, IDEWindowIntf, Forms, Controls, Graphics,
   Dialogs, Menus, ActnList, StdActns, ComCtrls, Grids, ExtCtrls, Buttons,
-  StdCtrls, EditBtn, ledger_bom, tiModelMediator, tiListMediators, tiMediators,
-  tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers, BufDataset, db,
-  SdfData, dbf, LR_Class, LR_DSet, LR_DBSet
+  StdCtrls, EditBtn, DBGrids, ledger_bom, tiModelMediator, tiListMediators,
+  tiMediators, tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers,
+  BufDataset, db, SdfData, dbf, LR_Class, LR_DSet, LR_DBSet
   ;
 
 type
@@ -76,6 +76,8 @@ type
     cmbPaymentsFilterService: TComboBox;
     cmbLoanLoanTypes: TComboBox;
     cmbLedgerService: TComboBox;
+    DataSource1: TDataSource;
+    DBGrid1: TDBGrid;
     dteLoans1: TDateEdit;
     dteLoans2: TDateEdit;
     dtePaymentDate1: TDateEdit;
@@ -303,9 +305,9 @@ end;
 
 procedure TfrmMain.actPrintLoansExecute(Sender: TObject);
 begin
+  ListToBufDataset(gLedgerManager.Loans,BufDataset1,['DocNumber','DocDate','Principal']);
 
-  ListToBufDataset(gLedgerManager.Loans,BufDataset1,['DOcNumber','DocDate','Principal']);
-{
+  {
   with TfrReport.Create(Self) do
   try
     Clear;
