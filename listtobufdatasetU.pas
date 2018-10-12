@@ -31,7 +31,6 @@ begin
     begin
       PropTypeName := MyPropInfo^.PropType^.Name;
 
-
       if PropTypeName = 'AnsiString' then
         ft:= ftString
       else if PropTypeName = 'TDate' then
@@ -62,7 +61,7 @@ begin
       else
         ABufDataset.Fields[j].AsString:= AList.Items[i].PropValue[AFields[j]]
         ;
-      writeln(AList.Items[i].PropValue[AFields[j]] );
+      writeln( ABufDataset.Fields[j].AsString );
     end;
     ABufDataset.Post;
   end;
