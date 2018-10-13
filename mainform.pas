@@ -304,8 +304,11 @@ begin
 end;
 
 procedure TfrmMain.actPrintLoansExecute(Sender: TObject);
+const
+  fields = 'DocNumber:20;DocDate;Principal';
 begin
-  ListToBufDataset(gLedgerManager.Loans,BufDataset1,['DocNumber','DocDate','Principal']);
+  ListToBufDataset(gLedgerManager.Loans,BufDataset1,fields);
+  //todo: continue reporting by bufdataset
 
   {
   with TfrReport.Create(Self) do
