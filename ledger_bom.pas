@@ -384,8 +384,10 @@ type
     FService: TService;
     FTerms: Integer;
     FTotal: Currency;
+    function GetMember: String;
     function GetPersonID: string;
     function GetServiceID: string;
+    function GetServiceName: String;
     procedure SetAdjustments(AValue: Currency);
     procedure SetAmortization(AValue: Currency);
     procedure SetBalance(AValue: Currency);
@@ -441,7 +443,9 @@ type
     Property PaymentStart: Tdate read FPaymentStart write SetPaymentStart;
     Property PaymentEnd: Tdate read FPaymentEnd write SetPaymentEnd;
     property Balance: Currency read FBalance write SetBalance;
-    property AdjustmentList: TLoanAdjustmentList read FAdjustmentList; // write SetAdjustmentList;
+    property AdjustmentList: TLoanAdjustmentList read FAdjustmentList;
+    property Member: String read GetMember;
+    property ServiceName: String read GetServiceName;
   end;
 
   { TLoanList }
@@ -830,9 +834,19 @@ begin
   result := Person.OID.AsString;
 end;
 
+function TLoan.GetMember: String;
+begin
+  Result := Person.Name;
+end;
+
 function TLoan.GetServiceID: string;
 begin
   result := Service.OID.AsString;
+end;
+
+function TLoan.GetServiceName: String;
+begin
+  Result := Service.Name;
 end;
 
 procedure TLoan.SetAdjustments(AValue: Currency);

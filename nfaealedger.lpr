@@ -10,7 +10,7 @@ uses
   Forms, mainform, ledger_bom, ledgermanager, visitors, PersonEditForm,
   datetimectrls, sdflaz, lazcontrols, dbflaz, MemberCSVLoad, Model_View,
   ResourceDM, SQLWhereBuilderNV, ObjectListFilter, DisplayHelpers,
-  PeriodSelectForm;
+  PeriodSelectForm, MyUtils;
 
 {$R *.res}
 

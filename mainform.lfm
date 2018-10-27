@@ -292,7 +292,7 @@ object frmMain: TfrmMain
         Left = 687
         Height = 22
         Top = 9
-        Width = 67
+        Width = 73
         Action = actFilterLoans
         BorderSpacing.Left = 8
         TabOrder = 3
@@ -368,7 +368,7 @@ object frmMain: TfrmMain
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = btnApplyLoanFilter
         AnchorSideTop.Side = asrCenter
-        Left = 754
+        Left = 760
         Height = 22
         Top = 9
         Width = 23
@@ -381,16 +381,6 @@ object frmMain: TfrmMain
         Width = 40
         Caption = 'Label11'
         ParentColor = False
-      end
-      object DBGrid1: TDBGrid
-        Left = 467
-        Height = 186
-        Top = 110
-        Width = 326
-        Color = clWindow
-        Columns = <>
-        DataSource = DataSource1
-        TabOrder = 9
       end
     end
     object tabPayments: TTabSheet
@@ -1047,7 +1037,7 @@ object frmMain: TfrmMain
   end
   object BufDataset1: TBufDataset
     PacketRecords = -1
-    IndexFieldNames = 'DocNumber'
+    IndexFieldNames = 'ServiceName;DocDate;DocNumber'
     FieldDefs = <>
     left = 376
     top = 104
@@ -1056,10 +1046,5 @@ object frmMain: TfrmMain
     DataSet = BufDataset1
     left = 328
     top = 104
-  end
-  object DataSource1: TDataSource
-    DataSet = BufDataset1
-    left = 505
-    top = 164
   end
 end

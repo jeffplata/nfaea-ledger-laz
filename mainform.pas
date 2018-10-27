@@ -9,7 +9,7 @@ uses
   Dialogs, Menus, ActnList, StdActns, ComCtrls, Grids, ExtCtrls, Buttons,
   StdCtrls, EditBtn, DBGrids, ledger_bom, tiModelMediator, tiListMediators,
   tiMediators, tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers,
-  BufDataset, db, SdfData, dbf, LR_Class, LR_DSet, LR_DBSet
+  BufDataset, db, dbf, LR_Class, LR_DSet, LR_DBSet
   ;
 
 type
@@ -76,8 +76,6 @@ type
     cmbPaymentsFilterService: TComboBox;
     cmbLoanLoanTypes: TComboBox;
     cmbLedgerService: TComboBox;
-    DataSource1: TDataSource;
-    DBGrid1: TDBGrid;
     dteLoans1: TDateEdit;
     dteLoans2: TDateEdit;
     dtePaymentDate1: TDateEdit;
@@ -249,16 +247,10 @@ var
 implementation
 
 uses
-  PersonEditForm
-  ,ServiceEditForm
-  ,LoanEditForm
-  ,ledgermanager
-  ,tiOPFManager, tiBaseMediator
-  ,MemberCSVLoad
-  , PaymentEditForm
-  , ResourceDM
-  , PaymentCSVLoad
-  , ObjectUtils, PeriodSelectForm, LoanCSVLoad, LookupForm, ListToBufDatasetU
+  PersonEditForm, ServiceEditForm, LoanEditForm, ledgermanager, tiOPFManager,
+  tiBaseMediator, MemberCSVLoad, PaymentEditForm, ResourceDM, PaymentCSVLoad,
+  ObjectUtils, PeriodSelectForm, LoanCSVLoad, LookupForm, ListToBufDatasetU,
+  MyUtils
   ;
 
 const
@@ -305,23 +297,23 @@ end;
 
 procedure TfrmMain.actPrintLoansExecute(Sender: TObject);
 const
-  fields = 'DocNumber:20;DocDate;Principal';
+  fields = 'DocDate;DocNumber:20;Member:60;ServiceName:20;Principal;Interest;Total;PreviousBalance;Rebates;Adjustments;NetProceeds';
 begin
   ListToBufDataset(gLedgerManager.Loans,BufDataset1,fields);
-  //todo: continue reporting by bufdataset
 
-  {
   with TfrReport.Create(Self) do
   try
     Clear;
-    Dataset := frUserDatasetLoans;
-    OnGetValue:= @frReport1GetValueForLoans;
+    Dataset := frDBDataSet1;
+    frVariables['Period'] := BeautifyDatePeriod(dteLoans1.Date, dteLoans2.Date);
+           //OnGetValue:= @frReport1GetValueForLoans;
     LoadFromFile('reports\Loans.lrf');
     ShowReport;
   finally
+    frDBDataSet1.DataSet.Close;
     free;
   end;
-  }
+
 end;
 
 procedure TfrmMain.ActionList1Update(AAction: TBasicAction; var Handled: Boolean
@@ -346,6 +338,8 @@ begin
     actClearLoanDate2.Enabled:= dteLoans2.Text <> ''
   else if AAction = actClearLoanType then
     actClearLoanType.Enabled:= cmbLoanLoanTypes.Text <> ''
+  else if AAction = actPrintLoans then
+    actPrintLoans.Enabled:= gLedgerManager.Loans.Count > 0
 
   else if AAction = actClearLedgerDate1 then
     actClearLedgerDate1.Enabled:= dteLedgerDate1.Text <> ''

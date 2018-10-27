@@ -52,11 +52,10 @@ var
   fields: TFieldDefs;
   fieldnames: TStringArray;
   fieldsizes: TIntegerArray;
-  ft: TFieldType;              //49182
+  ft: TFieldType;
 begin
   Parse( AFields, fieldnames, fieldsizes );
-  writeln(length(fieldnames));
-
+writeln(AList.Count);
   fields := TFieldDefs.Create(ABufDataset);
   for i := 0 to Length(fieldnames)-1 do
   begin
