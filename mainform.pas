@@ -9,7 +9,7 @@ uses
   Dialogs, Menus, ActnList, StdActns, ComCtrls, Grids, ExtCtrls, Buttons,
   StdCtrls, EditBtn, DBGrids, ledger_bom, tiModelMediator, tiListMediators,
   tiMediators, tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers,
-  BufDataset, db, dbf, LR_Class, LR_DSet, LR_DBSet
+  BufDataset, db, dbf, LR_Class, LR_DSet, LR_DBSet, LR_E_CSV, LR_PGrid, LR_ChBox
   ;
 
 type
@@ -87,6 +87,7 @@ type
     edtLoanMember: TLabeledEdit;
     edtFilterPayments: TLabeledEdit;
     edtFilterPaymentsORNumber: TLabeledEdit;
+    frCSVExport1: TfrCSVExport;
     frDBDataSet1: TfrDBDataSet;
     frReport1: TfrReport;
     frUserDatasetLoans: TfrUserDataset;
@@ -187,6 +188,7 @@ type
     procedure edtFilterPaymentsKeyPress(Sender: TObject; var Key: char);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure frReport1ExportFilterSetup(Sender: TfrExportFilter);
     procedure frReport1GetValue(const ParName: String; var ParValue: Variant);
     procedure frReport1GetValueForLoans(const ParName: String; var ParValue: Variant);
     procedure frUserDatasetLedgerCheckEOF(Sender: TObject; var Eof: Boolean);
@@ -307,6 +309,7 @@ begin
     Dataset := frDBDataSet1;
     frVariables['Period'] := BeautifyDatePeriod(dteLoans1.Date, dteLoans2.Date);
            //OnGetValue:= @frReport1GetValueForLoans;
+    OnExportFilterSetup:= @frReport1ExportFilterSetup;
     LoadFromFile('reports\Loans.lrf');
     ShowReport;
   finally
@@ -916,6 +919,12 @@ end;
 procedure TfrmMain.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(FLedgerPerson);
+end;
+
+
+procedure TfrmMain.frReport1ExportFilterSetup(Sender: TfrExportFilter);
+begin
+  sender.BandTypes:= [btGroupHeader,btMasterHeader,btMasterData,btGroupFooter];
 end;
 
 procedure TfrmMain.frReport1GetValue(const ParName: String;

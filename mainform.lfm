@@ -152,11 +152,11 @@ object frmMain: TfrmMain
     end
     object tabLoans: TTabSheet
       Caption = 'Loans'
-      ClientHeight = 319
+      ClientHeight = 321
       ClientWidth = 814
       object sgdLoans: TStringGrid
         Left = 0
-        Height = 255
+        Height = 257
         Top = 64
         Width = 814
         Align = alBottom
@@ -171,7 +171,7 @@ object frmMain: TfrmMain
       end
       object edtLoanMember: TLabeledEdit
         Left = 304
-        Height = 23
+        Height = 21
         Top = 8
         Width = 144
         EditLabel.AnchorSideTop.Control = edtLoanMember
@@ -179,10 +179,10 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtLoanMember
         EditLabel.AnchorSideBottom.Control = edtLoanMember
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 256
-        EditLabel.Height = 15
+        EditLabel.Left = 263
+        EditLabel.Height = 13
         EditLabel.Top = 12
-        EditLabel.Width = 45
+        EditLabel.Width = 38
         EditLabel.Caption = 'Member'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -196,7 +196,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 448
         Height = 22
-        Top = 8
+        Top = 7
         Width = 23
         Action = actClearLoanMember
       end
@@ -233,7 +233,7 @@ object frmMain: TfrmMain
       object dteLoans1: TDateEdit
         AnchorSideTop.Side = asrBottom
         Left = 512
-        Height = 23
+        Height = 21
         Top = 9
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
@@ -250,8 +250,8 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLoans1
         AnchorSideTop.Side = asrBottom
         Left = 512
-        Height = 23
-        Top = 35
+        Height = 21
+        Top = 33
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -269,7 +269,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 656
         Height = 22
-        Top = 9
+        Top = 8
         Width = 23
         Action = actClearLoanDate1
       end
@@ -280,7 +280,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 656
         Height = 22
-        Top = 35
+        Top = 32
         Width = 23
         Action = actClearLoanDate2
       end
@@ -291,7 +291,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 687
         Height = 22
-        Top = 9
+        Top = 8
         Width = 73
         Action = actFilterLoans
         BorderSpacing.Left = 8
@@ -301,10 +301,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLoans1
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dteLoans1
-        Left = 480
-        Height = 15
+        Left = 484
+        Height = 13
         Top = 13
-        Width = 28
+        Width = 24
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -315,10 +315,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLoans2
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dteLoans2
-        Left = 494
-        Height = 15
-        Top = 39
-        Width = 14
+        Left = 496
+        Height = 13
+        Top = 37
+        Width = 12
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -330,11 +330,11 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = edtLoanMember
         AnchorSideTop.Side = asrBottom
         Left = 304
-        Height = 23
-        Top = 34
+        Height = 21
+        Top = 32
         Width = 144
         BorderSpacing.Top = 3
-        ItemHeight = 15
+        ItemHeight = 13
         Style = csDropDownList
         TabOrder = 8
       end
@@ -342,10 +342,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = cmbLoanLoanTypes
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cmbLoanLoanTypes
-        Left = 245
-        Height = 15
-        Top = 38
-        Width = 55
+        Left = 250
+        Height = 13
+        Top = 36
+        Width = 50
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -359,7 +359,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 448
         Height = 22
-        Top = 34
+        Top = 31
         Width = 23
         Action = actClearLoanType
       end
@@ -370,15 +370,15 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 760
         Height = 22
-        Top = 9
+        Top = 8
         Width = 23
         Action = actPrintLoans
       end
       object Label11: TLabel
         Left = 241
-        Height = 15
+        Height = 13
         Top = 104
-        Width = 40
+        Width = 37
         Caption = 'Label11'
         ParentColor = False
       end
@@ -503,11 +503,11 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = edtFilterPaymentsORNumber
         AnchorSideTop.Side = asrBottom
         Left = 304
-        Height = 23
+        Height = 21
         Top = 56
         Width = 144
         BorderSpacing.Top = 3
-        ItemHeight = 15
+        ItemHeight = 13
         Style = csDropDownList
         TabOrder = 6
       end
@@ -641,11 +641,11 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = edtLedgerName
         AnchorSideTop.Side = asrBottom
         Left = 88
-        Height = 23
+        Height = 21
         Top = 33
         Width = 152
         BorderSpacing.Top = 3
-        ItemHeight = 15
+        ItemHeight = 13
         Style = csDropDownList
         TabOrder = 2
       end
@@ -1018,6 +1018,7 @@ object frmMain: TfrmMain
     RebuildPrinter = True
     DataType = dtDataSource
     OnGetValue = frReport1GetValue
+    OnExportFilterSetup = frReport1ExportFilterSetup
     left = 184
     top = 104
   end
@@ -1045,6 +1046,10 @@ object frmMain: TfrmMain
   object frDBDataSet1: TfrDBDataSet
     DataSet = BufDataset1
     left = 328
+    top = 104
+  end
+  object frCSVExport1: TfrCSVExport
+    left = 442
     top = 104
   end
 end

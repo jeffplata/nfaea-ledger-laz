@@ -89,7 +89,7 @@ implementation
 
 uses
   ledgermanager
-  ,LookupForm, LoanAdjEditForm, ObjectUtils, PersonsLookupForm
+  ,LookupForm, LoanAdjEditForm, ObjectUtils
   ,LCLType
   ;
 
