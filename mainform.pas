@@ -300,7 +300,12 @@ end;
 procedure TfrmMain.actPrintLoansExecute(Sender: TObject);
 const
   fields = 'DocDate;DocNumber:20;Member:60;ServiceName:20;Principal;Interest;Total;PreviousBalance;Rebates;Adjustments;NetProceeds';
+var
+  lDataset: TBufDataset;
 begin
+  lDataset := TBufDataset.Create(Self);
+  //todo: continue here
+
   ListToBufDataset(gLedgerManager.Loans,BufDataset1,fields);
 
   with TfrReport.Create(Self) do
@@ -354,6 +359,9 @@ begin
 
   else if AAction = actShowLedger then
     actShowLedger.Enabled:= (edtLedgerName.Text <> '') and (cmbLedgerService.Text<>'')
+  else if AAction = actPrintLedger then
+    actPrintLedger.Enabled:= gLedgerManager.Ledger.Count > 0
+
   ;
 end;
 
