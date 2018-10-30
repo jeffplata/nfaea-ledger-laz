@@ -16,9 +16,9 @@ object frmMain: TfrmMain
     Height = 347
     Top = 0
     Width = 822
-    ActivePage = tabLoans
+    ActivePage = tabPayments
     Align = alClient
-    TabIndex = 2
+    TabIndex = 3
     TabOrder = 0
     object tabPersons: TTabSheet
       Caption = 'Members'
@@ -104,12 +104,12 @@ object frmMain: TfrmMain
     object tabServices: TTabSheet
       Caption = 'Services'
       ClientHeight = 319
-      ClientWidth = 771
+      ClientWidth = 814
       object sgdServices: TStringGrid
         Left = 0
         Height = 279
         Top = 40
-        Width = 771
+        Width = 814
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 0
@@ -152,11 +152,11 @@ object frmMain: TfrmMain
     end
     object tabLoans: TTabSheet
       Caption = 'Loans'
-      ClientHeight = 321
+      ClientHeight = 319
       ClientWidth = 814
       object sgdLoans: TStringGrid
         Left = 0
-        Height = 257
+        Height = 255
         Top = 64
         Width = 814
         Align = alBottom
@@ -171,7 +171,7 @@ object frmMain: TfrmMain
       end
       object edtLoanMember: TLabeledEdit
         Left = 304
-        Height = 21
+        Height = 23
         Top = 8
         Width = 144
         EditLabel.AnchorSideTop.Control = edtLoanMember
@@ -179,10 +179,10 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtLoanMember
         EditLabel.AnchorSideBottom.Control = edtLoanMember
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 263
-        EditLabel.Height = 13
+        EditLabel.Left = 256
+        EditLabel.Height = 15
         EditLabel.Top = 12
-        EditLabel.Width = 38
+        EditLabel.Width = 45
         EditLabel.Caption = 'Member'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -196,7 +196,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 448
         Height = 22
-        Top = 7
+        Top = 8
         Width = 23
         Action = actClearLoanMember
       end
@@ -233,7 +233,7 @@ object frmMain: TfrmMain
       object dteLoans1: TDateEdit
         AnchorSideTop.Side = asrBottom
         Left = 512
-        Height = 21
+        Height = 23
         Top = 9
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
@@ -250,8 +250,8 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLoans1
         AnchorSideTop.Side = asrBottom
         Left = 512
-        Height = 21
-        Top = 33
+        Height = 23
+        Top = 35
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -269,7 +269,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 656
         Height = 22
-        Top = 8
+        Top = 9
         Width = 23
         Action = actClearLoanDate1
       end
@@ -280,7 +280,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 656
         Height = 22
-        Top = 32
+        Top = 35
         Width = 23
         Action = actClearLoanDate2
       end
@@ -291,7 +291,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 687
         Height = 22
-        Top = 8
+        Top = 9
         Width = 73
         Action = actFilterLoans
         BorderSpacing.Left = 8
@@ -301,10 +301,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLoans1
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dteLoans1
-        Left = 484
-        Height = 13
+        Left = 480
+        Height = 15
         Top = 13
-        Width = 24
+        Width = 28
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -315,10 +315,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLoans2
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dteLoans2
-        Left = 496
-        Height = 13
-        Top = 37
-        Width = 12
+        Left = 494
+        Height = 15
+        Top = 39
+        Width = 14
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -330,11 +330,11 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = edtLoanMember
         AnchorSideTop.Side = asrBottom
         Left = 304
-        Height = 21
-        Top = 32
+        Height = 23
+        Top = 34
         Width = 144
         BorderSpacing.Top = 3
-        ItemHeight = 13
+        ItemHeight = 15
         Style = csDropDownList
         TabOrder = 8
       end
@@ -342,10 +342,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = cmbLoanLoanTypes
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cmbLoanLoanTypes
-        Left = 250
-        Height = 13
-        Top = 36
-        Width = 50
+        Left = 245
+        Height = 15
+        Top = 38
+        Width = 55
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -359,7 +359,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 448
         Height = 22
-        Top = 31
+        Top = 34
         Width = 23
         Action = actClearLoanType
       end
@@ -370,26 +370,26 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 760
         Height = 22
-        Top = 8
+        Top = 9
         Width = 23
         Action = actPrintLoans
       end
       object Label11: TLabel
         Left = 241
-        Height = 13
+        Height = 15
         Top = 104
-        Width = 37
+        Width = 40
         Caption = 'Label11'
         ParentColor = False
       end
     end
     object tabPayments: TTabSheet
       Caption = 'Payments'
-      ClientHeight = 321
-      ClientWidth = 771
+      ClientHeight = 319
+      ClientWidth = 814
       object edtFilterPayments: TLabeledEdit
         Left = 304
-        Height = 21
+        Height = 23
         Top = 8
         Width = 144
         EditLabel.AnchorSideTop.Control = edtFilterPayments
@@ -397,10 +397,10 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtFilterPayments
         EditLabel.AnchorSideBottom.Control = edtFilterPayments
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 263
-        EditLabel.Height = 13
+        EditLabel.Left = 256
+        EditLabel.Height = 15
         EditLabel.Top = 12
-        EditLabel.Width = 38
+        EditLabel.Width = 45
         EditLabel.Caption = 'Member'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -414,7 +414,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 448
         Height = 22
-        Top = 7
+        Top = 8
         Width = 23
         Action = ActClearPayee
       end
@@ -450,9 +450,9 @@ object frmMain: TfrmMain
       end
       object sgdPayments: TStringGrid
         Left = 0
-        Height = 233
+        Height = 231
         Top = 88
-        Width = 771
+        Width = 814
         Align = alBottom
         Anchors = [akTop, akLeft, akRight, akBottom]
         ColCount = 0
@@ -468,8 +468,8 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = edtFilterPayments
         AnchorSideTop.Side = asrBottom
         Left = 304
-        Height = 21
-        Top = 32
+        Height = 23
+        Top = 34
         Width = 144
         BorderSpacing.Top = 3
         EditLabel.AnchorSideTop.Control = edtFilterPaymentsORNumber
@@ -477,10 +477,10 @@ object frmMain: TfrmMain
         EditLabel.AnchorSideRight.Control = edtFilterPaymentsORNumber
         EditLabel.AnchorSideBottom.Control = edtFilterPaymentsORNumber
         EditLabel.AnchorSideBottom.Side = asrBottom
-        EditLabel.Left = 246
-        EditLabel.Height = 13
-        EditLabel.Top = 36
-        EditLabel.Width = 55
+        EditLabel.Left = 238
+        EditLabel.Height = 15
+        EditLabel.Top = 38
+        EditLabel.Width = 63
         EditLabel.Caption = 'OR Number'
         EditLabel.ParentColor = False
         LabelPosition = lpLeft
@@ -494,7 +494,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 448
         Height = 22
-        Top = 31
+        Top = 34
         Width = 23
         Action = actClearORNo
       end
@@ -503,11 +503,11 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = edtFilterPaymentsORNumber
         AnchorSideTop.Side = asrBottom
         Left = 304
-        Height = 21
-        Top = 56
+        Height = 23
+        Top = 60
         Width = 144
         BorderSpacing.Top = 3
-        ItemHeight = 13
+        ItemHeight = 15
         Style = csDropDownList
         TabOrder = 6
       end
@@ -515,10 +515,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = cmbPaymentsFilterService
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cmbPaymentsFilterService
-        Left = 266
-        Height = 13
-        Top = 60
-        Width = 35
+        Left = 264
+        Height = 15
+        Top = 64
+        Width = 37
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 3
@@ -532,7 +532,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 448
         Height = 22
-        Top = 55
+        Top = 60
         Width = 23
         Action = actClearService
       end
@@ -543,7 +543,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 679
         Height = 22
-        Top = 7
+        Top = 8
         Width = 67
         Action = actFilterPayments
         BorderSpacing.Left = 8
@@ -553,10 +553,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dtePaymentDate1
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dtePaymentDate1
-        Left = 476
-        Height = 13
+        Left = 472
+        Height = 15
         Top = 12
-        Width = 24
+        Width = 28
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -567,10 +567,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dtePaymentDate2
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dtePaymentDate2
-        Left = 488
-        Height = 13
-        Top = 36
-        Width = 12
+        Left = 486
+        Height = 15
+        Top = 38
+        Width = 14
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -580,7 +580,7 @@ object frmMain: TfrmMain
       object dtePaymentDate1: TDateEdit
         AnchorSideTop.Side = asrBottom
         Left = 504
-        Height = 21
+        Height = 23
         Top = 8
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
@@ -597,8 +597,8 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dtePaymentDate1
         AnchorSideTop.Side = asrBottom
         Left = 504
-        Height = 21
-        Top = 32
+        Height = 23
+        Top = 34
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -616,7 +616,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 648
         Height = 22
-        Top = 7
+        Top = 8
         Width = 23
         Action = actClearPaymentDate1
       end
@@ -627,31 +627,42 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 648
         Height = 22
-        Top = 31
+        Top = 34
         Width = 23
         Action = actClearPaymentDate2
+      end
+      object spbPrintPayments: TSpeedButton
+        AnchorSideLeft.Control = btnApplyPaymentFilter
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = btnApplyPaymentFilter
+        AnchorSideTop.Side = asrCenter
+        Left = 746
+        Height = 22
+        Top = 8
+        Width = 23
+        Action = actPrintPayments
       end
     end
     object tabLedger: TTabSheet
       Caption = 'Ledger'
-      ClientHeight = 321
+      ClientHeight = 319
       ClientWidth = 814
       object cmbLedgerService: TComboBox
         AnchorSideLeft.Control = edtLedgerName
         AnchorSideTop.Control = edtLedgerName
         AnchorSideTop.Side = asrBottom
         Left = 88
-        Height = 21
-        Top = 33
+        Height = 23
+        Top = 35
         Width = 152
         BorderSpacing.Top = 3
-        ItemHeight = 13
+        ItemHeight = 15
         Style = csDropDownList
         TabOrder = 2
       end
       object edtLedgerName: TEdit
         Left = 88
-        Height = 21
+        Height = 23
         Top = 9
         Width = 152
         OnKeyPress = edtLedgerNameKeyPress
@@ -664,7 +675,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 240
         Height = 22
-        Top = 8
+        Top = 9
         Width = 48
         Action = actSelectMember
         TabOrder = 1
@@ -673,10 +684,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLedgerDate1
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dteLedgerDate1
-        Left = 300
-        Height = 13
+        Left = 296
+        Height = 15
         Top = 13
-        Width = 24
+        Width = 28
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -687,10 +698,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLedgerDate2
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = dteLedgerDate2
-        Left = 312
-        Height = 13
-        Top = 37
-        Width = 12
+        Left = 310
+        Height = 15
+        Top = 39
+        Width = 14
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 4
@@ -700,7 +711,7 @@ object frmMain: TfrmMain
       object dteLedgerDate1: TDateEdit
         AnchorSideTop.Side = asrBottom
         Left = 328
-        Height = 21
+        Height = 23
         Top = 9
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
@@ -717,8 +728,8 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = dteLedgerDate1
         AnchorSideTop.Side = asrBottom
         Left = 328
-        Height = 21
-        Top = 33
+        Height = 23
+        Top = 35
         Width = 144
         CalendarDisplaySettings = [dsShowHeadings, dsShowDayNames]
         DateOrder = doNone
@@ -736,7 +747,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 472
         Height = 22
-        Top = 8
+        Top = 9
         Width = 23
         Action = actClearLedgerDate1
       end
@@ -747,7 +758,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 472
         Height = 22
-        Top = 32
+        Top = 35
         Width = 23
         Action = actClearLedgerDate2
       end
@@ -758,7 +769,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 503
         Height = 22
-        Top = 8
+        Top = 9
         Width = 83
         Action = actShowLedger
         BorderSpacing.Left = 8
@@ -766,7 +777,7 @@ object frmMain: TfrmMain
       end
       object sgdLedger: TStringGrid
         Left = 0
-        Height = 257
+        Height = 255
         Top = 64
         Width = 814
         Align = alBottom
@@ -785,10 +796,10 @@ object frmMain: TfrmMain
         AnchorSideTop.Control = edtLedgerName
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = edtLedgerName
-        Left = 17
-        Height = 13
+        Left = 5
+        Height = 15
         Top = 13
-        Width = 68
+        Width = 80
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
         BorderSpacing.Right = 3
@@ -800,8 +811,8 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cmbLedgerService
         Left = 8
-        Height = 13
-        Top = 37
+        Height = 15
+        Top = 39
         Width = 77
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
@@ -816,7 +827,7 @@ object frmMain: TfrmMain
         AnchorSideTop.Side = asrCenter
         Left = 586
         Height = 22
-        Top = 8
+        Top = 9
         Width = 23
         Action = actPrintLedger
       end
@@ -1009,6 +1020,9 @@ object frmMain: TfrmMain
     end
     object actPrintLoans: TAction
       OnExecute = actPrintLoansExecute
+    end
+    object actPrintPayments: TAction
+      OnExecute = actPrintPaymentsExecute
     end
   end
   object frReport1: TfrReport

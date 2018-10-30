@@ -49,6 +49,7 @@ type
     actClearPaymentDate2: TAction;
     actClearLedgerDate1: TAction;
     actClearLedgerDate2: TAction;
+    actPrintPayments: TAction;
     actPrintLoans: TAction;
     actPrintLedger: TAction;
     actShowLedger: TAction;
@@ -124,6 +125,7 @@ type
     spbPrintLedger: TSpeedButton;
     spbClearLoanDate1: TSpeedButton;
     spbClearLoanDate2: TSpeedButton;
+    spbPrintPayments: TSpeedButton;
     spbPrintLoans: TSpeedButton;
     spbClearPMTDate1: TSpeedButton;
     spbClearPMTDate2: TSpeedButton;
@@ -177,6 +179,7 @@ type
     procedure actPrintLoansExecute(Sender: TObject);
     procedure ActionList1Update(AAction: TBasicAction; var Handled: Boolean);
     procedure actPrintLedgerExecute(Sender: TObject);
+    procedure actPrintPaymentsExecute(Sender: TObject);
     procedure actSelectMemberExecute(Sender: TObject);
     procedure actShowLedgerExecute(Sender: TObject);
     procedure dteLedgerDate1ButtonClick(Sender: TObject);
@@ -337,6 +340,8 @@ begin
     actClearPaymentDate1.Enabled:= dtePaymentDate1.Text <> ''
   else if AAction = actClearPaymentDate2 then
     actClearPaymentDate2.Enabled:= dtePaymentDate2.Text <> ''
+  else if AAction = actPrintPayments then
+    actPrintPayments.Enabled:= gLedgerManager.PaymentList.Count > 0
 
   else if AAction = actClearLoanMember then
     actClearLoanMember.Enabled:= edtLoanMember.Text <> ''
@@ -374,6 +379,46 @@ begin
     OnGetValue:= @frReport1GetValue;
     LoadFromFile('reports\Ledger.lrf');
     ShowReport;
+  end;
+end;
+
+procedure TfrmMain.actPrintPaymentsExecute(Sender: TObject);
+const
+  crossFieldLength = ':20';
+var
+  bufdataset : TBufDataset;
+  crossFields_ : TStringList;
+  lFields : string;
+  i: Integer;
+begin
+  with TfrReport.Create(Self) do
+  try
+    Clear;
+    //Dataset := frDBDataSet1;
+    //frVariables['Period'] := BeautifyDatePeriod(dteLoans1.Date, dteLoans2.Date);
+           //OnGetValue:= @frReport1GetValueForLoans;
+    //OnExportFilterSetup:= @frReport1ExportFilterSetup;
+
+    crossFields_ := TStringList.Create;
+    crossFields_.Duplicates:= dupIgnore;
+    crossFields_.Delimiter:= ';';
+    for i := 0 to gLedgerManager.PaymentList.Count -1 do
+      crossFields_.Add(gLedgerManager.PaymentList.Items[i].Service.Name + crossFieldLength);
+    crossFields_.Duplicates:= dupIgnore;
+    lFields := crossFields_.DelimitedText;
+    writeln(lFields);
+
+    bufdataset := TBufDataset.Create(Self);
+    //bufdataset.Open;
+    try
+      //Dataset ;
+      //LoadFromFile('reports\Payments.lrf');
+      //ShowReport;
+    finally
+      bufdataset.Free;
+    end;
+  finally
+    free;
   end;
 end;
 
@@ -885,6 +930,7 @@ begin
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPaymentsFilterService.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPMTDate1.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearPMTDate2.Glyph);
+  dmResources.imlButtonGlyphs.GetBitmap(iindBtnPrint,spbPrintPayments.Glyph);
 
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLedgerDate1.Glyph);
   dmResources.imlButtonGlyphs.GetBitmap(iindBtnFilterCancel,spbClearLedgerDate2.Glyph);
