@@ -69,13 +69,14 @@ begin
 
       if PropTypeName = 'AnsiString' then
         ft:= ftString
-      else if PropTypeName = 'TDate' then
+      else if PropTypeName = 'TDateTime' then
         ft:= ftDate
       else if PropTypeName = 'Currency' then
         ft:= ftFloat
       else
         ft:= ftVariant
         ;
+
       //if ft=ftString then
       if fieldsizes[i] > 0 then
         fields.add(fieldnames[i],ft,fieldsizes[i])

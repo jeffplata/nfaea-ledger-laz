@@ -107,6 +107,8 @@ type
     FPerson: TPersonBasic;
     FRemarks: string;
     FService: TServiceBasic;
+    function GetPersonName: string;
+    function GetServiceName: string;
     procedure SetAmount(AValue: Currency);
     procedure SetDocDate(AValue: TDateTime);
     procedure SetDocNumber(AValue: string);
@@ -129,6 +131,8 @@ type
     property DocNumber: string read FDocNumber write SetDocNumber;
     property Amount: Currency read FAmount write SetAmount;
     property Remarks: string read FRemarks write SetRemarks;
+    property PersonName: string read GetPersonName;
+    property ServiceName: string read GetServiceName;
   end;
 
   { TPaymentList }
@@ -635,6 +639,16 @@ procedure TPayment.SetAmount(AValue: Currency);
 begin
   if FAmount=AValue then Exit;
   FAmount:=AValue;
+end;
+
+function TPayment.GetPersonName: string;
+begin
+  result := Person.Name;
+end;
+
+function TPayment.GetServiceName: string;
+begin
+  result := service.name;
 end;
 
 procedure TPayment.SetDocDate(AValue: TDateTime);
