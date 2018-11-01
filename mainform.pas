@@ -386,10 +386,14 @@ procedure TfrmMain.actPrintPaymentsExecute(Sender: TObject);
 const
   crossFieldLength = ':20';
   fields = 'PersonName:40;ServiceName:40;DocDate;DocNumber:40;Amount;Remarks:80';
+  _columns = 'PersonName:40';
+  _crossColumns = 'ServiceName:40';
+  _valueColumns = 'Amount';
+
 var
   bufdataset : TBufDataset;
   crossFields_ : TStringList;
-  lFields : string;
+  lCrossFields : string;
   i: Integer;
   frReport: TfrReport;
   frObject: TfrObject;
@@ -403,32 +407,44 @@ begin
            //OnGetValue:= @frReport1GetValueForLoans;
     //OnExportFilterSetup:= @frReport1ExportFilterSetup;
 
-    //crossFields_ := TStringList.Create;
-    //crossFields_.Sorted:= True;
-    //crossFields_.Duplicates:= dupIgnore;
-    //crossFields_.Delimiter:= ';';
-    //for i := 0 to gLedgerManager.PaymentList.Count -1 do
-    //  crossFields_.Add(gLedgerManager.PaymentList.Items[i].Service.Name + crossFieldLength);
-    //lFields := crossFields_.DelimitedText;
+    crossFields_ := TStringList.Create;
+    crossFields_.Sorted:= True;
+    crossFields_.Duplicates:= dupIgnore;
+    crossFields_.Delimiter:= ';';
+    for i := 0 to gLedgerManager.PaymentList.Count -1 do
+      crossFields_.Add(gLedgerManager.PaymentList.Items[i].Service.Name + crossFieldLength);
+    lCrossFields := crossFields_.DelimitedText;
 
     bufdataset := TBufDataset.Create( Self );
-    ListToBufDataset(gLedgerManager.PaymentList, bufdataset, fields);
+    ListToBufDatasetCrossTab(gLedgerManager.PaymentList, bufdataset, _columns, lCrossFields, _valueColumns);
+
+    //todo: continue
+    {
+      traverse list
+        namesStringlist = list.items[i].personname
+      namesStringlist to bufdataset
+      traverse list again
+        buftdataset.locate( list.personname )
+        edit bufdataset
+
+    }
+
     try
-      bufdataset.Open;
-      frDBDataSet1.DataSet := bufdataset;
-      Dataset := frDBDataSet1;
+      //todo: plan b: listtocrosstab
+      //bufdataset.Open;
       //DataSource1.DataSet := bufdataset;
-      LoadFromFile('reports\Payments.lrf');
-      //frObject := Pages.Pages[0].FindObject('MasterData1');
-      //writeln(frObject.ToString);
-      //frObject := Pages.Pages[0].FindObject('CrossView1');
-      //writeln(frObject.ToString);
-      (Pages.Pages[0].FindObject('MasterData1') as TfrBandView).DataSet := 'frDBDataSet1';
-      (Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).DataSet := 'frDBDataSet1';
-      (Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).RowFields.Add('PersonName');
-      (Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).ColumnFields.Add('ServiceName');
-      (Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).CellFields.Add('Amount');
-      ShowReport;
+      //frDBDataSet1.DataSet := bufdataset;
+      //Dataset := frDBDataSet1;
+      //LoadFromFile('reports\Payments.lrf');
+      //(Pages.Pages[0].FindObject('MasterData1') as TfrBandView).DataSet := 'frDBDataSet1';
+      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).DataSet := 'frDBDataSet1';
+      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).RowFields.Add('PersonName');
+      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).ColumnFields.Add('ServiceName');
+      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).CellFields.Add('Amount|SUM');
+      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).ShowGrandTotal:=false;
+      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).ShowRowTotal:=false;
+      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).ShowRowHeader:=false;
+      //ShowReport;
     finally
       bufdataset.Free;
     end;

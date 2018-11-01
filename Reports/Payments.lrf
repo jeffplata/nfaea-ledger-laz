@@ -7,7 +7,7 @@
     <KeyWords Value=""/>
     <Comments Value=""/>
     <ReportCreateDate Value="1899-12-30 00:00:00"/>
-    <ReportLastChange Value="2018-10-31 16:38:10"/>
+    <ReportLastChange Value="2018-11-01 12:15:03"/>
     <ReportVersionBuild Value=""/>
     <ReportVersionMajor Value=""/>
     <ReportVersionMinor Value=""/>
@@ -77,7 +77,7 @@
             <Left Value="0"/>
             <Top Value="168"/>
             <Width Value="773"/>
-            <Height Value="36"/>
+            <Height Value="100"/>
           </Size>
           <Flags Value="48"/>
           <Data>
@@ -92,38 +92,10 @@
           </Frames>
           <BandType Value="btMasterData"/>
           <Condition Value=""/>
-          <DatasetStr Value=""/>
+          <DatasetStr Value="frDBDataSet1"/>
           <Child Value=""/>
         </Object2>
         <Object3>
-          <Name Value="CrossData1"/>
-          <ClassName Value="TfrBandView"/>
-          <Visible Value="True"/>
-          <Typ Value="gtBand"/>
-          <StreamMode Value="0"/>
-          <Size>
-            <Left Value="288"/>
-            <Top Value="0"/>
-            <Width Value="476"/>
-            <Height Value="1008"/>
-          </Size>
-          <Flags Value="48"/>
-          <Data>
-            <Script Value=""/>
-            <GapX Value="0"/>
-            <GapY Value="0"/>
-          </Data>
-          <Tag Value=""/>
-          <FURLInfo Value=""/>
-          <Frames>
-            <Restrictions Value=""/>
-          </Frames>
-          <BandType Value="btCrossData"/>
-          <Condition Value=""/>
-          <DatasetStr Value="MasterData1=[None];"/>
-          <Child Value=""/>
-        </Object3>
-        <Object4>
           <Name Value="Memo1"/>
           <ClassName Value="TfrMemoView"/>
           <Visible Value="True"/>
@@ -178,18 +150,18 @@
           <Angle Value="0"/>
           <Justify Value="False"/>
           <Cursor Value="0"/>
-        </Object4>
-        <Object5>
+        </Object3>
+        <Object4>
           <Name Value="CrossView1"/>
           <ClassName Value="TlrCrossView"/>
           <Visible Value="True"/>
           <Typ Value="gtAddIn"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="184"/>
+            <Left Value="16"/>
             <Top Value="176"/>
-            <Width Value="96"/>
-            <Height Value="18"/>
+            <Width Value="368"/>
+            <Height Value="82"/>
           </Size>
           <Flags Value="1"/>
           <FillColor Value="clNone"/>
@@ -202,19 +174,19 @@
             <GapX Value="0"/>
             <GapY Value="0"/>
           </Data>
-          <ShowColumnHeader Value="False"/>
+          <ShowColumnHeader Value="True"/>
           <ShowColumnTotal Value="True"/>
           <ShowCorner Value="True"/>
-          <ShowRowHeader Value="False"/>
-          <ShowRowTotal Value="False"/>
-          <ShowTitle Value="True"/>
+          <ShowRowHeader Value="True"/>
+          <ShowRowTotal Value="True"/>
+          <ShowTitle Value="False"/>
           <ShowGrandTotal Value="False"/>
-          <ShowTotalCHCell Value="True"/>
-          <ShowTotalRHCell Value="True"/>
+          <ShowTotalCHCell Value="False"/>
+          <ShowTotalRHCell Value="False"/>
           <DataSetName Value=""/>
-          <CellFields Value=""/>
-          <ColumnFields Value=""/>
-          <RowFields Value=""/>
+          <CellFields Value="Amount|SUM&#xD;&#xA;"/>
+          <ColumnFields Value="ServiceName&#xD;&#xA;"/>
+          <RowFields Value="PersonName&#xD;&#xA;"/>
           <DataCell>
             <Name Value="CrossView1_Data"/>
             <ClassName Value="TlrCrossDesignDataView"/>
@@ -222,7 +194,7 @@
             <Typ Value="gtMemo"/>
             <StreamMode Value="0"/>
             <Size>
-              <Left Value="258"/>
+              <Left Value="90"/>
               <Top Value="208"/>
               <Width Value="60"/>
               <Height Value="18"/>
@@ -278,7 +250,7 @@
             <Typ Value="gtMemo"/>
             <StreamMode Value="0"/>
             <Size>
-              <Left Value="194"/>
+              <Left Value="26"/>
               <Top Value="208"/>
               <Width Value="60"/>
               <Height Value="18"/>
@@ -333,7 +305,7 @@
             <Typ Value="gtMemo"/>
             <StreamMode Value="0"/>
             <Size>
-              <Left Value="322"/>
+              <Left Value="154"/>
               <Top Value="208"/>
               <Width Value="60"/>
               <Height Value="18"/>
@@ -388,7 +360,7 @@
             <Typ Value="gtMemo"/>
             <StreamMode Value="0"/>
             <Size>
-              <Left Value="258"/>
+              <Left Value="90"/>
               <Top Value="186"/>
               <Width Value="60"/>
               <Height Value="18"/>
@@ -443,7 +415,7 @@
             <Typ Value="gtMemo"/>
             <StreamMode Value="0"/>
             <Size>
-              <Left Value="258"/>
+              <Left Value="90"/>
               <Top Value="230"/>
               <Width Value="60"/>
               <Height Value="18"/>
@@ -498,7 +470,7 @@
             <Typ Value="gtMemo"/>
             <StreamMode Value="0"/>
             <Size>
-              <Left Value="322"/>
+              <Left Value="154"/>
               <Top Value="230"/>
               <Width Value="60"/>
               <Height Value="18"/>
@@ -553,7 +525,7 @@
             <Typ Value="gtMemo"/>
             <StreamMode Value="0"/>
             <Size>
-              <Left Value="322"/>
+              <Left Value="154"/>
               <Top Value="186"/>
               <Width Value="60"/>
               <Height Value="18"/>
@@ -608,7 +580,7 @@
             <Typ Value="gtMemo"/>
             <StreamMode Value="0"/>
             <Size>
-              <Left Value="194"/>
+              <Left Value="26"/>
               <Top Value="186"/>
               <Width Value="60"/>
               <Height Value="18"/>
@@ -656,64 +628,8 @@
             <Justify Value="False"/>
             <Cursor Value="0"/>
           </TotalRHCell>
-        </Object5>
-        <Object6>
-          <Name Value="Memo2"/>
-          <ClassName Value="TfrMemoView"/>
-          <Visible Value="True"/>
-          <Typ Value="gtMemo"/>
-          <StreamMode Value="0"/>
-          <Size>
-            <Left Value="20"/>
-            <Top Value="180"/>
-            <Width Value="96"/>
-            <Height Value="18"/>
-          </Size>
-          <Flags Value="3"/>
-          <FillColor Value="clNone"/>
-          <Frames>
-            <FrameColor Value="clBlack"/>
-            <FrameStyle Value="frsSolid"/>
-            <FrameWidth Value="1"/>
-            <FrameBorders Value=""/>
-            <Restrictions Value=""/>
-          </Frames>
-          <Data>
-            <Format Value="558"/>
-            <FormatStr Value=""/>
-            <Memo Value="[PersonName]&#xD;&#xA;"/>
-            <Script Value=""/>
-            <GapX Value="0"/>
-            <GapY Value="0"/>
-            <OnClick Value=""/>
-            <OnMouseEnter Value=""/>
-            <OnMouseLeave Value=""/>
-            <DetailReport Value=""/>
-            <ParagraphGap Value="0"/>
-            <LineSpacing Value="2"/>
-          </Data>
-          <Tag Value=""/>
-          <FURLInfo Value=""/>
-          <Font>
-            <Name Value="Arial"/>
-            <Size Value="10"/>
-            <Color Value="clBlack"/>
-            <Charset Value="0"/>
-            <Style Value=""/>
-          </Font>
-          <Highlight>
-            <FontStyle Value="2"/>
-            <FontColor Value="clBlack"/>
-            <FillColor Value="clWhite"/>
-            <HighlightStr Value=""/>
-          </Highlight>
-          <Alignment Value="taLeftJustify"/>
-          <Layout Value="tlTop"/>
-          <Angle Value="0"/>
-          <Justify Value="False"/>
-          <Cursor Value="0"/>
-        </Object6>
-        <ObjectCount Value="6"/>
+        </Object4>
+        <ObjectCount Value="4"/>
       </Page1>
       <FVal>
         <Count Value="0"/>
