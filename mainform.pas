@@ -78,6 +78,8 @@ type
     cmbPaymentsFilterService: TComboBox;
     cmbLoanLoanTypes: TComboBox;
     cmbLedgerService: TComboBox;
+    DataSource1: TDataSource;
+    DBGrid1: TDBGrid;
     dteLoans1: TDateEdit;
     dteLoans2: TDateEdit;
     dtePaymentDate1: TDateEdit;
@@ -305,24 +307,32 @@ const
   fields = 'DocDate;DocNumber:20;Member:60;ServiceName:20;Principal;Interest;Total;PreviousBalance;Rebates;Adjustments;NetProceeds';
 var
   lDataset: TBufDataset;
+  lfrReport: TfrReport;
+  lfrDBDataSet: TfrDBDataSet;
 begin
+
+  lDataset := nil;
+  lfrDBDataSet := nil;
+  lfrReport := nil;
+
   lDataset := TBufDataset.Create(Self);
-  //todo: continue here
-
-  ListToBufDataset(gLedgerManager.Loans,BufDataset1,fields);
-
-  with TfrReport.Create(Self) do
+  lfrDBDataSet := TfrDBDataSet.Create(Self);
+  lfrReport := TfrReport.Create(Self);
   try
-    Clear;
-    Dataset := frDBDataSet1;
+    lDataset.IndexFieldNames:= 'ServiceName;DocDate;DocNumber';
+    ListToBufDataset(gLedgerManager.Loans,lDataset,fields);
+    lfrDBDataSet.DataSet := lDataset;
+
     frVariables['Period'] := BeautifyDatePeriod(dteLoans1.Date, dteLoans2.Date);
-           //OnGetValue:= @frReport1GetValueForLoans;
-    OnExportFilterSetup:= @frReport1ExportFilterSetup;
-    LoadFromFile('reports\Loans.lrf');
-    ShowReport;
+    lfrReport.Clear;
+    lfrReport.Dataset := lfrDBDataSet;
+    lfrReport.OnExportFilterSetup:= @frReport1ExportFilterSetup;
+    lfrReport.LoadFromFile('reports\Loans.lrf');
+    lfrReport.ShowReport;
   finally
-    frDBDataSet1.DataSet.Close;
-    free;
+    lDataset.Free;
+    lfrDBDataSet.Free;
+    lfrReport.Free;
   end;
 
 end;
@@ -393,20 +403,18 @@ const
 var
   bufdataset : TBufDataset;
   crossFields_ : TStringList;
-  lCrossFields : string;
-  i: Integer;
+  lCrossFields , lPersonName: string;
+  i, j: Integer;
   frReport: TfrReport;
   frObject: TfrObject;
+  names_ : TStringList;
+  oPayment: TPayment;
+  amount: Double;
 begin
   frReport := TfrReport.Create(self);
-  with frReport {TfrReport.Create(Self)} do
+  with frReport do
   try
     Clear;
-    //Dataset := frDBDataSet1;
-    //frVariables['Period'] := BeautifyDatePeriod(dteLoans1.Date, dteLoans2.Date);
-           //OnGetValue:= @frReport1GetValueForLoans;
-    //OnExportFilterSetup:= @frReport1ExportFilterSetup;
-
     crossFields_ := TStringList.Create;
     crossFields_.Sorted:= True;
     crossFields_.Duplicates:= dupIgnore;
@@ -417,34 +425,40 @@ begin
 
     bufdataset := TBufDataset.Create( Self );
     ListToBufDatasetCrossTab(gLedgerManager.PaymentList, bufdataset, _columns, lCrossFields, _valueColumns);
+    bufdataset.IndexFieldNames:= 'PersonName';
 
-    //todo: continue
-    {
-      traverse list
-        namesStringlist = list.items[i].personname
-      namesStringlist to bufdataset
-      traverse list again
-        buftdataset.locate( list.personname )
-        edit bufdataset
+    names_ := TStringList.Create;
+    names_.Sorted:= True;
+    names_.Duplicates:= dupIgnore;
+    // names to bufdataset
+    for i := 0 to Pred(gLedgerManager.PaymentList.Count) do
+      names_.Add( gLedgerManager.PaymentList.Items[i].PersonName );
+    for i := 0 to Pred(names_.Count) do
+    begin
+      bufdataset.Insert;
+      bufdataset.FieldByName('PersonName').AsString:= names_.Strings[i];
+      bufdataset.Post;
+    end;
+    //amounts to bufdataset
+    for i := 0 to Pred(gLedgerManager.PaymentList.Count) do
+    begin
+      oPayment := gLedgerManager.PaymentList.Items[i];
+      lPersonName := oPayment.PersonName;
+      bufdataset.Locate('PersonName',lPersonName,[]);
 
-    }
-
+      try
+        amount := bufdataset.FieldByName(oPayment.ServiceName).AsFloat;
+      except
+        amount := 0
+      end;
+      amount := amount + oPayment.Amount;
+      bufdataset.Edit;
+      bufdataset.FieldByName(oPayment.ServiceName).AsFloat := amount;
+      bufdataset.Post;
+    end;
     try
-      //todo: plan b: listtocrosstab
-      //bufdataset.Open;
-      //DataSource1.DataSet := bufdataset;
-      //frDBDataSet1.DataSet := bufdataset;
-      //Dataset := frDBDataSet1;
-      //LoadFromFile('reports\Payments.lrf');
-      //(Pages.Pages[0].FindObject('MasterData1') as TfrBandView).DataSet := 'frDBDataSet1';
-      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).DataSet := 'frDBDataSet1';
-      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).RowFields.Add('PersonName');
-      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).ColumnFields.Add('ServiceName');
-      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).CellFields.Add('Amount|SUM');
-      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).ShowGrandTotal:=false;
-      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).ShowRowTotal:=false;
-      //(Pages.Pages[0].FindObject('CrossView1') as TlrCrossView).ShowRowHeader:=false;
-      //ShowReport;
+      DataSource1.DataSet := bufdataset;
+      //report here
     finally
       bufdataset.Free;
     end;

@@ -642,6 +642,16 @@ object frmMain: TfrmMain
         Width = 23
         Action = actPrintPayments
       end
+      object DBGrid1: TDBGrid
+        Left = 50
+        Height = 157
+        Top = 152
+        Width = 751
+        Color = clWindow
+        Columns = <>
+        DataSource = DataSource1
+        TabOrder = 10
+      end
     end
     object tabLedger: TTabSheet
       Caption = 'Ledger'
@@ -1065,5 +1075,9 @@ object frmMain: TfrmMain
   object frCSVExport1: TfrCSVExport
     left = 442
     top = 104
+  end
+  object DataSource1: TDataSource
+    left = 32
+    top = 160
   end
 end

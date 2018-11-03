@@ -5,7 +5,7 @@ unit ListToBufDatasetU;
 interface
 
 uses
-  Classes, SysUtils, tiObject, BufDataset;
+  Classes, SysUtils, tiObject, BufDataset, db;
 
 type
   TStringArray = array of string;
@@ -13,13 +13,52 @@ type
 
 
 procedure _LocalParse( AString: string; var AFieldNames: TStringArray; var AFieldSizes: TIntegerArray );
+procedure _CreateFields(AList: TtiObjectList; fields: TFieldDefs; fieldnames: TStringArray; fieldsizes: TIntegerArray);
 
 procedure ListToBufDataset( AList: TtiObjectList; ABufDataset: TBufDataset; AFields: string );
 procedure ListToBufDatasetCrossTab( AList: TtiObjectList; ABufDataset: TBufDataset; Columns, CrossTabColumn, ValueColumn: string );
 
 implementation
 
-uses variants, strutils, typinfo, db;
+uses variants, strutils, typinfo;
+
+//------------
+procedure _CreateFields(AList: TtiObjectList; fields: TFieldDefs; fieldnames: TStringArray; fieldsizes: TIntegerArray);
+var
+  MyPropInfo: PPropInfo;
+  PropTypeName: string;
+  ft: TFieldType;
+  i: integer;
+begin
+  for i := 0 to Length(fieldnames)-1 do
+  begin
+
+    MyPropInfo := GetPropInfo(AList.Items[0], fieldnames[i]);
+    if MyPropInfo<>nil then
+    begin
+      PropTypeName := MyPropInfo^.PropType^.Name;
+
+      if PropTypeName = 'AnsiString' then
+        ft:= ftString
+      else if PropTypeName = 'TDateTime' then
+        ft:= ftDate
+      else if PropTypeName = 'TDate' then
+        ft:= ftDate
+      else if PropTypeName = 'Currency' then
+        ft:= ftFloat
+      else
+        ft:= ftVariant
+        ;
+
+      if fieldsizes[i] > 0 then
+        fields.add(fieldnames[i],ft,fieldsizes[i])
+      else
+        fields.Add(fieldnames[i],ft);
+    end;
+  end; //for i
+end;
+//============
+
 
 //------------
 procedure _LocalParse(AString: string; var AFieldNames: TStringArray;
@@ -54,41 +93,14 @@ end;
 procedure ListToBufDataset(AList: TtiObjectList; ABufDataset: TBufDataset; AFields: string );
 var
   i, j: Integer;
-  MyPropInfo: PPropInfo;
-  PropTypeName: string;
   fields: TFieldDefs;
   fieldnames: TStringArray;
   fieldsizes: TIntegerArray;
-  ft: TFieldType;
 begin
   _LocalParse( AFields, fieldnames, fieldsizes );
 
   fields := TFieldDefs.Create(ABufDataset);
-  for i := 0 to Length(fieldnames)-1 do
-  begin
-
-    MyPropInfo := GetPropInfo(AList.Items[0], fieldnames[i]);
-    if MyPropInfo<>nil then
-    begin
-      PropTypeName := MyPropInfo^.PropType^.Name;
-
-      if PropTypeName = 'AnsiString' then
-        ft:= ftString
-      else if PropTypeName = 'TDateTime' then
-        ft:= ftDate
-      else if PropTypeName = 'Currency' then
-        ft:= ftFloat
-      else
-        ft:= ftVariant
-        ;
-
-      //if ft=ftString then
-      if fieldsizes[i] > 0 then
-        fields.add(fieldnames[i],ft,fieldsizes[i])
-      else
-        fields.Add(fieldnames[i],ft);
-    end;
-  end; //for i
+  _CreateFields(AList, fields, fieldnames, fieldsizes);
 
   ABufDataset.FieldDefs.Assign(fields);
   ABufDataset.CreateDataset;
@@ -101,7 +113,7 @@ begin
     begin
       if ABufDataset.Fields[j].DataType = ftFloat then
         ABufDataset.Fields[j].AsFloat:= AList.Items[i].PropValue[fieldnames[j]]
-      else if ABufDataset.Fields[j].DataType = ftDate then
+      else if (ABufDataset.Fields[j].DataType in[ftDateTime, ftDate]) then
         ABufDataset.Fields[j].AsDateTime:= AList.Items[i].PropValue[fieldnames[j]]
       else
         ABufDataset.Fields[j].AsString:= AList.Items[i].PropValue[fieldnames[j]]
@@ -122,100 +134,23 @@ var
   crossSizes: TIntegerArray;
   valueColumns: TStringArray;
   valueSizes: TIntegerArray;
-  i, ind: Integer;
+  i: Integer;
 
-  procedure CreateFields(AList: TtiObjectList; fields: TFieldDefs; fieldnames: TStringArray; fieldsizes: TIntegerArray);
-  var
-    MyPropInfo: PPropInfo;
-    PropTypeName: string;
-    ft: TFieldType;
-    i: integer;
   begin
-    for i := 0 to Length(fieldnames)-1 do
-    begin
+    _LocalParse( Columns, fieldnames, fieldsizes );
+    _LocalParse( CrossTabColumn, crossColumns, crossSizes );
+    _LocalParse( ValueColumn, valueColumns, valueSizes );
 
-      MyPropInfo := GetPropInfo(AList.Items[0], fieldnames[i]);
-      if MyPropInfo<>nil then
-      begin
-        PropTypeName := MyPropInfo^.PropType^.Name;
+    fields := TFieldDefs.Create(ABufDataset);
+    _CreateFields( AList, fields, fieldnames, fieldsizes );
+    for i := 0 to Length(crossColumns)-1 do
+      fields.add(crossColumns[i],ftString,crossSizes[i]);
+    _CreateFields( AList, fields, valueColumns, valueSizes );
 
-        if PropTypeName = 'AnsiString' then
-          ft:= ftString
-        else if PropTypeName = 'TDateTime' then
-          ft:= ftDate
-        else if PropTypeName = 'Currency' then
-          ft:= ftFloat
-        else
-          ft:= ftVariant
-          ;
-
-        if fieldsizes[i] > 0 then
-          fields.add(fieldnames[i],ft,fieldsizes[i])
-        else
-          fields.Add(fieldnames[i],ft);
-      end;
-    end; //for i
+    ABufDataset.FieldDefs.Assign(fields);
+    ABufDataset.CreateDataset;
+    ABufDataset.Active:= true;
   end;
-
-begin
-  //
-  _LocalParse( Columns, fieldnames, fieldsizes );
-  _LocalParse( CrossTabColumn, crossColumns, crossSizes );
-  _LocalParse( ValueColumn, valueColumns, valueSizes );
-
-  //ind := Length(fieldnames);
-  //writeln(ind);
-  //SetLength( fieldnames, Length(fieldnames) + Length(crossColumns));
-  //for i := Low(crossColumns) to High(crossColumns) do
-  //begin
-  //  fieldnames[ind+i] := crossColumns[i];
-  //  fieldsizes[ind+i] := crossSizes[i];
-  //end;
-  //
-  //ind := Length(fieldnames);
-  //writeln(ind);
-  //SetLength( fieldnames, Length(fieldnames) + Length(valueColumns));
-  //for i := Low(valueColumns) to High(valueColumns) do
-  //begin
-  //  fieldnames[ind+i] := valueColumns[i];
-  //  fieldsizes[ind+i] := valueSizes[i];
-  //end;
-
-  //debug
-  //writeln( Length(fieldnames) );
-  //writeln( Length(crossColumns) );
-  //writeln( Length(valueColumns) );
-
-  //for i := Low(fieldnames) to High(fieldnames) do
-  //  writeln(fieldnames[i], ' ', fieldsizes[i]);
-
-  fields := TFieldDefs.Create(ABufDataset);
-  CreateFields( AList, fields, fieldnames, fieldsizes );
-  for i := 0 to Length(crossColumns)-1 do
-    fields.add(crossColumns[i],ftString,crossSizes[i]);
-  CreateFields( AList, fields, valueColumns, valueSizes );
-
-  ABufDataset.FieldDefs.Assign(fields);
-  ABufDataset.CreateDataset;
-  ABufDataset.Active:= true;
-
-  for i := 0 to Pred(AList.Count) do
-  begin
-    ABufDataset.Insert;
-    for j := 0 to Length(fieldnames)-1 do
-    begin
-      if ABufDataset.Fields[j].DataType = ftFloat then
-        ABufDataset.Fields[j].AsFloat:= AList.Items[i].PropValue[fieldnames[j]]
-      else if ABufDataset.Fields[j].DataType = ftDate then
-        ABufDataset.Fields[j].AsDateTime:= AList.Items[i].PropValue[fieldnames[j]]
-      else
-        ABufDataset.Fields[j].AsString:= AList.Items[i].PropValue[fieldnames[j]]
-        ;
-    end;
-    ABufDataset.Post;
-  end;
-
-end;
 
 end.
 
