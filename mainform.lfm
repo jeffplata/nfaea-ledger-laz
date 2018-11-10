@@ -1,5 +1,5 @@
 object frmMain: TfrmMain
-  Left = 324
+  Left = 396
   Height = 390
   Top = 167
   Width = 822
@@ -641,16 +641,6 @@ object frmMain: TfrmMain
         Top = 8
         Width = 23
         Action = actPrintPayments
-      end
-      object DBGrid1: TDBGrid
-        Left = 50
-        Height = 157
-        Top = 152
-        Width = 751
-        Color = clWindow
-        Columns = <>
-        DataSource = DataSource1
-        TabOrder = 10
       end
     end
     object tabLedger: TTabSheet

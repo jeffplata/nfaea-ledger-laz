@@ -7,7 +7,7 @@
     <KeyWords Value=""/>
     <Comments Value=""/>
     <ReportCreateDate Value="1899-12-30 00:00:00"/>
-    <ReportLastChange Value="2018-11-01 12:15:03"/>
+    <ReportLastChange Value="2018-11-10 17:15:45"/>
     <ReportVersionBuild Value=""/>
     <ReportVersionMajor Value=""/>
     <ReportVersionMinor Value=""/>
@@ -23,17 +23,17 @@
         <Name Value="Page1"/>
         <ClassName Value="TfrPageReport"/>
         <Visible Value="True"/>
-        <Width Value="612"/>
-        <Height Value="792"/>
+        <Width Value="792"/>
+        <Height Value="612"/>
         <Script Value=""/>
         <PgSize Value="1"/>
         <Margins>
           <left Value="0"/>
-          <Top Value="0"/>
+          <Top Value="43"/>
           <Right Value="0"/>
-          <Bottom Value="0"/>
+          <Bottom Value="43"/>
         </Margins>
-        <Orientation Value="poPortrait"/>
+        <Orientation Value="poLandscape"/>
         <UseMargins Value="True"/>
         <PrintToPrevPage Value="False"/>
         <ColCount Value="0"/>
@@ -47,8 +47,8 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="0"/>
-            <Top Value="44"/>
-            <Width Value="773"/>
+            <Top Value="64"/>
+            <Width Value="1001"/>
             <Height Value="40"/>
           </Size>
           <Flags Value="48"/>
@@ -75,9 +75,9 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="0"/>
-            <Top Value="168"/>
-            <Width Value="773"/>
-            <Height Value="100"/>
+            <Top Value="212"/>
+            <Width Value="1001"/>
+            <Height Value="18"/>
           </Size>
           <Flags Value="48"/>
           <Data>
@@ -96,6 +96,34 @@
           <Child Value=""/>
         </Object2>
         <Object3>
+          <Name Value="MasterHeader1"/>
+          <ClassName Value="TfrBandView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtBand"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="0"/>
+            <Top Value="140"/>
+            <Width Value="1001"/>
+            <Height Value="18"/>
+          </Size>
+          <Flags Value="48"/>
+          <Data>
+            <Script Value=""/>
+            <GapX Value="0"/>
+            <GapY Value="0"/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Frames>
+            <Restrictions Value=""/>
+          </Frames>
+          <BandType Value="btMasterHeader"/>
+          <Condition Value=""/>
+          <DatasetStr Value=""/>
+          <Child Value=""/>
+        </Object3>
+        <Object4>
           <Name Value="Memo1"/>
           <ClassName Value="TfrMemoView"/>
           <Visible Value="True"/>
@@ -103,7 +131,7 @@
           <StreamMode Value="0"/>
           <Size>
             <Left Value="12"/>
-            <Top Value="52"/>
+            <Top Value="72"/>
             <Width Value="188"/>
             <Height Value="18"/>
           </Size>
@@ -119,7 +147,7 @@
           <Data>
             <Format Value="558"/>
             <FormatStr Value=""/>
-            <Memo Value="Payments Cross-tab Report&#xD;&#xA;"/>
+            <Memo Value="Payments Report&#xD;&#xA;"/>
             <Script Value=""/>
             <GapX Value="0"/>
             <GapY Value="0"/>
@@ -150,486 +178,120 @@
           <Angle Value="0"/>
           <Justify Value="False"/>
           <Cursor Value="0"/>
-        </Object3>
-        <Object4>
-          <Name Value="CrossView1"/>
-          <ClassName Value="TlrCrossView"/>
+        </Object4>
+        <Object5>
+          <Name Value="MemoPersonName"/>
+          <ClassName Value="TfrMemoView"/>
           <Visible Value="True"/>
-          <Typ Value="gtAddIn"/>
+          <Typ Value="gtMemo"/>
           <StreamMode Value="0"/>
           <Size>
-            <Left Value="16"/>
-            <Top Value="176"/>
-            <Width Value="368"/>
-            <Height Value="82"/>
+            <Left Value="12"/>
+            <Top Value="212"/>
+            <Width Value="104"/>
+            <Height Value="18"/>
           </Size>
-          <Flags Value="1"/>
+          <Flags Value="3"/>
           <FillColor Value="clNone"/>
-          <Tag Value=""/>
-          <FURLInfo Value=""/>
           <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
             <Restrictions Value=""/>
           </Frames>
           <Data>
+            <Format Value="16974382"/>
+            <FormatStr Value=""/>
+            <Memo Value="[PersonName]&#xD;&#xA;"/>
+            <Script Value=""/>
             <GapX Value="0"/>
             <GapY Value="0"/>
+            <OnClick Value=""/>
+            <OnMouseEnter Value=""/>
+            <OnMouseLeave Value=""/>
+            <DetailReport Value=""/>
+            <ParagraphGap Value="0"/>
+            <LineSpacing Value="2"/>
           </Data>
-          <ShowColumnHeader Value="True"/>
-          <ShowColumnTotal Value="True"/>
-          <ShowCorner Value="True"/>
-          <ShowRowHeader Value="True"/>
-          <ShowRowTotal Value="True"/>
-          <ShowTitle Value="False"/>
-          <ShowGrandTotal Value="False"/>
-          <ShowTotalCHCell Value="False"/>
-          <ShowTotalRHCell Value="False"/>
-          <DataSetName Value=""/>
-          <CellFields Value="Amount|SUM&#xD;&#xA;"/>
-          <ColumnFields Value="ServiceName&#xD;&#xA;"/>
-          <RowFields Value="PersonName&#xD;&#xA;"/>
-          <DataCell>
-            <Name Value="CrossView1_Data"/>
-            <ClassName Value="TlrCrossDesignDataView"/>
-            <Visible Value="True"/>
-            <Typ Value="gtMemo"/>
-            <StreamMode Value="0"/>
-            <Size>
-              <Left Value="90"/>
-              <Top Value="208"/>
-              <Width Value="60"/>
-              <Height Value="18"/>
-            </Size>
-            <Flags Value="3"/>
-            <FillColor Value="clNone"/>
-            <Frames>
-              <FrameColor Value="clBlack"/>
-              <FrameStyle Value="frsSolid"/>
-              <FrameWidth Value="1"/>
-              <FrameBorders Value=""/>
-            </Frames>
-            <Data>
-              <Format Value="558"/>
-              <FormatStr Value=""/>
-              <Memo Value="Data&#xD;&#xA;"/>
-              <Script Value=""/>
-              <GapX Value="0"/>
-              <GapY Value="0"/>
-              <OnClick Value=""/>
-              <OnMouseEnter Value=""/>
-              <OnMouseLeave Value=""/>
-              <DetailReport Value=""/>
-              <ParagraphGap Value="0"/>
-              <LineSpacing Value="2"/>
-            </Data>
-            <Tag Value=""/>
-            <FURLInfo Value=""/>
-            <Font>
-              <Name Value="Arial"/>
-              <Size Value="10"/>
-              <Color Value="clBlack"/>
-              <Charset Value="0"/>
-              <Style Value=""/>
-            </Font>
-            <Highlight>
-              <FontStyle Value="2"/>
-              <FontColor Value="clBlack"/>
-              <FillColor Value="clWhite"/>
-              <HighlightStr Value=""/>
-            </Highlight>
-            <Alignment Value="taLeftJustify"/>
-            <Layout Value="tlTop"/>
-            <Angle Value="0"/>
-            <Justify Value="False"/>
-            <Cursor Value="0"/>
-            <AlternativeColor Value="clNone"/>
-          </DataCell>
-          <RowTitleCell>
-            <Name Value="CrossView1_RowTitleCell"/>
-            <ClassName Value="TlrCrossDesignView"/>
-            <Visible Value="True"/>
-            <Typ Value="gtMemo"/>
-            <StreamMode Value="0"/>
-            <Size>
-              <Left Value="26"/>
-              <Top Value="208"/>
-              <Width Value="60"/>
-              <Height Value="18"/>
-            </Size>
-            <Flags Value="3"/>
-            <FillColor Value="clNone"/>
-            <Frames>
-              <FrameColor Value="clBlack"/>
-              <FrameStyle Value="frsSolid"/>
-              <FrameWidth Value="1"/>
-              <FrameBorders Value=""/>
-            </Frames>
-            <Data>
-              <Format Value="558"/>
-              <FormatStr Value=""/>
-              <Memo Value="Row title&#xD;&#xA;"/>
-              <Script Value=""/>
-              <GapX Value="0"/>
-              <GapY Value="0"/>
-              <OnClick Value=""/>
-              <OnMouseEnter Value=""/>
-              <OnMouseLeave Value=""/>
-              <DetailReport Value=""/>
-              <ParagraphGap Value="0"/>
-              <LineSpacing Value="2"/>
-            </Data>
-            <Tag Value=""/>
-            <FURLInfo Value=""/>
-            <Font>
-              <Name Value="Arial"/>
-              <Size Value="10"/>
-              <Color Value="clBlack"/>
-              <Charset Value="0"/>
-              <Style Value=""/>
-            </Font>
-            <Highlight>
-              <FontStyle Value="2"/>
-              <FontColor Value="clBlack"/>
-              <FillColor Value="clWhite"/>
-              <HighlightStr Value=""/>
-            </Highlight>
-            <Alignment Value="taLeftJustify"/>
-            <Layout Value="tlTop"/>
-            <Angle Value="0"/>
-            <Justify Value="False"/>
-            <Cursor Value="0"/>
-          </RowTitleCell>
-          <RowTotalCell>
-            <Name Value="CrossView1_RowTotalCell"/>
-            <ClassName Value="TlrCrossDesignView"/>
-            <Visible Value="True"/>
-            <Typ Value="gtMemo"/>
-            <StreamMode Value="0"/>
-            <Size>
-              <Left Value="154"/>
-              <Top Value="208"/>
-              <Width Value="60"/>
-              <Height Value="18"/>
-            </Size>
-            <Flags Value="3"/>
-            <FillColor Value="clNone"/>
-            <Frames>
-              <FrameColor Value="clBlack"/>
-              <FrameStyle Value="frsSolid"/>
-              <FrameWidth Value="1"/>
-              <FrameBorders Value=""/>
-            </Frames>
-            <Data>
-              <Format Value="558"/>
-              <FormatStr Value=""/>
-              <Memo Value="Row total&#xD;&#xA;"/>
-              <Script Value=""/>
-              <GapX Value="0"/>
-              <GapY Value="0"/>
-              <OnClick Value=""/>
-              <OnMouseEnter Value=""/>
-              <OnMouseLeave Value=""/>
-              <DetailReport Value=""/>
-              <ParagraphGap Value="0"/>
-              <LineSpacing Value="2"/>
-            </Data>
-            <Tag Value=""/>
-            <FURLInfo Value=""/>
-            <Font>
-              <Name Value="Arial"/>
-              <Size Value="10"/>
-              <Color Value="clBlack"/>
-              <Charset Value="0"/>
-              <Style Value=""/>
-            </Font>
-            <Highlight>
-              <FontStyle Value="2"/>
-              <FontColor Value="clBlack"/>
-              <FillColor Value="clWhite"/>
-              <HighlightStr Value=""/>
-            </Highlight>
-            <Alignment Value="taLeftJustify"/>
-            <Layout Value="tlTop"/>
-            <Angle Value="0"/>
-            <Justify Value="False"/>
-            <Cursor Value="0"/>
-          </RowTotalCell>
-          <ColTitleCell>
-            <Name Value="CrossView1_ColTitleCell"/>
-            <ClassName Value="TlrCrossDesignView"/>
-            <Visible Value="True"/>
-            <Typ Value="gtMemo"/>
-            <StreamMode Value="0"/>
-            <Size>
-              <Left Value="90"/>
-              <Top Value="186"/>
-              <Width Value="60"/>
-              <Height Value="18"/>
-            </Size>
-            <Flags Value="3"/>
-            <FillColor Value="clNone"/>
-            <Frames>
-              <FrameColor Value="clBlack"/>
-              <FrameStyle Value="frsSolid"/>
-              <FrameWidth Value="1"/>
-              <FrameBorders Value=""/>
-            </Frames>
-            <Data>
-              <Format Value="558"/>
-              <FormatStr Value=""/>
-              <Memo Value="Col title&#xD;&#xA;"/>
-              <Script Value=""/>
-              <GapX Value="0"/>
-              <GapY Value="0"/>
-              <OnClick Value=""/>
-              <OnMouseEnter Value=""/>
-              <OnMouseLeave Value=""/>
-              <DetailReport Value=""/>
-              <ParagraphGap Value="0"/>
-              <LineSpacing Value="2"/>
-            </Data>
-            <Tag Value=""/>
-            <FURLInfo Value=""/>
-            <Font>
-              <Name Value="Arial"/>
-              <Size Value="10"/>
-              <Color Value="clBlack"/>
-              <Charset Value="0"/>
-              <Style Value=""/>
-            </Font>
-            <Highlight>
-              <FontStyle Value="2"/>
-              <FontColor Value="clBlack"/>
-              <FillColor Value="clWhite"/>
-              <HighlightStr Value=""/>
-            </Highlight>
-            <Alignment Value="taLeftJustify"/>
-            <Layout Value="tlTop"/>
-            <Angle Value="0"/>
-            <Justify Value="False"/>
-            <Cursor Value="0"/>
-          </ColTitleCell>
-          <ColTotalCell>
-            <Name Value="CrossView1_ColTotalCell"/>
-            <ClassName Value="TlrCrossDesignView"/>
-            <Visible Value="True"/>
-            <Typ Value="gtMemo"/>
-            <StreamMode Value="0"/>
-            <Size>
-              <Left Value="90"/>
-              <Top Value="230"/>
-              <Width Value="60"/>
-              <Height Value="18"/>
-            </Size>
-            <Flags Value="3"/>
-            <FillColor Value="clNone"/>
-            <Frames>
-              <FrameColor Value="clBlack"/>
-              <FrameStyle Value="frsSolid"/>
-              <FrameWidth Value="1"/>
-              <FrameBorders Value=""/>
-            </Frames>
-            <Data>
-              <Format Value="558"/>
-              <FormatStr Value=""/>
-              <Memo Value="Col total&#xD;&#xA;"/>
-              <Script Value=""/>
-              <GapX Value="0"/>
-              <GapY Value="0"/>
-              <OnClick Value=""/>
-              <OnMouseEnter Value=""/>
-              <OnMouseLeave Value=""/>
-              <DetailReport Value=""/>
-              <ParagraphGap Value="0"/>
-              <LineSpacing Value="2"/>
-            </Data>
-            <Tag Value=""/>
-            <FURLInfo Value=""/>
-            <Font>
-              <Name Value="Arial"/>
-              <Size Value="10"/>
-              <Color Value="clBlack"/>
-              <Charset Value="0"/>
-              <Style Value=""/>
-            </Font>
-            <Highlight>
-              <FontStyle Value="2"/>
-              <FontColor Value="clBlack"/>
-              <FillColor Value="clWhite"/>
-              <HighlightStr Value=""/>
-            </Highlight>
-            <Alignment Value="taLeftJustify"/>
-            <Layout Value="tlTop"/>
-            <Angle Value="0"/>
-            <Justify Value="False"/>
-            <Cursor Value="0"/>
-          </ColTotalCell>
-          <GrandTotalCell>
-            <Name Value="CrossView1_GrandTotalCell"/>
-            <ClassName Value="TlrCrossDesignView"/>
-            <Visible Value="True"/>
-            <Typ Value="gtMemo"/>
-            <StreamMode Value="0"/>
-            <Size>
-              <Left Value="154"/>
-              <Top Value="230"/>
-              <Width Value="60"/>
-              <Height Value="18"/>
-            </Size>
-            <Flags Value="3"/>
-            <FillColor Value="clNone"/>
-            <Frames>
-              <FrameColor Value="clBlack"/>
-              <FrameStyle Value="frsSolid"/>
-              <FrameWidth Value="1"/>
-              <FrameBorders Value=""/>
-            </Frames>
-            <Data>
-              <Format Value="558"/>
-              <FormatStr Value=""/>
-              <Memo Value="Grand total&#xD;&#xA;"/>
-              <Script Value=""/>
-              <GapX Value="0"/>
-              <GapY Value="0"/>
-              <OnClick Value=""/>
-              <OnMouseEnter Value=""/>
-              <OnMouseLeave Value=""/>
-              <DetailReport Value=""/>
-              <ParagraphGap Value="0"/>
-              <LineSpacing Value="2"/>
-            </Data>
-            <Tag Value=""/>
-            <FURLInfo Value=""/>
-            <Font>
-              <Name Value="Arial"/>
-              <Size Value="10"/>
-              <Color Value="clBlack"/>
-              <Charset Value="0"/>
-              <Style Value=""/>
-            </Font>
-            <Highlight>
-              <FontStyle Value="2"/>
-              <FontColor Value="clBlack"/>
-              <FillColor Value="clWhite"/>
-              <HighlightStr Value=""/>
-            </Highlight>
-            <Alignment Value="taLeftJustify"/>
-            <Layout Value="tlTop"/>
-            <Angle Value="0"/>
-            <Justify Value="False"/>
-            <Cursor Value="0"/>
-          </GrandTotalCell>
-          <TotalCHCell>
-            <Name Value="CrossView1_TotalCHCell"/>
-            <ClassName Value="TlrCrossDesignView"/>
-            <Visible Value="True"/>
-            <Typ Value="gtMemo"/>
-            <StreamMode Value="0"/>
-            <Size>
-              <Left Value="154"/>
-              <Top Value="186"/>
-              <Width Value="60"/>
-              <Height Value="18"/>
-            </Size>
-            <Flags Value="3"/>
-            <FillColor Value="clNone"/>
-            <Frames>
-              <FrameColor Value="clBlack"/>
-              <FrameStyle Value="frsSolid"/>
-              <FrameWidth Value="1"/>
-              <FrameBorders Value=""/>
-            </Frames>
-            <Data>
-              <Format Value="558"/>
-              <FormatStr Value=""/>
-              <Memo Value="Total CH cell&#xD;&#xA;"/>
-              <Script Value=""/>
-              <GapX Value="0"/>
-              <GapY Value="0"/>
-              <OnClick Value=""/>
-              <OnMouseEnter Value=""/>
-              <OnMouseLeave Value=""/>
-              <DetailReport Value=""/>
-              <ParagraphGap Value="0"/>
-              <LineSpacing Value="2"/>
-            </Data>
-            <Tag Value=""/>
-            <FURLInfo Value=""/>
-            <Font>
-              <Name Value="Arial"/>
-              <Size Value="10"/>
-              <Color Value="clBlack"/>
-              <Charset Value="0"/>
-              <Style Value=""/>
-            </Font>
-            <Highlight>
-              <FontStyle Value="2"/>
-              <FontColor Value="clBlack"/>
-              <FillColor Value="clWhite"/>
-              <HighlightStr Value=""/>
-            </Highlight>
-            <Alignment Value="taLeftJustify"/>
-            <Layout Value="tlTop"/>
-            <Angle Value="0"/>
-            <Justify Value="False"/>
-            <Cursor Value="0"/>
-          </TotalCHCell>
-          <TotalRHCell>
-            <Name Value="CrossView1_TotalRHCell"/>
-            <ClassName Value="TlrCrossDesignView"/>
-            <Visible Value="True"/>
-            <Typ Value="gtMemo"/>
-            <StreamMode Value="0"/>
-            <Size>
-              <Left Value="26"/>
-              <Top Value="186"/>
-              <Width Value="60"/>
-              <Height Value="18"/>
-            </Size>
-            <Flags Value="3"/>
-            <FillColor Value="clNone"/>
-            <Frames>
-              <FrameColor Value="clBlack"/>
-              <FrameStyle Value="frsSolid"/>
-              <FrameWidth Value="1"/>
-              <FrameBorders Value=""/>
-            </Frames>
-            <Data>
-              <Format Value="558"/>
-              <FormatStr Value=""/>
-              <Memo Value="Total RH cell&#xD;&#xA;"/>
-              <Script Value=""/>
-              <GapX Value="0"/>
-              <GapY Value="0"/>
-              <OnClick Value=""/>
-              <OnMouseEnter Value=""/>
-              <OnMouseLeave Value=""/>
-              <DetailReport Value=""/>
-              <ParagraphGap Value="0"/>
-              <LineSpacing Value="2"/>
-            </Data>
-            <Tag Value=""/>
-            <FURLInfo Value=""/>
-            <Font>
-              <Name Value="Arial"/>
-              <Size Value="10"/>
-              <Color Value="clBlack"/>
-              <Charset Value="0"/>
-              <Style Value=""/>
-            </Font>
-            <Highlight>
-              <FontStyle Value="2"/>
-              <FontColor Value="clBlack"/>
-              <FillColor Value="clWhite"/>
-              <HighlightStr Value=""/>
-            </Highlight>
-            <Alignment Value="taLeftJustify"/>
-            <Layout Value="tlTop"/>
-            <Angle Value="0"/>
-            <Justify Value="False"/>
-            <Cursor Value="0"/>
-          </TotalRHCell>
-        </Object4>
-        <ObjectCount Value="4"/>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+          <Cursor Value="0"/>
+        </Object5>
+        <Object6>
+          <Name Value="MemoPersonTitle"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="12"/>
+            <Top Value="140"/>
+            <Width Value="104"/>
+            <Height Value="18"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
+            <Restrictions Value=""/>
+          </Frames>
+          <Data>
+            <Format Value="16974382"/>
+            <FormatStr Value=""/>
+            <Memo Value="Member Name&#xD;&#xA;"/>
+            <Script Value=""/>
+            <GapX Value="0"/>
+            <GapY Value="0"/>
+            <OnClick Value=""/>
+            <OnMouseEnter Value=""/>
+            <OnMouseLeave Value=""/>
+            <DetailReport Value=""/>
+            <ParagraphGap Value="0"/>
+            <LineSpacing Value="2"/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="Arial"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value="fsBold"/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+          <Cursor Value="0"/>
+        </Object6>
+        <ObjectCount Value="6"/>
       </Page1>
       <FVal>
         <Count Value="0"/>

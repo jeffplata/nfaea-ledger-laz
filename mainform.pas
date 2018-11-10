@@ -79,7 +79,6 @@ type
     cmbLoanLoanTypes: TComboBox;
     cmbLedgerService: TComboBox;
     DataSource1: TDataSource;
-    DBGrid1: TDBGrid;
     dteLoans1: TDateEdit;
     dteLoans2: TDateEdit;
     dtePaymentDate1: TDateEdit;
@@ -395,21 +394,21 @@ end;
 procedure TfrmMain.actPrintPaymentsExecute(Sender: TObject);
 const
   crossFieldLength = ':20';
-  fields = 'PersonName:40;ServiceName:40;DocDate;DocNumber:40;Amount;Remarks:80';
+  //fields = 'PersonName:40;ServiceName:40;DocDate;DocNumber:40;Amount;Remarks:80';
   _columns = 'PersonName:40';
-  _crossColumns = 'ServiceName:40';
+  //_crossColumns = 'ServiceName:40';
   _valueColumns = 'Amount';
 
 var
   bufdataset : TBufDataset;
   crossFields_ : TStringList;
   lCrossFields , lPersonName: string;
-  i, j: Integer;
+  i: Integer;
   frReport: TfrReport;
-  frObject: TfrObject;
   names_ : TStringList;
   oPayment: TPayment;
-  amount: Double;
+  amount, totalAmt: Double;
+  m, mpn: TfrMemoView;
 begin
   frReport := TfrReport.Create(self);
   with frReport do
@@ -419,8 +418,10 @@ begin
     crossFields_.Sorted:= True;
     crossFields_.Duplicates:= dupIgnore;
     crossFields_.Delimiter:= ';';
+    //extract crosstab fields
     for i := 0 to gLedgerManager.PaymentList.Count -1 do
       crossFields_.Add(gLedgerManager.PaymentList.Items[i].Service.Name + crossFieldLength);
+    crossFields_.Add('Total:20');
     lCrossFields := crossFields_.DelimitedText;
 
     bufdataset := TBufDataset.Create( Self );
@@ -445,20 +446,41 @@ begin
       oPayment := gLedgerManager.PaymentList.Items[i];
       lPersonName := oPayment.PersonName;
       bufdataset.Locate('PersonName',lPersonName,[]);
-
       try
         amount := bufdataset.FieldByName(oPayment.ServiceName).AsFloat;
       except
         amount := 0
       end;
+      try
+        totalAmt:= bufdataset.FieldByName('Total').AsFloat;
+      except
+        totalAmt:= 0;
+      end;
       amount := amount + oPayment.Amount;
+      totalAmt:= totalAmt + oPayment.Amount;
       bufdataset.Edit;
       bufdataset.FieldByName(oPayment.ServiceName).AsFloat := amount;
+      bufdataset.FieldByName('Total').AsFloat:= totalAmt;
       bufdataset.Post;
     end;
     try
-      DataSource1.DataSet := bufdataset;
-      //report here
+      frReport.Dataset := frDBDataSet1;
+      frDBDataSet1.DataSet := bufdataset;
+      frReport.LoadFromFile('reports\Payments.lrf');
+
+      mpn := frReport.Pages.Pages[0].FindObject('MemoPersonName') as TfrMemoView;
+      for i := 0 to Pred(crossFields_.Count) do
+      begin
+        m := TfrMemoView.Create(frReport.Pages[0]);
+        m.CreateUniqueName;
+        m.SetBounds(Trunc(mpn.Left+mpn.Width)+1,Trunc(mpn.Top),60,Trunc(mpn.Height));
+        m.Memo.Text:= '['+ Copy(crossFields_.Strings[i],1,Length(crossFields_.Strings[i])-3) + ']';
+        m.Format:= 16974382;
+        m.Alignment:= taRightJustify;
+        mpn := m;
+      end;
+
+      frReport.ShowReport;
     finally
       bufdataset.Free;
     end;
