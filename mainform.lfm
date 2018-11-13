@@ -642,6 +642,17 @@ object frmMain: TfrmMain
         Width = 23
         Action = actPrintPayments
       end
+      object spbPrintPayments1: TSpeedButton
+        AnchorSideLeft.Control = spbPrintPayments
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = spbPrintPayments
+        AnchorSideTop.Side = asrCenter
+        Left = 769
+        Height = 22
+        Top = 8
+        Width = 23
+        Action = actDesignPayments
+      end
     end
     object tabLedger: TTabSheet
       Caption = 'Ledger'
@@ -1024,6 +1035,10 @@ object frmMain: TfrmMain
     object actPrintPayments: TAction
       OnExecute = actPrintPaymentsExecute
     end
+    object actDesignPayments: TAction
+      Caption = 'DR'
+      OnExecute = actDesignPaymentsExecute
+    end
   end
   object frReport1: TfrReport
     InitialZoom = pzDefault
@@ -1069,5 +1084,9 @@ object frmMain: TfrmMain
   object DataSource1: TDataSource
     left = 32
     top = 160
+  end
+  object frDesigner1: TfrDesigner
+    left = 331
+    top = 153
   end
 end

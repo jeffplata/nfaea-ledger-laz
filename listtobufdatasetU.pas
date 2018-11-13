@@ -144,7 +144,10 @@ var
     fields := TFieldDefs.Create(ABufDataset);
     _CreateFields( AList, fields, fieldnames, fieldsizes );
     for i := 0 to Length(crossColumns)-1 do
-      fields.add(crossColumns[i],ftString,crossSizes[i]);
+    begin
+      //fields.add(StringReplace(crossColumns[i],' ','', [rfReplaceAll]),ftCurrency,crossSizes[i]);
+      fields.add(crossColumns[i],ftCurrency,crossSizes[i]);
+    end;
     _CreateFields( AList, fields, valueColumns, valueSizes );
 
     ABufDataset.FieldDefs.Assign(fields);

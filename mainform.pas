@@ -10,7 +10,7 @@ uses
   StdCtrls, EditBtn, DBGrids, ledger_bom, tiModelMediator, tiListMediators,
   tiMediators, tiOIDInteger, tiObject, SQLWhereBuilderNV, DisplayHelpers,
   BufDataset, db, dbf, LR_Class, LR_DSet, LR_DBSet, LR_E_CSV, LR_PGrid,
-  LR_ChBox, lr_CrossTab
+  LR_ChBox, lr_CrossTab, LR_Desgn
   ;
 
 type
@@ -50,6 +50,7 @@ type
     actClearPaymentDate2: TAction;
     actClearLedgerDate1: TAction;
     actClearLedgerDate2: TAction;
+    actDesignPayments: TAction;
     actPrintPayments: TAction;
     actPrintLoans: TAction;
     actPrintLedger: TAction;
@@ -92,6 +93,7 @@ type
     edtFilterPaymentsORNumber: TLabeledEdit;
     frCSVExport1: TfrCSVExport;
     frDBDataSet1: TfrDBDataSet;
+    frDesigner1: TfrDesigner;
     frReport1: TfrReport;
     frUserDatasetLoans: TfrUserDataset;
     frUserDatasetLedger: TfrUserDataset;
@@ -139,6 +141,7 @@ type
     spbClearPaymentsFilterService: TSpeedButton;
     spbClearLedgerDate1: TSpeedButton;
     spbClearLedgerDate2: TSpeedButton;
+    spbPrintPayments1: TSpeedButton;
     StatusBar1: TStatusBar;
     sgdPersons: TStringGrid;
     sgdServices: TStringGrid;
@@ -168,6 +171,7 @@ type
     procedure actDeleteMemberExecute(Sender: TObject);
     procedure actDeletePaymentExecute(Sender: TObject);
     procedure actDeleteServiceExecute(Sender: TObject);
+    procedure actDesignPaymentsExecute(Sender: TObject);
     procedure actEditLoanExecute(Sender: TObject);
     procedure actEditLoanUpdate(Sender: TObject);
     procedure actEditMemberExecute(Sender: TObject);
@@ -208,6 +212,7 @@ type
     procedure sgdServicesDblClick(Sender: TObject);
     procedure spbClearLoanFilterClick(Sender: TObject);
   private
+    PreviewFlagged: boolean;
     LoanPointer: integer;
     LedgerPointer: integer;
     LedgerDebitTotal: Double;
@@ -393,16 +398,14 @@ end;
 
 procedure TfrmMain.actPrintPaymentsExecute(Sender: TObject);
 const
-  crossFieldLength = ':20';
-  //fields = 'PersonName:40;ServiceName:40;DocDate;DocNumber:40;Amount;Remarks:80';
+  //crossFieldLength = ':20';
   _columns = 'PersonName:40';
-  //_crossColumns = 'ServiceName:40';
   _valueColumns = 'Amount';
 
 var
   bufdataset : TBufDataset;
   crossFields_ : TStringList;
-  lCrossFields , lPersonName: string;
+  lCrossFields , lPersonName, fldnm: string;
   i: Integer;
   frReport: TfrReport;
   names_ : TStringList;
@@ -418,10 +421,12 @@ begin
     crossFields_.Sorted:= True;
     crossFields_.Duplicates:= dupIgnore;
     crossFields_.Delimiter:= ';';
+
     //extract crosstab fields
     for i := 0 to gLedgerManager.PaymentList.Count -1 do
-      crossFields_.Add(gLedgerManager.PaymentList.Items[i].Service.Name + crossFieldLength);
-    crossFields_.Add('Total:20');
+      //crossFields_.Add(gLedgerManager.PaymentList.Items[i].Service.Name + crossFieldLength);
+      crossFields_.Add(gLedgerManager.PaymentList.Items[i].Service.Name);
+    crossFields_.Add('Total');
     lCrossFields := crossFields_.DelimitedText;
 
     bufdataset := TBufDataset.Create( Self );
@@ -446,8 +451,10 @@ begin
       oPayment := gLedgerManager.PaymentList.Items[i];
       lPersonName := oPayment.PersonName;
       bufdataset.Locate('PersonName',lPersonName,[]);
+      //fldnm := StringReplace( oPayment.ServiceName, ' ', '', [rfReplaceAll] );
+      fldnm:= oPayment.ServiceName;
       try
-        amount := bufdataset.FieldByName(oPayment.ServiceName).AsFloat;
+        amount := bufdataset.FieldByName(fldnm).AsFloat;
       except
         amount := 0
       end;
@@ -459,28 +466,67 @@ begin
       amount := amount + oPayment.Amount;
       totalAmt:= totalAmt + oPayment.Amount;
       bufdataset.Edit;
-      bufdataset.FieldByName(oPayment.ServiceName).AsFloat := amount;
+      bufdataset.FieldByName(fldnm).AsFloat := amount;
       bufdataset.FieldByName('Total').AsFloat:= totalAmt;
       bufdataset.Post;
     end;
     try
       frReport.Dataset := frDBDataSet1;
       frDBDataSet1.DataSet := bufdataset;
+      frReport.OnExportFilterSetup:= @frReport1ExportFilterSetup;
       frReport.LoadFromFile('reports\Payments.lrf');
+      //todo: error when repeating Payments report
+      //build crosstab titles
+      mpn := frReport.Pages.Pages[0].FindObject('MemoPersonTitle') as TfrMemoView;
+      for i := 0 to Pred(crossFields_.Count) do
+      begin
+        m := TfrMemoView.Create(frReport.Pages[0]);
+        m.CreateUniqueName;
+        m.SetBounds(Trunc(mpn.Left+mpn.Width)+1,Trunc(mpn.Top),60,Trunc(mpn.Height));
+        //m.Memo.Text:= Copy(crossFields_.Strings[i],1,Length(crossFields_.Strings[i])-3) ;
+        m.Memo.Text:= crossFields_.Strings[i];
+        //m.Memo.Text := StringReplace( m.Memo.Text, '_', ' ', [rfReplaceAll] );
+        m.Alignment:= taRightJustify;
+        m.Font.Style:= m.Font.Style + [fsBold];
+        mpn := m;
+      end;
 
+      //build crosstab columns
       mpn := frReport.Pages.Pages[0].FindObject('MemoPersonName') as TfrMemoView;
       for i := 0 to Pred(crossFields_.Count) do
       begin
         m := TfrMemoView.Create(frReport.Pages[0]);
         m.CreateUniqueName;
         m.SetBounds(Trunc(mpn.Left+mpn.Width)+1,Trunc(mpn.Top),60,Trunc(mpn.Height));
-        m.Memo.Text:= '['+ Copy(crossFields_.Strings[i],1,Length(crossFields_.Strings[i])-3) + ']';
+        //m.Memo.Text:= '['+ Copy(crossFields_.Strings[i],1,Length(crossFields_.Strings[i])-3) + ']';
+        m.Memo.Text:= '['+ crossFields_.Strings[i] + ']';
+        //m.Memo.Text := StringReplace( m.Memo.Text, ' ', '', [rfReplaceAll] );
         m.Format:= 16974382;
         m.Alignment:= taRightJustify;
+        m.HideZeroValues:= true;
         mpn := m;
       end;
 
-      frReport.ShowReport;
+      //build crosstab footers
+      mpn := frReport.Pages.Pages[0].FindObject('MemoPersonFooter') as TfrMemoView;
+      for i := 0 to Pred(crossFields_.Count) do
+      begin
+        m := TfrMemoView.Create(frReport.Pages[0]);
+        m.CreateUniqueName;
+        m.SetBounds(Trunc(mpn.Left+mpn.Width)+1,Trunc(mpn.Top),60,Trunc(mpn.Height));
+        //m.Memo.Text:= '[SUM('+ Copy(crossFields_.Strings[i],1,Length(crossFields_.Strings[i])-3) + ',MasterData1)]';
+        m.Memo.Text:= '[SUM("'+ crossFields_.Strings[i] + '",MasterData1)]';
+        //m.Memo.Text:= StringReplace( m.Memo.Text, ' ', '', [rfReplaceAll] );
+        m.Format:= 16974382;
+        m.Alignment:= taRightJustify;
+        m.Font.Style:= m.Font.Style + [fsBold];
+        mpn := m;
+      end;
+
+      if PreviewFlagged then
+        frReport.DesignReport
+      else
+        frReport.ShowReport;
     finally
       bufdataset.Free;
     end;
@@ -816,6 +862,13 @@ begin
   DeleteFromList( sgdServices, Services, TService );
 end;
 
+procedure TfrmMain.actDesignPaymentsExecute(Sender: TObject);
+begin
+  PreviewFlagged:= true;
+  actPrintPayments.Execute;
+  PreviewFlagged:= false;
+end;
+
 procedure TfrmMain.actEditLoanExecute(Sender: TObject);
   var
     D : TLoanDisplay;
@@ -1045,7 +1098,7 @@ end;
 
 procedure TfrmMain.frReport1ExportFilterSetup(Sender: TfrExportFilter);
 begin
-  sender.BandTypes:= [btGroupHeader,btMasterHeader,btMasterData,btGroupFooter];
+  sender.BandTypes:= [btGroupHeader,btMasterHeader,btMasterData,btMasterFooter,btGroupFooter];
 end;
 
 procedure TfrmMain.frReport1GetValue(const ParName: String;
