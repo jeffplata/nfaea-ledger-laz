@@ -1085,8 +1085,4 @@ object frmMain: TfrmMain
     left = 32
     top = 160
   end
-  object frDesigner1: TfrDesigner
-    left = 331
-    top = 153
-  end
 end

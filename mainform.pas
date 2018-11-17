@@ -93,7 +93,6 @@ type
     edtFilterPaymentsORNumber: TLabeledEdit;
     frCSVExport1: TfrCSVExport;
     frDBDataSet1: TfrDBDataSet;
-    frDesigner1: TfrDesigner;
     frReport1: TfrReport;
     frUserDatasetLoans: TfrUserDataset;
     frUserDatasetLedger: TfrUserDataset;
@@ -398,9 +397,9 @@ end;
 
 procedure TfrmMain.actPrintPaymentsExecute(Sender: TObject);
 const
-  //crossFieldLength = ':20';
   _columns = 'PersonName:40';
   _valueColumns = 'Amount';
+  waRound1Flag : Boolean = true;
 
 var
   bufdataset : TBufDataset;
@@ -416,7 +415,6 @@ begin
   frReport := TfrReport.Create(self);
   with frReport do
   try
-    Clear;
     crossFields_ := TStringList.Create;
     crossFields_.Sorted:= True;
     crossFields_.Duplicates:= dupIgnore;
@@ -424,7 +422,6 @@ begin
 
     //extract crosstab fields
     for i := 0 to gLedgerManager.PaymentList.Count -1 do
-      //crossFields_.Add(gLedgerManager.PaymentList.Items[i].Service.Name + crossFieldLength);
       crossFields_.Add(gLedgerManager.PaymentList.Items[i].Service.Name);
     crossFields_.Add('Total');
     lCrossFields := crossFields_.DelimitedText;
@@ -451,7 +448,6 @@ begin
       oPayment := gLedgerManager.PaymentList.Items[i];
       lPersonName := oPayment.PersonName;
       bufdataset.Locate('PersonName',lPersonName,[]);
-      //fldnm := StringReplace( oPayment.ServiceName, ' ', '', [rfReplaceAll] );
       fldnm:= oPayment.ServiceName;
       try
         amount := bufdataset.FieldByName(fldnm).AsFloat;
@@ -471,21 +467,22 @@ begin
       bufdataset.Post;
     end;
     try
+      frReport.Clear;
       frReport.Dataset := frDBDataSet1;
       frDBDataSet1.DataSet := bufdataset;
       frReport.OnExportFilterSetup:= @frReport1ExportFilterSetup;
       frReport.LoadFromFile('reports\Payments.lrf');
-      //todo: error when repeating Payments report
+      //todo: error when repeating Payments report design
       //build crosstab titles
+      if waRound1Flag then // bad workaround
+    begin
       mpn := frReport.Pages.Pages[0].FindObject('MemoPersonTitle') as TfrMemoView;
       for i := 0 to Pred(crossFields_.Count) do
       begin
         m := TfrMemoView.Create(frReport.Pages[0]);
         m.CreateUniqueName;
         m.SetBounds(Trunc(mpn.Left+mpn.Width)+1,Trunc(mpn.Top),60,Trunc(mpn.Height));
-        //m.Memo.Text:= Copy(crossFields_.Strings[i],1,Length(crossFields_.Strings[i])-3) ;
         m.Memo.Text:= crossFields_.Strings[i];
-        //m.Memo.Text := StringReplace( m.Memo.Text, '_', ' ', [rfReplaceAll] );
         m.Alignment:= taRightJustify;
         m.Font.Style:= m.Font.Style + [fsBold];
         mpn := m;
@@ -498,9 +495,7 @@ begin
         m := TfrMemoView.Create(frReport.Pages[0]);
         m.CreateUniqueName;
         m.SetBounds(Trunc(mpn.Left+mpn.Width)+1,Trunc(mpn.Top),60,Trunc(mpn.Height));
-        //m.Memo.Text:= '['+ Copy(crossFields_.Strings[i],1,Length(crossFields_.Strings[i])-3) + ']';
         m.Memo.Text:= '['+ crossFields_.Strings[i] + ']';
-        //m.Memo.Text := StringReplace( m.Memo.Text, ' ', '', [rfReplaceAll] );
         m.Format:= 16974382;
         m.Alignment:= taRightJustify;
         m.HideZeroValues:= true;
@@ -514,14 +509,13 @@ begin
         m := TfrMemoView.Create(frReport.Pages[0]);
         m.CreateUniqueName;
         m.SetBounds(Trunc(mpn.Left+mpn.Width)+1,Trunc(mpn.Top),60,Trunc(mpn.Height));
-        //m.Memo.Text:= '[SUM('+ Copy(crossFields_.Strings[i],1,Length(crossFields_.Strings[i])-3) + ',MasterData1)]';
         m.Memo.Text:= '[SUM("'+ crossFields_.Strings[i] + '",MasterData1)]';
-        //m.Memo.Text:= StringReplace( m.Memo.Text, ' ', '', [rfReplaceAll] );
         m.Format:= 16974382;
         m.Alignment:= taRightJustify;
         m.Font.Style:= m.Font.Style + [fsBold];
         mpn := m;
       end;
+   end;
 
       if PreviewFlagged then
         frReport.DesignReport
@@ -530,7 +524,10 @@ begin
     finally
       bufdataset.Free;
     end;
+    waRound1Flag := false;
   finally
+    names_.free;
+    crossFields_.Free;
     frReport.Free;
   end;
 end;
